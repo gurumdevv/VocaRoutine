@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MediumHeadline" parent="TextAppearance.Material3.HeadlineMedium" />
+
+    <style name="LargeHeadline" parent="TextAppearance.Material3.HeadlineLarge"/>
+
+    <style name="SmallBody" parent="TextAppearance.Material3.BodySmall" />
+
+    <style name="MediumBody" parent="TextAppearance.Material3.BodyMedium" />
+
+    <style name="LargeBody" parent="TextAppearance.Material3.BodyLarge" />
+
+</resources>

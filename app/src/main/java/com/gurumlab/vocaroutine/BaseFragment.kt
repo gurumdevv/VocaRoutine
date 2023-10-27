@@ -9,7 +9,7 @@ import androidx.viewbinding.ViewBinding
 
 abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
 
-    private var binding: Binding? = null
+    var binding: Binding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
