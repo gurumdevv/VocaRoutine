@@ -7,4 +7,9 @@
     <string name="fragment_online_list">온라인 단어장</string>
     <string name="fragment_home">홈화면</string>
     <string name="app_logo">앱 로고</string>
+    <string name="my_list">나의 단어장</string>
+    <string name="navigation_today">오늘</string>
+    <string name="navigation_today_list">단어장</string>
+    <string name="navigation_online">온라인</string>
+    <string name="navigation_setting">설정</string>
 </resources>
