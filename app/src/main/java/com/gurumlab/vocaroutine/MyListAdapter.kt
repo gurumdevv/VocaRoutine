@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -26,6 +27,24 @@ class MyListAdapter : ListAdapter<MyList, MyListAdapter.MyListViewHolder>(MyList
             binding.tvListTitle.text = item.name
             binding.tvTotalCount.text =
                 binding.root.context.getString(R.string.total_count, item.totalCount)
+
+            when (item.reviewCount) {
+                1 -> {
+                    binding.ivDayOne.setImageResource(R.drawable.ic_stamper)
+                }
+                2 -> {
+                    binding.ivDayOne.setImageResource(R.drawable.ic_stamper)
+                    binding.ivDayThree.setImageResource(R.drawable.ic_stamper)
+                }
+                3 -> {
+                    binding.ivDayOne.setImageResource(R.drawable.ic_stamper)
+                    binding.ivDayThree.setImageResource(R.drawable.ic_stamper)
+                    binding.ivDaySeven.setImageResource(R.drawable.ic_stamper)
+                }
+                else -> {
+                    Log.d("reviewCount", "The review count exceeds the range.")
+                }
+            }
         }
 
         companion object {
