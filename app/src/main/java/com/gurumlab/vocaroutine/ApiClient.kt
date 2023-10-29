@@ -12,7 +12,7 @@ import retrofit2.http.POST
 interface ApiClient {
 
     @GET("myList.json")
-    suspend fun getLists(): Map<String, MyList>
+    suspend fun getLists(): List<MyList>
 
     @POST("myList.json")
     suspend fun uploadList(@Body newList: MyList)

@@ -12,4 +12,8 @@
     <string name="navigation_today_list">단어장</string>
     <string name="navigation_online">온라인</string>
     <string name="navigation_setting">설정</string>
+    <string name="total_count">%d단어</string>
+    <string name="day_seven">7번째 복습</string>
+    <string name="day_three">3번째 복습</string>
+    <string name="day_one">1번째 복습</string>
 </resources>
