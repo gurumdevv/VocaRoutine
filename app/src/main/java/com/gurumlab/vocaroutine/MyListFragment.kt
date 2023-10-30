@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.gurumlab.vocaroutine.databinding.FragmentMyListBinding
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,12 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val myListAdapter = MyListAdapter()
+        val myListAdapter = MyListAdapter(object : ListClickListener {
+            override fun onClick(list: MyList) {
+                val action = MyListFragmentDirections.actionMyListToDetail(list)
+                findNavController().navigate(action)
+            }
+        })
 
         val apiClient = VocaRoutineApplication.appContainer.provideApiClient()
 
@@ -32,5 +38,4 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>() {
             myListAdapter.submitList(myLists)
         }
     }
-
 }
