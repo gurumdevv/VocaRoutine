@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.gurumlab.vocaroutine.databinding.FragmentDetailListBinding
@@ -27,6 +28,8 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideBottomNavigation(false)
+
         binding!!.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -35,5 +38,15 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         val detailListAdapter = DetailListAdapter()
         binding!!.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideBottomNavigation(true)
+    }
+
+    private fun hideBottomNavigation(visible: Boolean) {
+        val bottomNavigation = activity?.findViewById<View>(R.id.bottom_navigation)
+        bottomNavigation?.isVisible = visible
     }
 }
