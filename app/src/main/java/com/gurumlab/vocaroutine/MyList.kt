@@ -10,5 +10,5 @@ data class MyList(
     val totalCount: Int,
     val reviewCount: Int,
     val alarm: Boolean,
-    val vocabularies: Map<String, String>
+    val vocabularies: List<Vocabulary>
 ) : Parcelable

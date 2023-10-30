@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
     android:background="@drawable/item_rounded_rectangle">
 
     <TextView
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
         android:layout_marginTop="10dp"
-        android:lines="3"
+        android:maxLines="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_vocabulary"
         tools:text="1. 나란히 만들다 \n2. ~을 조정하다" />
