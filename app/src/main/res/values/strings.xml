@@ -5,6 +5,7 @@
     <string name="fragment_setting">설정 화면</string>
     <string name="fragment_my_list">나의 단어장</string>
     <string name="fragment_online_list">온라인 단어장</string>
+    <string name="fragment_detail">단어장 상세 화면</string>
     <string name="fragment_home">홈화면</string>
     <string name="app_logo">앱 로고</string>
     <string name="my_list">나의 단어장</string>
