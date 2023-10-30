@@ -17,4 +17,11 @@
     <string name="day_seven">7번째 복습</string>
     <string name="day_three">3번째 복습</string>
     <string name="day_one">1번째 복습</string>
+    <string name="menu_notification">menu_notification</string>
+    <string name="menu_notification_description">알림 설정 버튼</string>
+    <string name="menu_download">menu_download</string>
+    <string name="menu_download_description">오프라인 저장 버튼</string>
+    <string name="menu_upload">menu_upload</string>
+    <string name="menu_upload_description">온라인 공유 버튼</string>
+    <string name="etymology">어원</string>
 </resources>
