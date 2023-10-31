@@ -19,7 +19,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "GOOGLE_CLIENT_ID", getGoogleClientID("google_client_id"))
+        buildConfigField("String", "GOOGLE_CLIENT_ID", getLocalProperty("google_client_id"))
+        buildConfigField("String", "GPT_API_KEY", getLocalProperty("gpt_api_key"))
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -46,7 +47,7 @@ android {
     }
 }
 
-fun getGoogleClientID(propertyKey: String): String{
+fun getLocalProperty(propertyKey: String): String{
     return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
