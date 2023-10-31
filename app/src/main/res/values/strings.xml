@@ -24,4 +24,6 @@
     <string name="menu_upload">menu_upload</string>
     <string name="menu_upload_description">온라인 공유 버튼</string>
     <string name="etymology">어원</string>
+    <string name="gpt_response_error">어원 불러오기 오류</string>
+    <string name="loading_etymology">어원을 불러오는 중입니다.</string>
 </resources>
