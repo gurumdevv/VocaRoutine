@@ -28,4 +28,7 @@
     <string name="set_notification_description">알림 설정 버튼</string>
     <string name="set_download_description">오프라인 저장 버튼</string>
     <string name="set_upload_description">업로드 버튼</string>
+    <string name="set_review_notification_success">복습 알림이 설정되었습니다.</string>
+    <string name="set_review_notification_fail">알림이 정상적으로 설정되지 않았습니다.</string>
+    <string name="cancel_review_notification_success">복습 알림이 해제되었습니다.</string>
 </resources>

@@ -90,4 +90,12 @@ class AlarmFunctions(private val context: Context) {
             ).show()
         }
     }
+
+    fun cancelAlarm(alarmCode: Int) {
+        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        pendingIntent =
+            PendingIntent.getBroadcast(context, alarmCode, intent, PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.cancel(pendingIntent)
+    }
 }

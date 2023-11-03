@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.databinding.FragmentDetailListBinding
 import java.util.GregorianCalendar
 import java.util.Calendar
@@ -58,17 +58,28 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         binding!!.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
 
-        binding!!.ivSetNotification.setOnClickListener {
-            val date = getDate()
-            val random = (1..100000)
-            val alarmCode = random.random()
-            val content = list.name
+        val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
 
-            isNotificationSet = setAlarm(alarmCode, content, date)
-            if (isNotificationSet) {
-                binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
+        binding!!.ivSetNotification.setOnClickListener {
+            if (!isNotificationSet) {
+                val date = getDate()
+                val content = list.name
+
+                isNotificationSet = setAlarm(alarmCode, content, date)
+                if (isNotificationSet) {
+                    binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.set_review_notification_success), Snackbar.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.set_review_notification_fail), Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             } else {
-                Toast.makeText(requireContext(), "알림이 정상적으로 설정되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                cancelAlarm(alarmCode)
             }
         }
     }
@@ -94,5 +105,14 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
     private fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
         return alarmFunctions.callAlarm(date, alarmCode, content)
+    }
+
+    private fun cancelAlarm(alarmCode: Int) {
+        alarmFunctions.cancelAlarm(alarmCode)
+        binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
+        Snackbar.make(
+            requireView(),
+            getString(R.string.cancel_review_notification_success), Snackbar.LENGTH_SHORT
+        ).show()
     }
 }
