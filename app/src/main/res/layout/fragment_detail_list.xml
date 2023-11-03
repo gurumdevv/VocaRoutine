@@ -19,9 +19,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:navigationIcon="@drawable/ic_back" />
+            app:navigationIcon="@drawable/ic_back">
 
+            <ImageButton
+                android:id="@+id/iv_setUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/set_upload_description"
+                android:src="@drawable/ic_upload_online" />
+
+            <ImageButton
+                android:id="@+id/iv_setDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/set_download_description"
+                android:src="@drawable/ic_download_disabled" />
+
+            <ImageButton
+                android:id="@+id/iv_setNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="15dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/set_notification_description"
+                android:src="@drawable/ic_bell_disabled" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
