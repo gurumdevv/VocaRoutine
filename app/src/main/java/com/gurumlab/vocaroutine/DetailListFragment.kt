@@ -62,10 +62,15 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
         binding!!.ivSetNotification.setOnClickListener {
             if (!isNotificationSet) {
-                val date = getDate()
                 val content = list.name
+                val dayOne = getDate(1)
+                val dayThree = getDate(3)
+                val daySeven = getDate(7)
 
-                isNotificationSet = setAlarm(alarmCode, content, date)
+                isNotificationSet = setAlarm(alarmCode, content, dayOne)
+                setAlarm(alarmCode + 1, content, dayThree)
+                setAlarm(alarmCode + 2, content, daySeven)
+
                 if (isNotificationSet) {
                     binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
                     Snackbar.make(
@@ -84,9 +89,9 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         }
     }
 
-    private fun getDate(): String {
+    private fun getDate(daysToAdd: Int): String {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, 1)
+        calendar.add(Calendar.DATE, daysToAdd)
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -109,6 +114,9 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
     private fun cancelAlarm(alarmCode: Int) {
         alarmFunctions.cancelAlarm(alarmCode)
+        alarmFunctions.cancelAlarm(alarmCode + 1)
+        alarmFunctions.cancelAlarm(alarmCode + 2)
+
         binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
         Snackbar.make(
             requireView(),
