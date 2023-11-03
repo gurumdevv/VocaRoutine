@@ -31,4 +31,6 @@
     <string name="set_review_notification_success">복습 알림이 설정되었습니다.</string>
     <string name="set_review_notification_fail">알림이 정상적으로 설정되지 않았습니다.</string>
     <string name="cancel_review_notification_success">복습 알림이 해제되었습니다.</string>
+    <string name="passedDays">%d일전 추가됨</string>
+    <string name="invalid_date_format">잘못된 날짜 포맷</string>
 </resources>
