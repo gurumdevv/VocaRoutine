@@ -12,9 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.databinding.FragmentDetailListBinding
+import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
@@ -58,6 +60,9 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         binding!!.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
 
+        val passedDays = calculatePassedDate(list.creationDate)
+        binding!!.tvDayCounter.text = getString(R.string.passedDays, passedDays)
+
         val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
 
         binding!!.ivSetNotification.setOnClickListener {
@@ -89,15 +94,6 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         }
     }
 
-    private fun getDate(daysToAdd: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, daysToAdd)
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         hideBottomNavigation(true)
@@ -108,6 +104,28 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         bottomNavigation?.isVisible = visible
     }
 
+    private fun getDate(daysToAdd: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, daysToAdd)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
+    }
+
+    private fun calculatePassedDate(creationDate: String): Int {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val currentDate = Calendar.getInstance().time
+        val createdDate = dateFormat.parse(creationDate)
+
+        return if (createdDate != null) {
+            val diff = createdDate.time - currentDate.time
+            (diff / (24 * 60 * 60 * 1000)).toInt().absoluteValue
+        } else {
+            throw IllegalArgumentException(getString(R.string.invalid_date_format))
+        }
+    }
+
     private fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
         return alarmFunctions.callAlarm(date, alarmCode, content)
     }
@@ -116,6 +134,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         alarmFunctions.cancelAlarm(alarmCode)
         alarmFunctions.cancelAlarm(alarmCode + 1)
         alarmFunctions.cancelAlarm(alarmCode + 2)
+        isNotificationSet = false
 
         binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
         Snackbar.make(
