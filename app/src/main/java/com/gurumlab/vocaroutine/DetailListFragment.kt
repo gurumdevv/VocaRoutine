@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.databinding.FragmentDetailListBinding
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar
 import java.util.Calendar
@@ -24,6 +26,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
     private lateinit var mCalender: GregorianCalendar
     private lateinit var notificationManager: NotificationManager
     private lateinit var alarmFunctions: AlarmFunctions
+    private val db = VocaRoutineApplication.db.alarmDao()
     private var isNotificationSet = false
 
     private val args: DetailListFragmentArgs by navArgs()
@@ -66,30 +69,33 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
 
         binding!!.ivSetNotification.setOnClickListener {
-            if (!isNotificationSet) {
-                val content = list.name
-                val dayOne = getDate(1)
-                val dayThree = getDate(3)
-                val daySeven = getDate(7)
+            lifecycleScope.launch {
+                if (!isNotificationSet) {
+                    val content = list.name
+                    val dayOne = getDate(1)
+                    val dayThree = getDate(3)
+                    val daySeven = getDate(7)
 
-                isNotificationSet = setAlarm(alarmCode, content, dayOne)
-                setAlarm(alarmCode + 1, content, dayThree)
-                setAlarm(alarmCode + 2, content, daySeven)
+                    isNotificationSet = setAlarm(alarmCode, content, dayOne)
+                    setAlarm(alarmCode + 1, content, dayThree)
+                    setAlarm(alarmCode + 2, content, daySeven)
 
-                if (isNotificationSet) {
-                    binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.set_review_notification_success), Snackbar.LENGTH_SHORT
-                    ).show()
+                    if (isNotificationSet) {
+                        binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
+                        Snackbar.make(
+                            requireView(),
+                            getString(R.string.set_review_notification_success),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Snackbar.make(
+                            requireView(),
+                            getString(R.string.set_review_notification_fail), Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 } else {
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.set_review_notification_fail), Snackbar.LENGTH_SHORT
-                    ).show()
+                    cancelAlarm(alarmCode)
                 }
-            } else {
-                cancelAlarm(alarmCode)
             }
         }
     }
@@ -126,14 +132,24 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         }
     }
 
-    private fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
-        return alarmFunctions.callAlarm(date, alarmCode, content)
+    private suspend fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
+        val isSet = alarmFunctions.callAlarm(date, alarmCode, content)
+        if (isSet) {
+            val alarm = Alarm(alarmCode, date, content)
+            db.addAlarm(alarm)
+        }
+        return isSet
     }
 
-    private fun cancelAlarm(alarmCode: Int) {
-        alarmFunctions.cancelAlarm(alarmCode)
-        alarmFunctions.cancelAlarm(alarmCode + 1)
-        alarmFunctions.cancelAlarm(alarmCode + 2)
+    private suspend fun cancelAlarm(alarmCode: Int) {
+        val alarms = intArrayOf(alarmCode, alarmCode + 1, alarmCode + 2)
+        val activeAlarms = db.searchActiveAlarms(alarms)
+
+        for (activeAlarmCode in activeAlarms) {
+            alarmFunctions.cancelAlarm(activeAlarmCode)
+            db.deleteAlarm(activeAlarmCode)
+        }
+
         isNotificationSet = false
 
         binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)

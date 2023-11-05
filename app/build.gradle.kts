@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services")
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -41,25 +42,28 @@ android {
         jvmTarget = "1.8"
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
         buildConfig = true
     }
 }
 
-fun getLocalProperty(propertyKey: String): String{
+fun getLocalProperty(propertyKey: String): String {
     return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
 dependencies {
 
+    ksp("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
