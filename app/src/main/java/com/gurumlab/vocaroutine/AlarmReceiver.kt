@@ -7,11 +7,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class AlarmReceiver : BroadcastReceiver() {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
+    private val db = VocaRoutineApplication.db.alarmDao()
 
     override fun onReceive(context: Context?, intent: Intent?) {
         notificationManager =
@@ -49,5 +54,17 @@ class AlarmReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(1, notification)
+
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            removeScheduleFromDB(requestCode)
+        }
+        job.invokeOnCompletion {
+            it?.printStackTrace()
+            CoroutineScope(Dispatchers.IO).cancel()
+        }
+    }
+
+    private suspend fun removeScheduleFromDB(alarmCode: Int) {
+        db.deleteAlarm(alarmCode)
     }
 }
