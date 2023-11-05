@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.gurumlab.vocaroutine.HomeFragment"
+        android:name="com.gurumlab.vocaroutine.ui.home.HomeFragment"
         android:label="@string/fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_online"
-        android:name="com.gurumlab.vocaroutine.OnlineListFragment"
+        android:name="com.gurumlab.vocaroutine.ui.online.OnlineListFragment"
         android:label="@string/fragment_online_list"
         tools:layout="@layout/fragment_online_list" />
     <fragment
         android:id="@+id/navigation_mine"
-        android:name="com.gurumlab.vocaroutine.MyListFragment"
+        android:name="com.gurumlab.vocaroutine.ui.list.MyListFragment"
         android:label="@string/fragment_my_list"
         tools:layout="@layout/fragment_my_list" >
         <action
@@ -26,12 +26,12 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_setting"
-        android:name="com.gurumlab.vocaroutine.SettingFragment"
+        android:name="com.gurumlab.vocaroutine.ui.setting.SettingFragment"
         android:label="@string/fragment_setting"
         tools:layout="@layout/fragment_setting" />
     <fragment
         android:id="@+id/navigation_login"
-        android:name="com.gurumlab.vocaroutine.LoginFragment"
+        android:name="com.gurumlab.vocaroutine.ui.login.LoginFragment"
         android:label="@string/fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -40,11 +40,11 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_detail"
-        android:name="com.gurumlab.vocaroutine.DetailListFragment"
+        android:name="com.gurumlab.vocaroutine.ui.detail.DetailListFragment"
         android:label="@string/fragment_detail"
         tools:layout="@layout/fragment_detail_list" >
         <argument
             android:name="list"
-            app:argType="com.gurumlab.vocaroutine.MyList" />
+            app:argType="com.gurumlab.vocaroutine.data.model.MyList" />
     </fragment>
 </navigation>
