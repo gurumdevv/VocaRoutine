@@ -1,12 +1,11 @@
 package com.gurumlab.vocaroutine.ui.detail
 
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.gurumlab.vocaroutine.AlarmFunctions
-import com.gurumlab.vocaroutine.VocaRoutineApplication
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.MyList
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
@@ -16,15 +15,14 @@ import java.util.Calendar
 import java.util.Locale
 
 class DetailListViewModel(
-    application: VocaRoutineApplication,
-    private val repository: DetailListRepository
-) : AndroidViewModel(application) {
+    private val repository: DetailListRepository,
+    private val alarmFunctions: AlarmFunctions
+) : ViewModel() {
 
     private var _isNotificationSet: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val isNotificationSet = _isNotificationSet
     private var _isNotificationSetError: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val isNotificationSetError = _isNotificationSetError
-    private val alarmFunctions = AlarmFunctions(application)
     private val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
 
     fun handleNotification(list: MyList) {
@@ -78,10 +76,10 @@ class DetailListViewModel(
     }
 
     companion object {
-        fun provideFactory(application: VocaRoutineApplication, repository: DetailListRepository) =
+        fun provideFactory(repository: DetailListRepository, alarmFunctions: AlarmFunctions) =
             viewModelFactory {
                 initializer {
-                    DetailListViewModel(application, repository)
+                    DetailListViewModel(repository, alarmFunctions)
                 }
             }
     }
