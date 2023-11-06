@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import com.gurumlab.vocaroutine.AlarmFunctions
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.data.model.MyList
 import com.gurumlab.vocaroutine.R
@@ -24,8 +25,8 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
     private lateinit var list: MyList
     private val viewModel by viewModels<DetailListViewModel> {
         DetailListViewModel.provideFactory(
-            application = VocaRoutineApplication.getInstance(),
-            repository = DetailListRepository(VocaRoutineApplication.db)
+            repository = DetailListRepository(VocaRoutineApplication.db),
+            alarmFunctions = AlarmFunctions(requireContext())
         )
     }
 
