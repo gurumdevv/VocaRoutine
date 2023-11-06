@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.gurumlab.vocaroutine.AlarmFunctions
+import com.gurumlab.vocaroutine.AlarmHandler
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.MyList
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
@@ -16,7 +16,7 @@ import java.util.Locale
 
 class DetailListViewModel(
     private val repository: DetailListRepository,
-    private val alarmFunctions: AlarmFunctions
+    private val alarmHandler: AlarmHandler
 ) : ViewModel() {
 
     private var _isNotificationSet: MutableLiveData<Event<Boolean>> = MutableLiveData()
@@ -53,7 +53,7 @@ class DetailListViewModel(
     }
 
     private suspend fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
-        val isSet = alarmFunctions.callAlarm(date, alarmCode, content)
+        val isSet = alarmHandler.callAlarm(date, alarmCode, content)
         if (isSet) {
             val alarm = Alarm(alarmCode, date, content)
             repository.addAlarm(alarm)
@@ -68,7 +68,7 @@ class DetailListViewModel(
         val activeAlarms = repository.searchActiveAlarms(alarms)
 
         for (activeAlarmCode in activeAlarms) {
-            alarmFunctions.cancelAlarm(activeAlarmCode)
+            alarmHandler.cancelAlarm(activeAlarmCode)
             repository.deleteAlarm(activeAlarmCode)
         }
 
@@ -76,10 +76,10 @@ class DetailListViewModel(
     }
 
     companion object {
-        fun provideFactory(repository: DetailListRepository, alarmFunctions: AlarmFunctions) =
+        fun provideFactory(repository: DetailListRepository, alarmHandler: AlarmHandler) =
             viewModelFactory {
                 initializer {
-                    DetailListViewModel(repository, alarmFunctions)
+                    DetailListViewModel(repository, alarmHandler)
                 }
             }
     }

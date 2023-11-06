@@ -14,7 +14,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class AlarmFunctions(private val context: Context) {
+class AlarmHandler(private val context: Context) {
 
     private lateinit var pendingIntent: PendingIntent
     private lateinit var alarmManager: AlarmManager
