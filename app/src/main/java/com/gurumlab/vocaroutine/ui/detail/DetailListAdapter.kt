@@ -37,15 +37,9 @@ class DetailListAdapter :
             VocaRoutineApplication.appContainer.provideGptApiClient(BuildConfig.GPT_API_KEY)
 
         fun bind(item: Vocabulary) {
-            val meaningList = item.meaning.split(",")
-            val meaning = meaningList.mapIndexed { index, value ->
-                "${index + 1}. ${value.trim()}"
-            }.joinToString("\n")
+            binding.vocabulary = item
 
-            binding.tvVocabulary.text = item.word
-            binding.tvMeaning.text = meaning
-
-            //CoroutineScope에 대한 대안은 MVVM 패턴으로 전환시 구현
+            //업로드 기능 구현 부분으로 이동 예정
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val request = gptApiClient.getResponse(
