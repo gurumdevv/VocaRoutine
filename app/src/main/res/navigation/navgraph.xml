@@ -19,7 +19,7 @@
         android:id="@+id/navigation_mine"
         android:name="com.gurumlab.vocaroutine.ui.list.MyListFragment"
         android:label="@string/fragment_my_list"
-        tools:layout="@layout/fragment_my_list" >
+        tools:layout="@layout/fragment_my_list">
         <action
             android:id="@+id/action_my_list_to_detail"
             app:destination="@id/navigation_detail" />
@@ -33,7 +33,7 @@
         android:id="@+id/navigation_login"
         android:name="com.gurumlab.vocaroutine.ui.login.LoginFragment"
         android:label="@string/fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_home"
             app:destination="@id/navigation_home" />
@@ -42,9 +42,14 @@
         android:id="@+id/navigation_detail"
         android:name="com.gurumlab.vocaroutine.ui.detail.DetailListFragment"
         android:label="@string/fragment_detail"
-        tools:layout="@layout/fragment_detail_list" >
+        tools:layout="@layout/fragment_detail_list">
         <argument
             android:name="list"
             app:argType="com.gurumlab.vocaroutine.data.model.MyList" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_creation"
+        android:name="com.gurumlab.vocaroutine.ui.making.MakingListFragment"
+        android:label="@string/fragment_creation"
+        tools:layout="@layout/fragment_making_list" />
 </navigation>
