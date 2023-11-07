@@ -1,6 +1,6 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
-import com.gurumlab.vocaroutine.data.model.MyList
+import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,10 +13,10 @@ import retrofit2.http.POST
 interface ApiClient {
 
     @GET("myList.json")
-    suspend fun getLists(): List<MyList>
+    suspend fun getLists(): List<ListInfo>
 
     @POST("myList.json")
-    suspend fun uploadList(@Body newList: MyList)
+    suspend fun uploadList(@Body newList: ListInfo)
 
     companion object {
         private val moshi = Moshi.Builder()

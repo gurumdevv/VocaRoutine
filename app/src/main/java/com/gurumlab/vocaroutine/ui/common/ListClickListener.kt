@@ -1,8 +1,8 @@
 package com.gurumlab.vocaroutine.ui.common
 
-import com.gurumlab.vocaroutine.data.model.MyList
+import com.gurumlab.vocaroutine.data.model.ListInfo
 
 interface ListClickListener {
 
-    fun onClick(list: MyList)
+    fun onClick(list: ListInfo)
 }

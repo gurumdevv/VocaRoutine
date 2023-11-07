@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.ui.common.MyListDiffUtil
-import com.gurumlab.vocaroutine.data.model.MyList
+import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.databinding.ItemMyListBinding
 
 class MyListAdapter(private val clickListener: ListClickListener) :
-    ListAdapter<MyList, MyListAdapter.MyListViewHolder>(MyListDiffUtil()) {
+    ListAdapter<ListInfo, MyListAdapter.MyListViewHolder>(MyListDiffUtil()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -26,7 +26,7 @@ class MyListAdapter(private val clickListener: ListClickListener) :
     class MyListViewHolder(private val binding: ItemMyListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(list: MyList, clickListener: ListClickListener) {
+        fun bind(list: ListInfo, clickListener: ListClickListener) {
             binding.list = list
             binding.clickListener = clickListener
         }
