@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_my_list_to_detail"
             app:destination="@id/navigation_detail" />
+        <action
+            android:id="@+id/action_mine_to_creation"
+            app:destination="@id/navigation_creation" />
     </fragment>
     <fragment
         android:id="@+id/navigation_setting"
