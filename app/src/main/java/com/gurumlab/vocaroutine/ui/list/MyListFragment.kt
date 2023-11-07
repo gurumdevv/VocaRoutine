@@ -33,6 +33,12 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
         super.onViewCreated(view, savedInstanceState)
 
         setLayout()
+        binding!!.btnNewList.elevation = 0f
+
+        binding!!.btnNewList.setOnClickListener {
+            val action = MyListFragmentDirections.actionMineToCreation()
+            findNavController().navigate(action)
+        }
     }
 
     private fun setLayout() {

@@ -43,4 +43,6 @@
     <string name="next">다음</string>
     <string name="fragment_creation">단어장 작성 화면</string>
     <string name="done">끝내기</string>
+    <string name="new_list">새 단어장</string>
+    <string name="fab_new_list">새 단어장 만들기</string>
 </resources>
