@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.VocaRoutineApplication
-import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentMakingListBinding
@@ -50,19 +50,22 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
         binding!!.btnDone.setOnClickListener {
             createVocabulary()
-            val title = "tempTitle"
-            val date = getCurrentTimeAsString()
-            val alarmCode = getAlarmCode()
-            if (alarmCode == 0) {
-                findNavController().navigateUp()
-            }
 
-            val listInfo =
-                ListInfo(title, date, totalCount, 0, false, alarmCode, vocabularies.toList())
+            if (vocabularies.isEmpty()) {
+                Snackbar.make(requireView(), getString(R.string.empty_list), Snackbar.LENGTH_SHORT)
+                    .show()
+            } else {
+                val date = getCurrentTimeAsString()
+                val alarmCode = getAlarmCode()
+                if (alarmCode == 0) {
+                    findNavController().navigateUp()
+                }
 
-            lifecycleScope.launch {
-                VocaRoutineApplication.appContainer.provideApiClient().uploadList(uid, listInfo)
-                findNavController().navigateUp()
+                val tempListInfo =
+                    TempListInfo(date, totalCount, 0, false, alarmCode, vocabularies.toList())
+
+                val action = MakingListFragmentDirections.actionCreationToDialog(uid, tempListInfo)
+                findNavController().navigate(action)
             }
         }
     }
