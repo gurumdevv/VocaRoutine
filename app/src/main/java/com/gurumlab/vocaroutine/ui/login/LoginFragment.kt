@@ -122,7 +122,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val user = FirebaseAuth.getInstance().currentUser
-                        saveUserToken(user)
+                        saveUid(user!!.uid)
                         updateUI(user)
                     } else {
                         Log.e(
@@ -136,15 +136,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         }
     }
 
-    private fun saveUserToken(user: FirebaseUser?) {
+    private fun saveUid(uid: String) {
 
         lifecycleScope.launch {
-            VocaRoutineApplication.getInstance().getDataStore().setUserToken(user.toString())
+            VocaRoutineApplication.getInstance().getDataStore().setUid(uid)
         }
     }
 
     private suspend fun isLogin(): Boolean {
-        val userToken = VocaRoutineApplication.getInstance().getDataStore().savedUserToken.first()
+        val userToken = VocaRoutineApplication.getInstance().getDataStore().savedUid.first()
 
         return userToken.isNotEmpty()
     }

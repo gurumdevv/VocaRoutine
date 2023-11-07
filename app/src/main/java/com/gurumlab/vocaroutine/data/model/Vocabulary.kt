@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Vocabulary(
     val word: String,
-    val meaning: String
+    val meaning: String,
+    val etymology: String,
 ) : Parcelable

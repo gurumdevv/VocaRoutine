@@ -12,26 +12,26 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-class DataStoreModule (private val context: Context){
+class DataStoreModule(private val context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "dataStore")
 
-    private val userToken = stringPreferencesKey("USER_TOKEN")
+    private val uid = stringPreferencesKey("UID")
 
-    val savedUserToken: Flow<String> = context.dataStore.data
+    val savedUid: Flow<String> = context.dataStore.data
         .catch { exception ->
-            if(exception is IOException){
+            if (exception is IOException) {
                 emit(emptyPreferences())
-            } else{
+            } else {
                 throw exception
             }
         }.map {
-            it[userToken] ?: ""
+            it[uid] ?: ""
         }
 
-    suspend fun setUserToken(userTokenString: String){
+    suspend fun setUid(inputUid: String) {
         context.dataStore.edit {
-            it[userToken] = userTokenString
+            it[uid] = inputUid
         }
     }
 }
