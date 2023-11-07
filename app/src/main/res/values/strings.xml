@@ -33,4 +33,14 @@
     <string name="cancel_review_notification_success">복습 알림이 해제되었습니다.</string>
     <string name="passedDays">%d일전 추가됨</string>
     <string name="invalid_date_format">잘못된 날짜 포맷</string>
+    <string name="making_list">단어장 만들기</string>
+    <string name="load_from_picture">촬영해서 불러오기</string>
+    <string name="taking_photo">사진 촬영</string>
+    <string name="fill_in_self">직접 작성하기</string>
+    <string name="vocabulary">단어</string>
+    <string name="meaning">의미</string>
+    <string name="meaning_separation">콤마(,)로 뜻을 구분해 주세요</string>
+    <string name="next">다음</string>
+    <string name="fragment_creation">단어장 작성 화면</string>
+    <string name="done">끝내기</string>
 </resources>
