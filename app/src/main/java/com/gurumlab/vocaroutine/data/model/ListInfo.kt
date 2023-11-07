@@ -6,9 +6,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ListInfo(
     val name: String,
-    val creationDate: String,
+    val createdDate: String,
     val totalCount: Int,
     val reviewCount: Int,
-    val alarm: Boolean,
+    val isSetAlarm: Boolean,
+    val alarmCode: Int,
     val vocabularies: List<Vocabulary>
 ) : Parcelable

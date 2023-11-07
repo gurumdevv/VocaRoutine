@@ -82,7 +82,7 @@
         <TextView
             android:id="@+id/tv_day_counter"
             style="@style/MediumBody"
-            passedDays="@{list.creationDate}"
+            passedDays="@{list.createdDate}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="18dp"

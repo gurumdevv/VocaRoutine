@@ -9,14 +9,15 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiClient {
 
     @GET("myList.json")
     suspend fun getLists(): List<ListInfo>
 
-    @POST("myList.json")
-    suspend fun uploadList(@Body newList: ListInfo)
+    @POST("privateList/{uid}.json")
+    suspend fun uploadList(@Path("uid") uid: String, @Body newList: ListInfo)
 
     companion object {
         private val moshi = Moshi.Builder()
