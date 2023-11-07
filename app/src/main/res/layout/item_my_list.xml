@@ -11,7 +11,7 @@
 
         <variable
             name="list"
-            type="com.gurumlab.vocaroutine.data.model.MyList" />
+            type="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

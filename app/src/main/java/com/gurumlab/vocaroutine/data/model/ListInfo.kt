@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MyList(
+data class ListInfo(
     val name: String,
     val creationDate: String,
     val totalCount: Int,

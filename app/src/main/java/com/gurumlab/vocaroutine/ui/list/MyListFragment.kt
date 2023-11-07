@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.VocaRoutineApplication
-import com.gurumlab.vocaroutine.data.model.MyList
+import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.remote.MyListRepository
 import com.gurumlab.vocaroutine.databinding.FragmentMyListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
@@ -45,7 +45,7 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
         })
     }
 
-    override fun onClick(list: MyList) {
+    override fun onClick(list: ListInfo) {
         val action = MyListFragmentDirections.actionMyListToDetail(list)
         findNavController().navigate(action)
     }

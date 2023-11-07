@@ -45,7 +45,7 @@
         tools:layout="@layout/fragment_detail_list">
         <argument
             android:name="list"
-            app:argType="com.gurumlab.vocaroutine.data.model.MyList" />
+            app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </fragment>
     <fragment
         android:id="@+id/navigation_creation"
