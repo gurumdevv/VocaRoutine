@@ -53,4 +53,6 @@
     <string name="cancel">취소</string>
     <string name="empty_list">저장된 단어가 없습니다.</string>
     <string name="navigation_dialog">제목 입력 다이얼로그</string>
+    <string name="error">error</string>
+    <string name="loading_etymology_now">어원을 불러오는 중</string>
 </resources>
