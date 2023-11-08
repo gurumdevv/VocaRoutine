@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.VocaRoutineApplication
+import com.gurumlab.vocaroutine.data.model.ChatMessage
+import com.gurumlab.vocaroutine.data.model.ChatRequest
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
 import com.gurumlab.vocaroutine.ui.BaseFragment
@@ -23,6 +26,8 @@ import java.util.Locale
 
 class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
+    private val gptApiClient =
+        VocaRoutineApplication.appContainer.provideGptApiClient(BuildConfig.GPT_API_KEY)
     private lateinit var uid: String
     private val vocabularies = mutableListOf<Vocabulary>()
     private var totalCount = 0
@@ -45,44 +50,70 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding!!.btnNext.setOnClickListener {
-            createVocabulary()
+            lifecycleScope.launch {
+                createVocabulary()
+            }
         }
 
         binding!!.btnDone.setOnClickListener {
-            createVocabulary()
+            lifecycleScope.launch {
+                createVocabulary()
 
-            if (vocabularies.isEmpty()) {
-                Snackbar.make(requireView(), getString(R.string.empty_list), Snackbar.LENGTH_SHORT)
-                    .show()
-            } else {
-                val date = getCurrentTimeAsString()
-                val alarmCode = getAlarmCode()
-                if (alarmCode == 0) {
-                    findNavController().navigateUp()
+                if (vocabularies.isEmpty()) {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.empty_list),
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .setAnchorView(binding!!.btnDone)
+                        .show()
+                } else {
+                    val date = getCurrentTimeAsString()
+                    val alarmCode = getAlarmCode()
+                    if (alarmCode == 0) {
+                        findNavController().navigateUp()
+                    }
+
+                    val tempListInfo =
+                        TempListInfo(date, totalCount, 0, false, alarmCode, vocabularies.toList())
+
+                    val action =
+                        MakingListFragmentDirections.actionCreationToDialog(uid, tempListInfo)
+                    findNavController().navigate(action)
                 }
-
-                val tempListInfo =
-                    TempListInfo(date, totalCount, 0, false, alarmCode, vocabularies.toList())
-
-                val action = MakingListFragmentDirections.actionCreationToDialog(uid, tempListInfo)
-                findNavController().navigate(action)
             }
         }
     }
 
-    private fun createVocabulary() {
+    private suspend fun createVocabulary() {
         val word = binding!!.tvVocabulary.text ?: ""
         val meaning = binding!!.tvMeaning.text ?: ""
+        var numberOfAttempts = 0
 
         if (word.isNotEmpty() && meaning.isNotEmpty()) {
-            val vocabulary = Vocabulary(word.toString(), meaning.toString(), "etymology")
+            var etymology = getEtymology(word.toString())
+
+            while (etymology == "error") {
+                etymology = getEtymology(word.toString())
+
+                numberOfAttempts++
+                if (numberOfAttempts >= 2) {
+                    etymology = getString(R.string.gpt_response_error)
+                    break
+                }
+            }
+
+            val vocabulary = Vocabulary(word.toString(), meaning.toString(), etymology)
             vocabularies.add(vocabulary)
             totalCount++
 
             binding!!.tvVocabulary.setText("")
             binding!!.tvMeaning.setText("")
+
+            binding!!.btnNext.text = getString(R.string.next)
         } else {
             Snackbar.make(requireView(), getString(R.string.fill_in_blank), Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding!!.btnDone)
                 .show()
         }
     }
@@ -110,8 +141,27 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             Snackbar.make(
                 requireView(),
                 getString(R.string.alarm_code_creation_error, e), Snackbar.LENGTH_LONG
-            ).show()
+            )
+                .setAnchorView(binding!!.btnDone)
+                .show()
             0
+        }
+    }
+
+    private suspend fun getEtymology(word: String): String {
+        binding!!.btnNext.text = getString(R.string.loading_etymology_now)
+
+        return try {
+            val request = gptApiClient.getResponse(
+                ChatRequest(
+                    "gpt-3.5-turbo-1106", listOf(
+                        ChatMessage("system", "\'${word}\'에 대한 어원만 알려줘. 30자 이내로 간단하게 설명해줘.")
+                    )
+                )
+            )
+            request.choices.first().message.content
+        } catch (e: Exception) {
+            getString(R.string.error)
         }
     }
 }
