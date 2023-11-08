@@ -18,7 +18,8 @@ class MyListViewModel(private val repository: MyListRepository) : ViewModel() {
 
     fun loadLists() {
         viewModelScope.launch {
-            val myLists = repository.getLists()
+            val uid = repository.getUid()
+            val myLists = repository.getLists(uid)
             _items.value = Event(myLists)
         }
     }

@@ -18,7 +18,10 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
 
     private val viewModel by viewModels<MyListViewModel> {
         MyListViewModel.provideFactory(
-            repository = MyListRepository(VocaRoutineApplication.appContainer.provideApiClient())
+            repository = MyListRepository(
+                VocaRoutineApplication.appContainer.provideApiClient(),
+                VocaRoutineApplication.getInstance().getDataStore()
+            )
         )
     }
 
