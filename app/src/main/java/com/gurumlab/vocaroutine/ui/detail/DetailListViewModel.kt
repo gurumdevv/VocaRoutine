@@ -31,7 +31,7 @@ class DetailListViewModel(
             if (isNotificationSet.value?.content == true) {
                 cancelAlarm(alarmCode)
             } else {
-                val content = list.name
+                val content = list.title
                 val dayOne = getDate(1)
                 val dayThree = getDate(3)
                 val daySeven = getDate(7)
