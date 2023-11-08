@@ -13,8 +13,8 @@ import retrofit2.http.Path
 
 interface ApiClient {
 
-    @GET("myList.json")
-    suspend fun getLists(): List<ListInfo>
+    @GET("privateList/{uid}.json")
+    suspend fun getLists(@Path("uid") uid: String): Map<String, ListInfo>
 
     @POST("privateList/{uid}.json")
     suspend fun uploadList(@Path("uid") uid: String, @Body newList: ListInfo)
