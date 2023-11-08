@@ -49,6 +49,8 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setTopAppBar()
+
         binding!!.btnNext.setOnClickListener {
             lifecycleScope.launch {
                 createVocabulary()
@@ -162,6 +164,12 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             request.choices.first().message.content
         } catch (e: Exception) {
             getString(R.string.error)
+        }
+    }
+
+    private fun setTopAppBar() {
+        binding!!.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 }
