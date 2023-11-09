@@ -22,16 +22,21 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
-import com.gurumlab.vocaroutine.VocaRoutineApplication
+import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.databinding.FragmentLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private val oneTapResultLauncher = getResultLauncher()
     private lateinit var signInRequest: BeginSignInRequest
     private lateinit var oneTapClient: SignInClient
+    @Inject
+    lateinit var dataStore: DataStoreModule
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -137,14 +142,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     }
 
     private fun saveUid(uid: String) {
-
         lifecycleScope.launch {
-            VocaRoutineApplication.getInstance().getDataStore().setUid(uid)
+            dataStore.setUid(uid)
         }
     }
 
     private suspend fun isLogin(): Boolean {
-        val userToken = VocaRoutineApplication.getInstance().getDataStore().savedUid.first()
+        val userToken = dataStore.getUid.first()
 
         return userToken.isNotEmpty()
     }
