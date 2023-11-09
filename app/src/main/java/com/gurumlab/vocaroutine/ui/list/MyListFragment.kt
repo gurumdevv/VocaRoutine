@@ -8,22 +8,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
-import com.gurumlab.vocaroutine.VocaRoutineApplication
 import com.gurumlab.vocaroutine.data.model.ListInfo
-import com.gurumlab.vocaroutine.data.source.remote.MyListRepository
 import com.gurumlab.vocaroutine.databinding.FragmentMyListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener {
 
-    private val viewModel by viewModels<MyListViewModel> {
-        MyListViewModel.provideFactory(
-            repository = MyListRepository(
-                VocaRoutineApplication.appContainer.provideApiClient(),
-                VocaRoutineApplication.getInstance().getDataStore()
-            )
-        )
-    }
+    private val viewModel by viewModels<MyListViewModel>()
 
     override fun inflateBinding(
         inflater: LayoutInflater,
