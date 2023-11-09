@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.VocaRoutineApplication
 import com.gurumlab.vocaroutine.data.model.ChatMessage
 import com.gurumlab.vocaroutine.data.model.ChatRequest
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
+import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
+import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentMakingListBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.lang.NumberFormatException
@@ -23,11 +24,15 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
-    private val gptApiClient =
-        VocaRoutineApplication.appContainer.provideGptApiClient(BuildConfig.GPT_API_KEY)
+    @Inject
+    lateinit var gptApiClient: GptApiClient
+    @Inject
+    lateinit var dataStore: DataStoreModule
     private lateinit var uid: String
     private val vocabularies = mutableListOf<Vocabulary>()
     private var totalCount = 0
@@ -35,7 +40,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            uid = VocaRoutineApplication.getInstance().getDataStore().savedUid.first()
+            uid = dataStore.getUid.first()
         }
     }
 
