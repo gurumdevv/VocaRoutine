@@ -3,18 +3,19 @@ package com.gurumlab.vocaroutine.ui.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.gurumlab.vocaroutine.AlarmHandler
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
+import javax.inject.Inject
 
-class DetailListViewModel(
+@HiltViewModel
+class DetailListViewModel @Inject constructor(
     private val repository: DetailListRepository,
     private val alarmHandler: AlarmHandler
 ) : ViewModel() {
@@ -73,14 +74,5 @@ class DetailListViewModel(
         }
 
         _isNotificationSet.value = Event(false)
-    }
-
-    companion object {
-        fun provideFactory(repository: DetailListRepository, alarmHandler: AlarmHandler) =
-            viewModelFactory {
-                initializer {
-                    DetailListViewModel(repository, alarmHandler)
-                }
-            }
     }
 }

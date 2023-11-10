@@ -7,17 +7,23 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
-    private val db = VocaRoutineApplication.db.alarmDao()
+
+    @Inject
+    lateinit var alarmDao: AlarmDao
 
     override fun onReceive(context: Context?, intent: Intent?) {
         notificationManager =
@@ -66,6 +72,6 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private suspend fun removeScheduleFromDB(alarmCode: Int) {
-        db.deleteAlarm(alarmCode)
+        alarmDao.deleteAlarm(alarmCode)
     }
 }
