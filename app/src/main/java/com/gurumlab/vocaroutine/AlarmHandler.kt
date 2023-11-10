@@ -8,13 +8,15 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
-class AlarmHandler(private val context: Context) {
+class AlarmHandler @Inject constructor(@ApplicationContext private val context: Context) {
 
     private lateinit var pendingIntent: PendingIntent
     private lateinit var alarmManager: AlarmManager
@@ -72,6 +74,7 @@ class AlarmHandler(private val context: Context) {
             action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
             putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
         }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
         Toast.makeText(
             context,
@@ -82,6 +85,7 @@ class AlarmHandler(private val context: Context) {
     private fun navigateToReminderSetting() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intent)
             Toast.makeText(
                 context,
