@@ -45,7 +45,8 @@
     <string name="done">끝내기</string>
     <string name="new_list">새 단어장</string>
     <string name="fab_new_list">새 단어장 만들기</string>
-    <string name="fill_in_blank">단어 또는 의미를 작성해 주세요.</string>
+    <string name="fill_in_blank_word">단어를 작성해 주세요.</string>
+    <string name="fill_in_blank_meaning">의미를 작성해 주세요.</string>
     <string name="alarm_code_creation_error">알람코드 생성오류: %s</string>
     <string name="list_name">단어장 이름</string>
     <string name="fill_in_title">단어장 이름을 입력하세요.</string>
