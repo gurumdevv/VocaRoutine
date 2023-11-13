@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.databinding.ItemOnlineListBinding
@@ -28,10 +27,8 @@ class OnlineListAdapter(private val clickListener: ListClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(list: ListInfo, clickListener: ListClickListener) {
-            binding.tvListTitle.text = list.title
-            binding.tvTotalCount.text =
-                binding.root.context.getString(R.string.total_count, list.totalCount)
-            itemView.setOnClickListener { clickListener.onClick(list) }
+            binding.list = list
+            binding.clickListener = clickListener
         }
 
         companion object {
