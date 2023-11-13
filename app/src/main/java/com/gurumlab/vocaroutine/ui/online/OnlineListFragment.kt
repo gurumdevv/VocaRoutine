@@ -6,15 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentOnlineListBinding
+import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>() {
+class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickListener {
 
     @Inject
     lateinit var apiClient: ApiClient
@@ -29,7 +32,7 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val onlineListAdapter = OnlineListAdapter()
+        val onlineListAdapter = OnlineListAdapter(this)
         binding!!.rvOnlineList.adapter = onlineListAdapter
 
         lifecycleScope.launch {
@@ -39,5 +42,10 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>() {
                 onlineListAdapter.submitList(sharedList.toList())
             }
         }
+    }
+
+    override fun onClick(list: ListInfo) {
+        val action = OnlineListFragmentDirections.actionOnlineToOnlineDetail(list)
+        findNavController().navigate(action)
     }
 }
