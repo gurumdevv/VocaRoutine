@@ -95,4 +95,9 @@
         android:name="com.gurumlab.vocaroutine.ui.making.ScanActivity"
         android:label="@string/navigation_scan"
         tools:layout="@layout/activity_scan" />
+    <activity
+        android:id="@+id/navigation_after_photo"
+        android:name="com.gurumlab.vocaroutine.ui.making.AfterPhotoActivity"
+        android:label="@string/navigation_after_photo"
+        tools:layout="@layout/activity_after_photo"/>
 </navigation>

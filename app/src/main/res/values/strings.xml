@@ -63,4 +63,6 @@
     <string name="extract_word_from_picture">문자를 인식 중 이에요…</string>
     <string name="please_scan_again">다시 스캔해 주세요.</string>
     <string name="capture_image">캡쳐한 이미지</string>
+    <string name="ocr_result">인식 결과</string>
+    <string name="navigation_after_photo">OCR 스캔 결과 화면</string>
 </resources>

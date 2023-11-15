@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.ui.making
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.ActivityScanBinding
+import com.gurumlab.vocaroutine.ui.common.Constants
 import com.websitebeaver.documentscanner.DocumentScanner
 import com.websitebeaver.documentscanner.constants.ResponseType
 
@@ -36,9 +38,12 @@ class ScanActivity : AppCompatActivity() {
 
                 val result = recognizer.process(image)
                     .addOnSuccessListener { visionText ->
-                        TODO("visionText.text로 fragment에 값 전달하기")
+                        val intent = Intent(this, AfterPhotoActivity::class.java)
+                        intent.putExtra(Constants.KEY_OCR_RESULT, visionText.text)
+                        startActivity(intent)
+                        finish()
                     }
-                    .addOnFailureListener { e ->
+                    .addOnFailureListener {
                         Snackbar.make(
                             binding.root.rootView,
                             getString(R.string.please_scan_again), Snackbar.LENGTH_SHORT

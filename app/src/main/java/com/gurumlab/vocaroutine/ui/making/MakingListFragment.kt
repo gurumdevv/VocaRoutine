@@ -112,6 +112,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
         binding!!.ivLoadPictureBackground.setOnClickListener {
             val action = MakingListFragmentDirections.actionCreationToScan()
             findNavController().navigate(action)
+            findNavController().navigateUp()
         }
     }
 
