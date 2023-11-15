@@ -59,4 +59,8 @@
     <string name="online_list">온라인 단어장</string>
     <string name="download_to_mine">단어장 내려받기 버튼</string>
     <string name="navigation_online_detail">단어장 공유 상세 화면</string>
+    <string name="navigation_scan">카메라로 스캔하는 화면</string>
+    <string name="extract_word_from_picture">문자를 인식 중 이에요…</string>
+    <string name="please_scan_again">다시 스캔해 주세요.</string>
+    <string name="capture_image">캡쳐한 이미지</string>
 </resources>

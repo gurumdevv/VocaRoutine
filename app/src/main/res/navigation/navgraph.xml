@@ -65,6 +65,9 @@
         <action
             android:id="@+id/action_creation_to_dialog"
             app:destination="@id/navigation_dialog" />
+        <action
+            android:id="@+id/action_creation_to_scan"
+            app:destination="@id/navigation_scan" />
     </fragment>
     <dialog
         android:id="@+id/navigation_dialog"
@@ -87,4 +90,9 @@
             android:name="list"
             app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </fragment>
+    <activity
+        android:id="@+id/navigation_scan"
+        android:name="com.gurumlab.vocaroutine.ui.making.ScanActivity"
+        android:label="@string/navigation_scan"
+        tools:layout="@layout/activity_scan" />
 </navigation>

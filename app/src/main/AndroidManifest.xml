@@ -19,6 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VocaRoutine"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.making.ScanActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr, ocr_korean" />
+
         <receiver
             android:name=".RestartAlarmReceiver"
             android:enabled="true"

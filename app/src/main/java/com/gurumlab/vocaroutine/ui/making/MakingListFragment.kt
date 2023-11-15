@@ -54,6 +54,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
         setTopAppBar()
         setObservers()
         setBtnNextClickListener()
+        setIvScanClickListener()
         hideBottomNavigation(false)
     }
 
@@ -104,6 +105,13 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             lifecycleScope.launch {
                 viewModel.createVocabulary()
             }
+        }
+    }
+
+    private fun setIvScanClickListener() {
+        binding!!.ivLoadPictureBackground.setOnClickListener {
+            val action = MakingListFragmentDirections.actionCreationToScan()
+            findNavController().navigate(action)
         }
     }
 
