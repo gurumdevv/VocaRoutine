@@ -1,6 +1,5 @@
 package com.gurumlab.vocaroutine.ui.making
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -38,9 +37,8 @@ class ScanActivity : AppCompatActivity() {
 
                 val result = recognizer.process(image)
                     .addOnSuccessListener { visionText ->
-                        val intent = Intent(this, AfterPhotoActivity::class.java)
                         intent.putExtra(Constants.KEY_OCR_RESULT, visionText.text)
-                        startActivity(intent)
+                        setResult(RESULT_OK, intent)
                         finish()
                     }
                     .addOnFailureListener {
