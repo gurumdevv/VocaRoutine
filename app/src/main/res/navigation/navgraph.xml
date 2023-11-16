@@ -66,8 +66,10 @@
             android:id="@+id/action_creation_to_dialog"
             app:destination="@id/navigation_dialog" />
         <action
-            android:id="@+id/action_creation_to_scan"
-            app:destination="@id/navigation_scan" />
+            android:id="@+id/action_creation_to_after_photo"
+            app:destination="@id/navigation_after_photo"
+            app:popUpTo="@id/navigation_mine"
+            app:popUpToInclusive="false" />
     </fragment>
     <dialog
         android:id="@+id/navigation_dialog"
@@ -95,9 +97,13 @@
         android:name="com.gurumlab.vocaroutine.ui.making.ScanActivity"
         android:label="@string/navigation_scan"
         tools:layout="@layout/activity_scan" />
-    <activity
+    <fragment
         android:id="@+id/navigation_after_photo"
-        android:name="com.gurumlab.vocaroutine.ui.making.AfterPhotoActivity"
+        android:name="com.gurumlab.vocaroutine.ui.making.AfterPhotoFragment"
         android:label="@string/navigation_after_photo"
-        tools:layout="@layout/activity_after_photo"/>
+        tools:layout="@layout/fragment_after_photo">
+        <action
+            android:id="@+id/action_after_photo_to_dialog"
+            app:destination="@id/navigation_dialog" />
+    </fragment>
 </navigation>
