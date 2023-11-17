@@ -142,8 +142,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:backgroundTint="@color/orange200"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
             android:minWidth="0dp"
             android:onClick="@{()->viewModel.createList()}"
             android:text="@string/done"
@@ -154,16 +152,25 @@
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="26dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/orange200"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
             android:minWidth="0dp"
             android:text="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_done" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/gray100"
+            android:minWidth="0dp"
+            android:text="@string/take_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_next" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

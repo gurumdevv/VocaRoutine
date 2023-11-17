@@ -65,4 +65,5 @@
     <string name="capture_image">캡쳐한 이미지</string>
     <string name="ocr_result">인식 결과</string>
     <string name="navigation_after_photo">OCR 스캔 결과 화면</string>
+    <string name="take_picture">찰영</string>
 </resources>

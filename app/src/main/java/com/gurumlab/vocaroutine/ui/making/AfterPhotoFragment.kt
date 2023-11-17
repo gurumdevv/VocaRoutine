@@ -56,6 +56,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
         setTopAppBar()
         setObservers()
         setBtnNextClickListener()
+        setCameraClickListener()
         hideBottomNavigation(false)
     }
 
@@ -128,6 +129,13 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
             lifecycleScope.launch {
                 viewModel.createVocabulary()
             }
+        }
+    }
+
+    private fun setCameraClickListener() {
+        binding!!.btnCamera.setOnClickListener {
+            val intent = Intent(requireContext(), ScanActivity::class.java)
+            resultLauncher.launch(intent)
         }
     }
 
