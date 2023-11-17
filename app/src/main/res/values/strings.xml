@@ -55,4 +55,7 @@
     <string name="navigation_dialog">제목 입력 다이얼로그</string>
     <string name="error">error</string>
     <string name="loading_etymology_now">어원을 불러오는 중</string>
+    <string name="online_list">온라인 단어장</string>
+    <string name="download_to_mine">단어장 내려받기 버튼</string>
+    <string name="navigation_online_detail">단어장 공유 상세 화면</string>
 </resources>

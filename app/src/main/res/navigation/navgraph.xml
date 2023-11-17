@@ -14,7 +14,14 @@
         android:id="@+id/navigation_online"
         android:name="com.gurumlab.vocaroutine.ui.online.OnlineListFragment"
         android:label="@string/fragment_online_list"
-        tools:layout="@layout/fragment_online_list" />
+        tools:layout="@layout/fragment_online_list" >
+        <argument
+            android:name="list"
+            app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
+        <action
+            android:id="@+id/action_online_to_online_detail"
+            app:destination="@id/navigation_online_detail" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_mine"
         android:name="com.gurumlab.vocaroutine.ui.list.MyListFragment"
@@ -71,4 +78,13 @@
             android:name="tempListInfo"
             app:argType="com.gurumlab.vocaroutine.data.model.TempListInfo" />
     </dialog>
+    <fragment
+        android:id="@+id/navigation_online_detail"
+        android:name="com.gurumlab.vocaroutine.ui.online.OnlineDetailListFragment"
+        android:label="@string/navigation_online_detail"
+        tools:layout="@layout/fragment_online_detail_list">
+        <argument
+            android:name="list"
+            app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
+    </fragment>
 </navigation>

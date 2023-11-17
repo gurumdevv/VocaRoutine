@@ -7,26 +7,30 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DataStoreModule(private val context: Context) {
+@Singleton
+class DataStoreModule @Inject constructor(@ApplicationContext private val context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "dataStore")
 
     private val uid = stringPreferencesKey("UID")
 
-    val savedUid: Flow<String> = context.dataStore.data
+    val getUid: Flow<String> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
             } else {
                 throw exception
             }
-        }.map {
-            it[uid] ?: ""
+        }.map { preference ->
+            preference[uid] ?: ""
         }
 
     suspend fun setUid(inputUid: String) {

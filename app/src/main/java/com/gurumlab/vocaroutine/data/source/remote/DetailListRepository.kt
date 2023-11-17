@@ -2,8 +2,9 @@ package com.gurumlab.vocaroutine.data.source.remote
 
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.source.local.AppDatabase
+import javax.inject.Inject
 
-class DetailListRepository(database: AppDatabase) {
+class DetailListRepository @Inject constructor(database: AppDatabase) {
 
     private val dao = database.alarmDao()
 

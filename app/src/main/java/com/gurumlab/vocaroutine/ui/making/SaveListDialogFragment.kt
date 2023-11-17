@@ -10,18 +10,23 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.gurumlab.vocaroutine.VocaRoutineApplication
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.TempListInfo
+import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.databinding.FragmentSaveListDialogBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SaveListDialogFragment : DialogFragment() {
     private var _binding: FragmentSaveListDialogBinding? = null
     private val binding get() = _binding!!
     private val args: SaveListDialogFragmentArgs by navArgs()
     private lateinit var uid: String
     private lateinit var tempListInfo: TempListInfo
+    @Inject
+    lateinit var apiClient: ApiClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +59,7 @@ class SaveListDialogFragment : DialogFragment() {
                 tempListInfo.vocabularies
             )
             lifecycleScope.launch {
-                VocaRoutineApplication.appContainer.provideApiClient().uploadList(uid, listInfo)
+                apiClient.uploadList(uid, listInfo)
                 findNavController().navigateUp()
                 findNavController().navigateUp()
             }

@@ -3,21 +3,26 @@ package com.gurumlab.vocaroutine
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.gurumlab.vocaroutine.data.source.local.AlarmDao
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RestartAlarmReceiver : BroadcastReceiver() {
 
-    private lateinit var alarmHandler: AlarmHandler
-    private val db = VocaRoutineApplication.db.alarmDao()
+    @Inject
+    lateinit var alarmHandler: AlarmHandler
+    @Inject
+    lateinit var alarmDao: AlarmDao
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            alarmHandler = AlarmHandler(context)
             val job = CoroutineScope(Dispatchers.IO).launch {
-                val alarmList = db.getAllAlarms()
+                val alarmList = alarmDao.getAllAlarms()
                 alarmList.let {
                     for (alarm in alarmList) {
                         val date = alarm.date
