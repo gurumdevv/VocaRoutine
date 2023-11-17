@@ -46,6 +46,8 @@ class ScanActivity : AppCompatActivity() {
                             binding.root.rootView,
                             getString(R.string.please_scan_again), Snackbar.LENGTH_SHORT
                         ).show()
+                        intent.putExtra(Constants.KEY_OCR_RESULT, "Analyze Fail")
+                        setResult(RESULT_CANCELED, intent)
                         finish()
                     }
 
@@ -55,9 +57,13 @@ class ScanActivity : AppCompatActivity() {
                     binding.root.rootView,
                     getString(R.string.please_scan_again), Snackbar.LENGTH_SHORT
                 ).show()
+                intent.putExtra(Constants.KEY_OCR_RESULT, "Scan Fail")
+                setResult(RESULT_CANCELED, intent)
                 finish()
             },
             {
+                intent.putExtra(Constants.KEY_OCR_RESULT, "User terminated")
+                setResult(RESULT_CANCELED, intent)
                 finish()
             },
             ResponseType.IMAGE_FILE_PATH,
