@@ -2,6 +2,8 @@ package com.gurumlab.vocaroutine
 
 import android.app.Application
 import androidx.room.Room
+import com.gurumlab.vocaroutine.data.source.local.AppDatabase
+import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 
 class VocaRoutineApplication : Application() {
 

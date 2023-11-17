@@ -10,12 +10,12 @@ import kotlinx.coroutines.launch
 
 class RestartAlarmReceiver : BroadcastReceiver() {
 
-    private lateinit var alarmFunctions: AlarmFunctions
+    private lateinit var alarmHandler: AlarmHandler
     private val db = VocaRoutineApplication.db.alarmDao()
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-            alarmFunctions = AlarmFunctions(context)
+            alarmHandler = AlarmHandler(context)
             val job = CoroutineScope(Dispatchers.IO).launch {
                 val alarmList = db.getAllAlarms()
                 alarmList.let {
@@ -23,7 +23,7 @@ class RestartAlarmReceiver : BroadcastReceiver() {
                         val date = alarm.date
                         val code = alarm.alarmCode
                         val content = alarm.content
-                        alarmFunctions.callAlarm(date, code, content)
+                        alarmHandler.callAlarm(date, code, content)
                     }
                 }
             }
