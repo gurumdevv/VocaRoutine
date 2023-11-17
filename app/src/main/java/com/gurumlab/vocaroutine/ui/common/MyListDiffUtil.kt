@@ -1,14 +1,14 @@
 package com.gurumlab.vocaroutine.ui.common
 
 import androidx.recyclerview.widget.DiffUtil
-import com.gurumlab.vocaroutine.data.model.MyList
+import com.gurumlab.vocaroutine.data.model.ListInfo
 
-class MyListDiffUtil : DiffUtil.ItemCallback<MyList>() {
-    override fun areItemsTheSame(oldItem: MyList, newItem: MyList): Boolean {
-        return oldItem.name == newItem.name
+class MyListDiffUtil : DiffUtil.ItemCallback<ListInfo>() {
+    override fun areItemsTheSame(oldItem: ListInfo, newItem: ListInfo): Boolean {
+        return oldItem.title == newItem.title
     }
 
-    override fun areContentsTheSame(oldItem: MyList, newItem: MyList): Boolean {
+    override fun areContentsTheSame(oldItem: ListInfo, newItem: ListInfo): Boolean {
         return oldItem == newItem
     }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/navigation_home">
+    app:startDestination="@id/navigation_login">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -19,10 +19,13 @@
         android:id="@+id/navigation_mine"
         android:name="com.gurumlab.vocaroutine.ui.list.MyListFragment"
         android:label="@string/fragment_my_list"
-        tools:layout="@layout/fragment_my_list" >
+        tools:layout="@layout/fragment_my_list">
         <action
             android:id="@+id/action_my_list_to_detail"
             app:destination="@id/navigation_detail" />
+        <action
+            android:id="@+id/action_mine_to_creation"
+            app:destination="@id/navigation_creation" />
     </fragment>
     <fragment
         android:id="@+id/navigation_setting"
@@ -33,7 +36,7 @@
         android:id="@+id/navigation_login"
         android:name="com.gurumlab.vocaroutine.ui.login.LoginFragment"
         android:label="@string/fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_home"
             app:destination="@id/navigation_home" />
@@ -42,9 +45,30 @@
         android:id="@+id/navigation_detail"
         android:name="com.gurumlab.vocaroutine.ui.detail.DetailListFragment"
         android:label="@string/fragment_detail"
-        tools:layout="@layout/fragment_detail_list" >
+        tools:layout="@layout/fragment_detail_list">
         <argument
             android:name="list"
-            app:argType="com.gurumlab.vocaroutine.data.model.MyList" />
+            app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_creation"
+        android:name="com.gurumlab.vocaroutine.ui.making.MakingListFragment"
+        android:label="@string/fragment_creation"
+        tools:layout="@layout/fragment_making_list">
+        <action
+            android:id="@+id/action_creation_to_dialog"
+            app:destination="@id/navigation_dialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/navigation_dialog"
+        android:name="com.gurumlab.vocaroutine.ui.making.SaveListDialogFragment"
+        android:label="@string/navigation_dialog"
+        tools:layout="@layout/fragment_save_list_dialog">
+        <argument
+            android:name="uid"
+            app:argType="string" />
+        <argument
+            android:name="tempListInfo"
+            app:argType="com.gurumlab.vocaroutine.data.model.TempListInfo" />
+    </dialog>
 </navigation>

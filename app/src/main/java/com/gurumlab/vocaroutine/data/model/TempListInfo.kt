@@ -4,11 +4,11 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MyList(
-    val name: String,
-    val creationDate: String,
+data class TempListInfo(
+    val createdDate: String,
     val totalCount: Int,
     val reviewCount: Int,
-    val alarm: Boolean,
+    val isSetAlarm: Boolean,
+    val alarmCode: Int,
     val vocabularies: List<Vocabulary>
 ) : Parcelable
