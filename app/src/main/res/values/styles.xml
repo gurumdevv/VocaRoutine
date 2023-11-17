@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="SmallHeadLine" parent="TextAppearance.Material3.HeadlineSmall" />
+
     <style name="MediumHeadline" parent="TextAppearance.Material3.HeadlineMedium" />
 
-    <style name="LargeHeadline" parent="TextAppearance.Material3.HeadlineLarge"/>
+    <style name="LargeHeadline" parent="TextAppearance.Material3.HeadlineLarge" />
+
+    <style name="MediumTitle" parent="TextAppearance.Material3.TitleMedium" />
 
     <style name="SmallBody" parent="TextAppearance.Material3.BodySmall" />
 
     <style name="MediumBody" parent="TextAppearance.Material3.BodyMedium" />
 
     <style name="LargeBody" parent="TextAppearance.Material3.BodyLarge" />
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/orange100</item>
+    </style>
 
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navgraph"
-    app:startDestination="@id/navigation_login">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -19,7 +19,11 @@
         android:id="@+id/navigation_mine"
         android:name="com.gurumlab.vocaroutine.MyListFragment"
         android:label="@string/fragment_my_list"
-        tools:layout="@layout/fragment_my_list" />
+        tools:layout="@layout/fragment_my_list" >
+        <action
+            android:id="@+id/action_my_list_to_detail"
+            app:destination="@id/navigation_detail" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_setting"
         android:name="com.gurumlab.vocaroutine.SettingFragment"
@@ -33,5 +37,14 @@
         <action
             android:id="@+id/action_login_to_home"
             app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.gurumlab.vocaroutine.DetailListFragment"
+        android:label="@string/fragment_detail"
+        tools:layout="@layout/fragment_detail_list" >
+        <argument
+            android:name="list"
+            app:argType="com.gurumlab.vocaroutine.MyList" />
     </fragment>
 </navigation>
