@@ -17,4 +17,20 @@
     <string name="day_seven">7번째 복습</string>
     <string name="day_three">3번째 복습</string>
     <string name="day_one">1번째 복습</string>
+    <string name="etymology">어원</string>
+    <string name="gpt_response_error">어원 불러오기 오류</string>
+    <string name="loading_etymology">어원을 불러오는 중입니다.</string>
+    <string name="review_notification">복습 알림</string>
+    <string name="time_to_review">복습할 시간입니다.</string>
+    <string name="check_alarm_permission">알림 권한을 활성화해 주세요.</string>
+    <string name="check_permission">권한을 확인해 주세요.</string>
+    <string name="review_channel_description">복습 설정 알림 채널</string>
+    <string name="set_notification_description">알림 설정 버튼</string>
+    <string name="set_download_description">오프라인 저장 버튼</string>
+    <string name="set_upload_description">업로드 버튼</string>
+    <string name="set_review_notification_success">복습 알림이 설정되었습니다.</string>
+    <string name="set_review_notification_fail">알림이 정상적으로 설정되지 않았습니다.</string>
+    <string name="cancel_review_notification_success">복습 알림이 해제되었습니다.</string>
+    <string name="passedDays">%d일전 추가됨</string>
+    <string name="invalid_date_format">잘못된 날짜 포맷</string>
 </resources>
