@@ -1,9 +1,11 @@
 package com.gurumlab.vocaroutine.ui.detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.AlarmHandler
+import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
@@ -28,6 +30,8 @@ class DetailListViewModel @Inject constructor(
     private var _isNotificationSetError: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val isNotificationSetError = _isNotificationSetError
     private val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
+    private val _snackbarMessage = MutableLiveData<Event<Int>>()
+    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
 
     fun handleNotification(list: ListInfo) {
 
@@ -89,6 +93,7 @@ class DetailListViewModel @Inject constructor(
             )
 
             repository.shareList(sharedListInfo)
+            _snackbarMessage.value = Event(R.string.share_complete)
         }
     }
 

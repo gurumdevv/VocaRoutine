@@ -42,6 +42,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         binding!!.viewModel = viewModel
 
         setLayout()
+        setSnackBar()
         setTopAppBar()
         setNotification()
         hideBottomNavigation(false)
@@ -84,6 +85,12 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         val detailListAdapter = DetailListAdapter()
         binding!!.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
+    }
+
+    private fun setSnackBar() {
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { messageId ->
+            Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     private fun setTopAppBar() {
