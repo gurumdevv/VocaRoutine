@@ -7,7 +7,13 @@ class OnlineListRepository @Inject constructor(
     private val apiClient: ApiClient
 ) {
 
-    suspend fun getLists(): List<SharedListInfo> {
-        return apiClient.getSharedList().values.toList()
+    suspend fun getLists(): List<SharedListInfo>? {
+        val response = apiClient.getSharedList().body()
+
+        return if(response.isNullOrEmpty()){
+            null
+        } else{
+            response.values.toList()
+        }
     }
 }

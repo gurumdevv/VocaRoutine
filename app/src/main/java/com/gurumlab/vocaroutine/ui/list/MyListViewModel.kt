@@ -21,7 +21,12 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
         viewModelScope.launch {
             val uid = repository.getUid()
             val myLists = repository.getLists(uid)
-            _items.value = Event(myLists)
+
+            if(myLists.isNullOrEmpty()){
+                return@launch
+            } else{
+                _items.value = Event(myLists)
+            }
         }
     }
 }
