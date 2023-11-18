@@ -4,6 +4,7 @@ import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -28,4 +29,10 @@ interface ApiClient {
 
     @POST("sharedList.json")
     suspend fun shareList(@Body newList: SharedListInfo)
+
+    @DELETE("privateList/{uid}.json")
+    suspend fun deleteMyList(@Path("uid") uid: String)
+
+    @DELETE("sharedList/{uid}.json")
+   suspend fun deleteSharedList(@Path("uid") uid: String)
 }
