@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ListInfo(
+    val id: String,
     val title: String,
     val createdDate: String,
     val totalCount: Int,

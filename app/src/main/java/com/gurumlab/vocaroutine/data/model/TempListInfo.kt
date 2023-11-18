@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TempListInfo(
+    val id: String,
     val createdDate: String,
     val totalCount: Int,
     val reviewCount: Int,
