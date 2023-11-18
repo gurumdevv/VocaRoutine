@@ -34,4 +34,8 @@ class DetailListRepository @Inject constructor(
     suspend fun shareList(sharedListInfo: SharedListInfo) {
         apiClient.shareList(sharedListInfo)
     }
+
+    suspend fun getSharedListById(postId: String): List<SharedListInfo>{
+        return apiClient.getSharedListById("\"identifier\"", "\"${postId}\"").values.toList()
+    }
 }
