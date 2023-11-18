@@ -48,6 +48,7 @@ class SettingViewModel @Inject constructor(private val repository: SettingReposi
     fun deleteAllMyLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
+            repository.deleteSharedList(uid)
             repository.deleteMyList(uid)
         }
         _snackbarMessage.value = Event(R.string.delete_complete_my_list)
