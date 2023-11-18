@@ -50,6 +50,7 @@ class SaveListDialogFragment : DialogFragment() {
         binding.btnDone.setOnClickListener {
             val title = binding.etListTitle.text.toString()
             val listInfo = ListInfo(
+                tempListInfo.id,
                 title,
                 tempListInfo.createdDate,
                 tempListInfo.totalCount,

@@ -2,9 +2,14 @@ package com.gurumlab.vocaroutine.data.source.remote
 
 import com.gurumlab.vocaroutine.data.model.ChatMessage
 import com.gurumlab.vocaroutine.data.model.ChatRequest
+import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class MakingListRepository @Inject constructor(private val gptApiClient: GptApiClient) {
+class MakingListRepository @Inject constructor(
+    private val gptApiClient: GptApiClient,
+    private val dataStore: DataStoreModule
+) {
 
     suspend fun getEtymology(word: String): String {
         val request = gptApiClient.getResponse(
@@ -15,5 +20,9 @@ class MakingListRepository @Inject constructor(private val gptApiClient: GptApiC
             )
         )
         return request.choices.first().message.content
+    }
+
+    suspend fun getUid(): String{
+        return dataStore.getUid.first()
     }
 }
