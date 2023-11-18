@@ -6,11 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.AlarmHandler
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -74,5 +77,23 @@ class DetailListViewModel @Inject constructor(
         }
 
         _isNotificationSet.value = Event(false)
+    }
+
+    fun shareListToOnline(list: ListInfo) {
+        viewModelScope.launch {
+            val sharedListInfo = SharedListInfo(
+                identifier = list.id,
+                creator = repository.getUid(),
+                sharedDate = getCurrentDateTime(),
+                listInfo = list
+            )
+
+            repository.shareList(sharedListInfo)
+        }
+    }
+
+    private fun getCurrentDateTime(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }
