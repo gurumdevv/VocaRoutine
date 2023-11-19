@@ -85,4 +85,5 @@
     <string name="list_already_exist">이미 존재하는 단어장입니다.</string>
     <string name="list_download_complete">단어장이 다운로드 되었습니다.</string>
     <string name="alarm_code_error_try_again">알람코드 생성 오류\n 다시 다운로드 해주세요,</string>
+    <string name="share_ignored">공유받은 단어장은 공유할 수 없습니다.</string>
 </resources>

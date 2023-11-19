@@ -76,6 +76,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
             val newListInfo = ListInfo(
                 id = list.id,
                 title = list.title,
+                creator = list.creator,
                 createdDate = date,
                 totalCount = list.totalCount,
                 reviewCount = 0,

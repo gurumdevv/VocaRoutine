@@ -52,6 +52,7 @@ class SaveListDialogFragment : DialogFragment() {
             val listInfo = ListInfo(
                 tempListInfo.id,
                 title,
+                tempListInfo.creator,
                 tempListInfo.createdDate,
                 tempListInfo.totalCount,
                 tempListInfo.reviewCount,

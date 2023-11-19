@@ -74,6 +74,7 @@ class MakingListViewModel @Inject constructor(private val repository: MakingList
                 _snackbarText.value = Event(R.string.empty_list)
             } else {
                 val id = getId()
+                val uid = repository.getUid()
                 val totalCount = vocabularies.size
                 val date = getCurrentTime()
                 val currentAlarmCode = getAlarmCode()
@@ -87,6 +88,7 @@ class MakingListViewModel @Inject constructor(private val repository: MakingList
                     Event(
                         TempListInfo(
                             id = id,
+                            creator = uid,
                             createdDate = date,
                             totalCount = totalCount,
                             reviewCount = 0,

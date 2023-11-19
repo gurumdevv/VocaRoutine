@@ -85,9 +85,15 @@ class DetailListViewModel @Inject constructor(
 
     fun shareListToOnline(list: ListInfo) {
         viewModelScope.launch {
+            val uid = repository.getUid()
+            if(uid != list.creator){
+                _snackbarMessage.value = Event(R.string.share_ignored)
+                return@launch
+            }
+
             val sharedListInfo = SharedListInfo(
                 identifier = list.id,
-                creator = repository.getUid(),
+                creator = uid,
                 sharedDate = getCurrentDateTime(),
                 listInfo = list
             )
