@@ -94,7 +94,7 @@ class DetailListViewModel @Inject constructor(
 
             val isAlreadyPost = repository.getSharedListById(list.id).isNotEmpty()
             if (isAlreadyPost) {
-                _snackbarMessage.value = Event(R.string.alreay_share)
+                _snackbarMessage.value = Event(R.string.already_share)
             } else {
                 repository.shareList(sharedListInfo)
                 _snackbarMessage.value = Event(R.string.share_complete)
