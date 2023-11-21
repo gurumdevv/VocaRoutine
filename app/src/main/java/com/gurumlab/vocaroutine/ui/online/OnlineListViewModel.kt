@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.ui.online
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import com.gurumlab.vocaroutine.data.model.onError
+import com.gurumlab.vocaroutine.data.model.onException
+import com.gurumlab.vocaroutine.data.model.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.OnlineListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,12 +35,13 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
 
     fun loadLists() {
         viewModelScope.launch {
-            val sharedLists = repository.getSharedLists()
-
-            if (sharedLists.isNullOrEmpty()) {
-                return@launch
-            } else {
-                _sharedLists.value = Event(sharedLists)
+            val result = repository.getSharedLists()
+            result.onSuccess {
+                _sharedLists.value = Event(it.values.toList())
+            }.onError { code, message ->
+                Log.d("OnlineListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
     }
@@ -44,12 +49,13 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     fun getMyLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            val myLists = repository.getMyLists(uid)
-
-            if (myLists.isNullOrEmpty()) {
-                return@launch
-            } else {
-                _myLists.value = Event(myLists)
+            val result = repository.getMyLists(uid)
+            result.onSuccess {
+                _myLists.value = Event(it.values.toList())
+            }.onError { code, message ->
+                Log.d("OnlineListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
+import com.gurumlab.vocaroutine.data.model.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -13,22 +13,22 @@ import retrofit2.http.Query
 interface ApiClient {
 
     @GET("privateList/{uid}.json")
-    suspend fun getLists(@Path("uid") uid: String): Response<Map<String, ListInfo>?>
+    suspend fun getLists(@Path("uid") uid: String): ApiResponse<Map<String, ListInfo>>
 
     @GET("sharedList.json")
-    suspend fun getSharedList(): Response<Map<String, SharedListInfo>?>
+    suspend fun getSharedList(): ApiResponse<Map<String, SharedListInfo>>
 
     @GET("sharedList.json")
     suspend fun getSharedListByCreator(
         @Query("orderBy") orderBy: String,
         @Query("equalTo") equalTo: String
-    ): Map<String, SharedListInfo>
+    ): ApiResponse<Map<String, SharedListInfo>>
 
     @GET("sharedList.json")
     suspend fun getSharedListById(
         @Query("orderBy") orderBy: String,
         @Query("equalTo") equalTo: String
-    ): Map<String, SharedListInfo>
+    ): ApiResponse<Map<String, SharedListInfo>>
 
     @POST("privateList/{uid}.json")
     suspend fun uploadList(@Path("uid") uid: String, @Body newList: ListInfo)
@@ -40,5 +40,5 @@ interface ApiClient {
     suspend fun deleteMyList(@Path("uid") uid: String)
 
     @DELETE("sharedList/{uid}.json")
-   suspend fun deleteSharedList(@Path("uid") uid: String)
+    suspend fun deleteSharedList(@Path("uid") uid: String)
 }

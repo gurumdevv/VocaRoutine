@@ -1,7 +1,12 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
+import android.util.Log
+import com.gurumlab.vocaroutine.data.model.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import com.gurumlab.vocaroutine.data.model.onError
+import com.gurumlab.vocaroutine.data.model.onException
+import com.gurumlab.vocaroutine.data.model.onSuccess
 import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -11,18 +16,12 @@ class SettingRepository @Inject constructor(
     private val dataStore: DataStoreModule
 ) {
 
-    suspend fun getMyLists(uid: String): List<ListInfo>? {
-        val response = apiClient.getLists(uid).body()
-
-        return if (response.isNullOrEmpty()) {
-            null
-        } else {
-            response.values.toList()
-        }
+    suspend fun getMyLists(uid: String): ApiResponse<Map<String, ListInfo>> {
+        return apiClient.getLists(uid)
     }
 
-    suspend fun getSharedListByCreator(uid: String): List<SharedListInfo> {
-        return apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"").values.toList()
+    suspend fun getSharedListByCreator(uid: String): ApiResponse<Map<String, SharedListInfo>> {
+        return apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
     }
 
     suspend fun deleteMyList(uid: String) {
@@ -30,9 +29,15 @@ class SettingRepository @Inject constructor(
     }
 
     suspend fun deleteSharedList(uid: String) {
-        val listKey = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"").keys
-        listKey.forEach { key ->
-            apiClient.deleteSharedList(key)
+        val result = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
+        result.onSuccess {
+            it.keys.forEach { key ->
+                apiClient.deleteSharedList(key)
+            }
+        }.onError { code, message ->
+            Log.d("SettingRepository", "Error code: $code message: $message")
+        }.onException { throwable ->
+            Log.d("SettingRepository", "Exception: $throwable")
         }
     }
 

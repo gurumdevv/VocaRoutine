@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.ui.detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,9 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import com.gurumlab.vocaroutine.data.model.onError
+import com.gurumlab.vocaroutine.data.model.onException
+import com.gurumlab.vocaroutine.data.model.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -113,12 +117,19 @@ class DetailListViewModel @Inject constructor(
                 listInfo = list
             )
 
-            val isAlreadyPost = repository.getSharedListById(list.id).isNotEmpty()
-            if (isAlreadyPost) {
-                _snackbarMessage.value = Event(R.string.already_share)
-            } else {
-                repository.shareList(sharedListInfo)
-                _snackbarMessage.value = Event(R.string.share_complete)
+            val result = repository.getSharedListById(list.id)
+            result.onSuccess {
+                val isAlreadyPost = it.values.toList().isNotEmpty()
+                if (isAlreadyPost) {
+                    _snackbarMessage.value = Event(R.string.already_share)
+                } else {
+                    repository.shareList(sharedListInfo)
+                    _snackbarMessage.value = Event(R.string.share_complete)
+                }
+            }.onError { code, message ->
+                Log.d("DetailListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("DetailListViewModel", "Exception: $throwable")
             }
         }
     }

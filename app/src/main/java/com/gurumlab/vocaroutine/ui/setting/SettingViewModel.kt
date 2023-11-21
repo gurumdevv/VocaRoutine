@@ -1,11 +1,15 @@
 package com.gurumlab.vocaroutine.ui.setting
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.gurumlab.vocaroutine.R
+import com.gurumlab.vocaroutine.data.model.onError
+import com.gurumlab.vocaroutine.data.model.onException
+import com.gurumlab.vocaroutine.data.model.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.SettingRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,11 +32,14 @@ class SettingViewModel @Inject constructor(private val repository: SettingReposi
     fun loadMyListCount() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            val myLists = repository.getMyLists(uid)
-            if (myLists.isNullOrEmpty()) {
+            val result = repository.getMyLists(uid)
+            result.onSuccess {
+                _myListCount.value = Event(it.values.size)
+            }.onError { code, message ->
                 _myListCount.value = Event(0)
-            } else {
-                _myListCount.value = Event(myLists.size)
+                Log.d("SettingViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("SettingViewModel", "Exception: $throwable")
             }
         }
     }
@@ -40,8 +47,14 @@ class SettingViewModel @Inject constructor(private val repository: SettingReposi
     fun loadSharedListCount() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            val shardList = repository.getSharedListByCreator(uid)
-            _sharedListCount.value = Event(shardList.size)
+            val result = repository.getSharedListByCreator(uid)
+            result.onSuccess {
+                _sharedListCount.value = Event(it.values.size)
+            }.onError { code, message ->
+                Log.d("SettingViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("SettingViewModel", "Exception: $throwable")
+            }
         }
     }
 
