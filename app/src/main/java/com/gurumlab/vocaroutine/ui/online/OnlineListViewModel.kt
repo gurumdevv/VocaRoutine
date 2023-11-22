@@ -32,15 +32,28 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     val myLists: LiveData<Event<List<ListInfo>>> = _myLists
     private val _snackbarMessage = MutableLiveData<Event<Int>>()
     val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
+    private val _isLoading = MutableLiveData<Event<Boolean>>()
+    val isLoading: LiveData<Event<Boolean>> = _isLoading
+    private val _isCompleted = MutableLiveData<Event<Boolean>>()
+    val isCompleted: LiveData<Event<Boolean>> = _isCompleted
+    private val _isError = MutableLiveData<Event<Boolean>>()
+    val isError: LiveData<Event<Boolean>> = _isError
 
     fun loadLists() {
         viewModelScope.launch {
+            _isLoading.value = Event(true)
             val result = repository.getSharedLists()
             result.onSuccess {
+                _isLoading.value = Event(false)
+                _isCompleted.value = Event(true)
                 _sharedLists.value = Event(it.values.toList())
             }.onError { code, message ->
+                _isLoading.value = Event(false)
+                _isError.value = Event(true)
                 Log.d("OnlineListViewModel", "Error code: $code message: $message")
             }.onException { throwable ->
+                _isLoading.value = Event(false)
+                _isError.value = Event(true)
                 Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
