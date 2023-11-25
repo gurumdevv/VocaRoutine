@@ -17,6 +17,15 @@ interface AlarmDao {
     @Query("DELETE FROM activeAlarms WHERE alarmCode = :alarmCode")
     suspend fun deleteAlarm(alarmCode: Int)
 
+    @Query("DELETE FROM activeAlarms WHERE (id = :id) AND (date LIKE :date || '%')")
+    suspend fun deleteAlarmFromIdAndDate(id: String, date: String)
+
+    @Query("DELETE FROM activeAlarms WHERE date < (:today || '%')")
+    suspend fun deleteOutOfDateAlarms(today: String)
+
     @Query("SELECT alarmCode FROM activeAlarms WHERE alarmCode IN (:alarmCodes)")
     suspend fun searchActiveAlarms(alarmCodes: IntArray): List<Int>
+
+    @Query("SELECT id FROM activeAlarms WHERE date LIKE :date || '%'")
+    suspend fun searchListByDate(date: String): List<String>
 }
