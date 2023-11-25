@@ -27,5 +27,8 @@ interface AlarmDao {
     suspend fun searchActiveAlarms(alarmCodes: IntArray): List<Int>
 
     @Query("SELECT id FROM activeAlarms WHERE date LIKE :date || '%'")
-    suspend fun searchListByDate(date: String): List<String>
+    suspend fun getListIdsByDate(date: String): List<String>
+
+    @Query("SELECT alarmCode FROM activeAlarms WHERE (id = :id) AND (date LIKE :date || '%')")
+    suspend fun getAlarmCode(id: String, date: String): Int
 }
