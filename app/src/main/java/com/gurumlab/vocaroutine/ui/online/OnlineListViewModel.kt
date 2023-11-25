@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.model.onError
 import com.gurumlab.vocaroutine.data.model.onException
@@ -87,6 +88,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
         viewModelScope.launch {
             val uid = repository.getUid()
             val date = getCurrentTime()
+            val review = Review(firstReview = false, secondReview = false, thirdReview = false)
             val alarmCode = getAlarmCode()
             if (alarmCode == 0) {
                 _snackbarMessage.value = Event(R.string.alarm_code_error_try_again)
@@ -98,9 +100,9 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
                 creator = list.creator,
                 createdDate = date,
                 totalCount = list.totalCount,
-                reviewCount = 0,
                 isSetAlarm = false,
                 alarmCode = alarmCode,
+                review = review,
                 vocabularies = list.vocabularies
             )
             repository.uploadList(uid, newListInfo)
