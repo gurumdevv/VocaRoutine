@@ -7,6 +7,8 @@
 
     <style name="LargeHeadline" parent="TextAppearance.Material3.HeadlineLarge" />
 
+    <style name="SmallTitle" parent="TextAppearance.Material3.TitleSmall" />
+
     <style name="MediumTitle" parent="TextAppearance.Material3.TitleMedium" />
 
     <style name="LargeTitle" parent="TextAppearance.Material3.TitleLarge" />

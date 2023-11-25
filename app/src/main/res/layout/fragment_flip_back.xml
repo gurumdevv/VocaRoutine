@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vocabulary"
+            type="com.gurumlab.vocaroutine.data.model.Vocabulary" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_answer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/item_quiz_background">
+
+        <TextView
+            android:id="@+id/tv_list_title"
+            style="@style/MediumTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="토익 뽀개기 850+" />
+
+        <TextView
+            android:id="@+id/tv_list_created_date"
+            style="@style/SmallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_list_title"
+            tools:text="3일전" />
+
+        <TextView
+            android:id="@+id/tv_vocabulary"
+            style="@style/LargeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
+            android:text="@{vocabulary.word}"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_list_created_date"
+            tools:text="assignment" />
+
+        <TextView
+            android:id="@+id/tv_meaning"
+            style="@style/MediumBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="40dp"
+            android:lines="3"
+            android:text="@{vocabulary.meaning}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_vocabulary"
+            tools:text="1. 과제, 임무\n2. 배정, 배치" />
+
+        <TextView
+            android:id="@+id/tv_etymology"
+            style="@style/MediumTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/etymology"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_meaning" />
+
+        <TextView
+            android:id="@+id/tv_etymology_description"
+            style="@style/MediumBody"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:lines="5"
+            android:paddingHorizontal="16dp"
+            android:text="@{vocabulary.etymology}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_etymology"
+            tools:text="Assignment은 중세 라틴어 assignare에서 비롯되었으며, ad- (to)와 signare (mark, sign)를 조합한 단어로, 어떤 작업이나 과제를 다른 사람에게 할당하거나 지정하는 데 사용되는 용어입니다." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_again"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/orange200"
+            android:text="@string/add_to_review"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
