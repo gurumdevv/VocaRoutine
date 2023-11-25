@@ -15,6 +15,13 @@ interface ApiClient {
     @GET("privateList/{uid}.json")
     suspend fun getLists(@Path("uid") uid: String): ApiResponse<Map<String, ListInfo>>
 
+    @GET("privateList/{uid}.json")
+    suspend fun getListsById(
+        @Path("uid") uid: String,
+        @Query("orderBy") orderBy: String,
+        @Query("equalTo") equalTo: String
+    ): ApiResponse<Map<String, ListInfo>>
+
     @GET("sharedList.json")
     suspend fun getSharedList(): ApiResponse<Map<String, SharedListInfo>>
 
