@@ -94,4 +94,5 @@
     <string name="add_to_review">복습 카드로</string>
     <string name="navigation_vocabulary_front">단어장 앞면</string>
     <string name="navigation_vocabulary_back">단어장 뒷면</string>
+    <string name="review_count_update_error">복습 횟수 업데이트에 실패했습니다.</string>
 </resources>

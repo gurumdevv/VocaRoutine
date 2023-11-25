@@ -12,6 +12,7 @@
         <variable
             name="list"
             type="com.gurumlab.vocaroutine.data.model.ListInfo" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +53,7 @@
 
         <ImageView
             android:id="@+id/iv_day_seven"
-            daySevenStamp="@{list.reviewCount}"
+            reviewStamp="@{list.review.thirdReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
@@ -64,7 +65,7 @@
 
         <ImageView
             android:id="@+id/iv_day_three"
-            dayThreeStamp="@{list.reviewCount}"
+            reviewStamp="@{list.review.secondReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
@@ -76,7 +77,7 @@
 
         <ImageView
             android:id="@+id/iv_day_one"
-            dayOneStamp="@{list.reviewCount}"
+            reviewStamp="@{list.review.firstReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"

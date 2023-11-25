@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentHomeBinding
@@ -30,6 +31,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         setLoadingLayout()
         setEmptyLayout()
         setFinishLayout()
+        setSnackbar()
     }
 
     private fun setLoadingLayout() {
@@ -72,6 +74,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     )
                 )
             }
+        })
+    }
+
+    private fun setSnackbar() {
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarMessage ->
+            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT)
+                .setAnchorView(R.id.bottom_navigation)
+                .show()
         })
     }
 }
