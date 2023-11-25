@@ -92,4 +92,6 @@
     <string name="quiz_ok">\n알아요!</string>
     <string name="quiz_no">\n몰라요</string>
     <string name="add_to_review">복습 카드로</string>
+    <string name="navigation_vocabulary_front">단어장 앞면</string>
+    <string name="navigation_vocabulary_back">단어장 뒷면</string>
 </resources>
