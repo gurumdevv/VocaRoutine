@@ -2,7 +2,9 @@ package com.gurumlab.vocaroutine.data.source.remote
 
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -11,10 +13,10 @@ import retrofit2.http.Query
 interface ApiClient {
 
     @GET("privateList/{uid}.json")
-    suspend fun getLists(@Path("uid") uid: String): Map<String, ListInfo>
+    suspend fun getLists(@Path("uid") uid: String): Response<Map<String, ListInfo>?>
 
     @GET("sharedList.json")
-    suspend fun getSharedList(): Map<String, SharedListInfo>
+    suspend fun getSharedList(): Response<Map<String, SharedListInfo>?>
 
     @GET("sharedList.json")
     suspend fun getSharedListByCreator(
@@ -27,4 +29,10 @@ interface ApiClient {
 
     @POST("sharedList.json")
     suspend fun shareList(@Body newList: SharedListInfo)
+
+    @DELETE("privateList/{uid}.json")
+    suspend fun deleteMyList(@Path("uid") uid: String)
+
+    @DELETE("sharedList/{uid}.json")
+   suspend fun deleteSharedList(@Path("uid") uid: String)
 }

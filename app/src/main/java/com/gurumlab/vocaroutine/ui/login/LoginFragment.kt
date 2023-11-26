@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
+import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,6 +74,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         binding!!.btnGoogleSignIn.setOnClickListener {
             setSignInRequest()
         }
+
+        hideBottomNavigation(false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideBottomNavigation(true)
     }
 
     private fun updateUI(user: FirebaseUser?) {
@@ -151,5 +160,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
         val userToken = dataStore.getUid.first()
 
         return userToken.isNotEmpty()
+    }
+
+    private fun hideBottomNavigation(visible: Boolean) {
+        val bottomNavigation = activity?.findViewById<View>(R.id.bottom_navigation)
+        bottomNavigation?.isVisible = visible
     }
 }

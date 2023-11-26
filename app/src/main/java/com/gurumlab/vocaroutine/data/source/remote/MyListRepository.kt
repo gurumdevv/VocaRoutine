@@ -10,8 +10,14 @@ class MyListRepository @Inject constructor(
     private val dataStore: DataStoreModule
 ) {
 
-    suspend fun getLists(uid: String): List<ListInfo> {
-        return apiClient.getLists(uid).values.toList()
+    suspend fun getLists(uid: String): List<ListInfo>? {
+        val response = apiClient.getLists(uid).body()
+
+        return if(response.isNullOrEmpty()){
+            null
+        } else{
+            response.values.toList()
+        }
     }
 
     suspend fun getUid(): String {

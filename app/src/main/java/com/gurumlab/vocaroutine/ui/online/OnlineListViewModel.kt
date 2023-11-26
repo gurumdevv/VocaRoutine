@@ -21,7 +21,12 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     fun loadLists() {
         viewModelScope.launch {
             val sharedLists = repository.getLists()
-            _items.value = Event(sharedLists)
+
+            if(sharedLists.isNullOrEmpty()){
+                return@launch
+            } else{
+                _items.value = Event(sharedLists)
+            }
         }
     }
 }

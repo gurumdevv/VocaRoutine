@@ -67,4 +67,17 @@
     <string name="navigation_after_photo">OCR 스캔 결과 화면</string>
     <string name="take_picture">찰영</string>
     <string name="result_empty">인식된 결과가 없습니다.</string>
+    <string name="count_my_list">%d개의 내 단어장</string>
+    <string name="count_share_list">%d개의 단어장이 공유됨</string>
+    <string name="load_data">데이터 로드중…</string>
+    <string name="setting">설정</string>
+    <string name="account_information">계정 정보</string>
+    <string name="logout">로그아웃</string>
+    <string name="manage_shared_list">공유된 단어장 관리</string>
+    <string name="delete">지우기</string>
+    <string name="manage_my_list">내 단어장 관리</string>
+    <string name="delete_all">모두 지우기</string>
+    <string name="delete_complete_my_list">모든 단어장이 삭제되었습니다.</string>
+    <string name="delete_complete_shared_list">모든 단어장 공유가 중단되었습니다.</string>
+    <string name="logout_done">로그아웃됨</string>
 </resources>

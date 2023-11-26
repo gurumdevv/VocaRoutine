@@ -38,7 +38,13 @@
         android:id="@+id/navigation_setting"
         android:name="com.gurumlab.vocaroutine.ui.setting.SettingFragment"
         android:label="@string/fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_setting_to_login"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/navigation_home"
+            app:destination="@id/navigation_login" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_login"
         android:name="com.gurumlab.vocaroutine.ui.login.LoginFragment"
@@ -46,6 +52,8 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_home"
+            app:popUpTo="@id/navigation_login"
+            app:popUpToInclusive="true"
             app:destination="@id/navigation_home" />
     </fragment>
     <fragment
