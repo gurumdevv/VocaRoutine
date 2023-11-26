@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
+import com.gurumlab.vocaroutine.data.model.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import kotlinx.coroutines.flow.first
@@ -10,14 +11,8 @@ class MyListRepository @Inject constructor(
     private val dataStore: DataStoreModule
 ) {
 
-    suspend fun getLists(uid: String): List<ListInfo>? {
-        val response = apiClient.getLists(uid).body()
-
-        return if(response.isNullOrEmpty()){
-            null
-        } else{
-            response.values.toList()
-        }
+    suspend fun getLists(uid: String): ApiResponse<Map<String, ListInfo>> {
+        return apiClient.getLists(uid)
     }
 
     suspend fun getUid(): String {

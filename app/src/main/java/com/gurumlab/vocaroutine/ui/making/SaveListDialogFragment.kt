@@ -55,9 +55,9 @@ class SaveListDialogFragment : DialogFragment() {
                 tempListInfo.creator,
                 tempListInfo.createdDate,
                 tempListInfo.totalCount,
-                tempListInfo.reviewCount,
                 tempListInfo.isSetAlarm,
                 tempListInfo.alarmCode,
+                tempListInfo.review,
                 tempListInfo.vocabularies
             )
             lifecycleScope.launch {

@@ -44,6 +44,7 @@ object NetworkModule {
             .baseUrl("https://vocaroutine-default-rtdb.asia-southeast1.firebasedatabase.app")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(ApiCallAdapterFactory.create())
             .build()
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -43,6 +44,15 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
 
         setLayout()
         setSnackbar()
+
+        viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
+            binding!!.lottie.isVisible = isLoading
+        })
+
+        viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
+            binding!!.ivConnectionOut.isVisible = isError
+            binding!!.tvConnectionOut.isVisible = isError
+        })
     }
 
     private fun setLayout() {
@@ -74,12 +84,8 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         viewModel.getMyLists()
         viewModel.myLists.observe(viewLifecycleOwner, EventObserver { myLists ->
             isAlreadyExist = viewModel.isAlreadyCreated(myLists, list)
-            if (!isAlreadyExist) {
-                viewModel.uploadList(list)
-                return@EventObserver
-            } else {
-                return@EventObserver
-            }
+            if (isAlreadyExist) return@EventObserver
+            viewModel.uploadList(list)
         })
     }
 }

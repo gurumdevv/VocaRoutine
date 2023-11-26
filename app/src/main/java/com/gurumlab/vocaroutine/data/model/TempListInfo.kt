@@ -9,8 +9,8 @@ data class TempListInfo(
     val creator: String,
     val createdDate: String,
     val totalCount: Int,
-    val reviewCount: Int,
     val isSetAlarm: Boolean,
     val alarmCode: Int,
+    val review: Review,
     val vocabularies: List<Vocabulary>
 ) : Parcelable

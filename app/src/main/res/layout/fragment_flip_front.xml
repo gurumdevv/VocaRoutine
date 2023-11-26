@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_quiz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/item_quiz_background">
+
+    <TextView
+        android:id="@+id/tv_list_title"
+        style="@style/MediumTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="토익 뽀개기 850+" />
+
+    <TextView
+        android:id="@+id/tv_list_created_date"
+        style="@style/SmallTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_list_title"
+        tools:text="3일전" />
+
+    <TextView
+        android:id="@+id/tv_vocabulary"
+        style="@style/LargeHeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btn_yes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_list_created_date"
+        tools:text="assignment" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_yes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/item_quiz_button"
+        android:backgroundTint="#DE5C2A"
+        android:drawableTop="@drawable/ic_winking"
+        android:elevation="6dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:paddingVertical="40dp"
+        android:text="@string/quiz_ok"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_no"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_no"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/item_quiz_button"
+        android:backgroundTint="#FFC830"
+        android:drawableTop="@drawable/ic_thinking"
+        android:elevation="6dp"
+        android:enabled="false"
+        android:gravity="center"
+        android:paddingVertical="40dp"
+        android:text="@string/quiz_no"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_yes" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

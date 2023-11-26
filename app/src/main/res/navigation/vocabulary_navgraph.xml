@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vocabulary_navgraph"
+    app:startDestination="@id/navigation_front">
+
+    <fragment
+        android:id="@+id/navigation_front"
+        android:name="com.gurumlab.vocaroutine.ui.home.FlipFrontFragment"
+        android:label="@string/navigation_vocabulary_front"
+        tools:layout="@layout/fragment_flip_front" />
+
+    <fragment
+        android:id="@+id/navigation_back"
+        android:name="com.gurumlab.vocaroutine.ui.home.FlipBackFragment"
+        android:label="@string/navigation_vocabulary_back"
+        tools:layout="@layout/fragment_flip_back">
+        <argument
+            android:name="vocabulary"
+            app:argType="com.gurumlab.vocaroutine.data.model.Vocabulary" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_front"
+        app:destination="@id/navigation_front" />
+
+    <action
+        android:id="@+id/action_global_back"
+        app:destination="@id/navigation_back" />
+
+</navigation>

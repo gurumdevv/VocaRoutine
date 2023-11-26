@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.R
+import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
 import com.gurumlab.vocaroutine.data.source.remote.MakingListRepository
@@ -78,6 +79,7 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
                 val totalCount = vocabularies.size
                 val date = getCurrentTime()
                 val currentAlarmCode = getAlarmCode()
+                val review = Review(firstReview = false, secondReview = false, thirdReview = false)
                 _alarmCode.value = Event(currentAlarmCode)
 
                 if (alarmCode.value!!.content == 0) {
@@ -91,9 +93,9 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
                             creator = uid,
                             createdDate = date,
                             totalCount = totalCount,
-                            reviewCount = 0,
                             isSetAlarm = false,
                             alarmCode = currentAlarmCode,
+                            review = review,
                             vocabularies = vocabularies.toList()
                         )
                     )

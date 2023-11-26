@@ -1,6 +1,7 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
 import com.gurumlab.vocaroutine.data.model.Alarm
+import com.gurumlab.vocaroutine.data.model.ApiResponse
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.local.AppDatabase
 import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
@@ -35,7 +36,7 @@ class DetailListRepository @Inject constructor(
         apiClient.shareList(sharedListInfo)
     }
 
-    suspend fun getSharedListById(postId: String): List<SharedListInfo>{
-        return apiClient.getSharedListById("\"identifier\"", "\"${postId}\"").values.toList()
+    suspend fun getSharedListById(postId: String): ApiResponse<Map<String, SharedListInfo>> {
+        return apiClient.getSharedListById("\"identifier\"", "\"${postId}\"")
     }
 }

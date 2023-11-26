@@ -10,10 +10,6 @@ import androidx.core.app.NotificationCompat
 import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,17 +57,5 @@ class AlarmReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(1, notification)
-
-        val job = CoroutineScope(Dispatchers.IO).launch {
-            removeScheduleFromDB(requestCode)
-        }
-        job.invokeOnCompletion {
-            it?.printStackTrace()
-            CoroutineScope(Dispatchers.IO).cancel()
-        }
-    }
-
-    private suspend fun removeScheduleFromDB(alarmCode: Int) {
-        alarmDao.deleteAlarm(alarmCode)
     }
 }

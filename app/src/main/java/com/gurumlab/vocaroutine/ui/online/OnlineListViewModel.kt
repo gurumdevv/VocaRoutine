@@ -1,12 +1,17 @@
 package com.gurumlab.vocaroutine.ui.online
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import com.gurumlab.vocaroutine.data.model.onError
+import com.gurumlab.vocaroutine.data.model.onException
+import com.gurumlab.vocaroutine.data.model.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.OnlineListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,15 +33,29 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     val myLists: LiveData<Event<List<ListInfo>>> = _myLists
     private val _snackbarMessage = MutableLiveData<Event<Int>>()
     val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
+    private val _isLoading = MutableLiveData<Event<Boolean>>()
+    val isLoading: LiveData<Event<Boolean>> = _isLoading
+    private val _isCompleted = MutableLiveData<Event<Boolean>>()
+    val isCompleted: LiveData<Event<Boolean>> = _isCompleted
+    private val _isError = MutableLiveData<Event<Boolean>>()
+    val isError: LiveData<Event<Boolean>> = _isError
 
     fun loadLists() {
         viewModelScope.launch {
-            val sharedLists = repository.getSharedLists()
-
-            if (sharedLists.isNullOrEmpty()) {
-                return@launch
-            } else {
-                _sharedLists.value = Event(sharedLists)
+            _isLoading.value = Event(true)
+            val result = repository.getSharedLists()
+            result.onSuccess {
+                _isLoading.value = Event(false)
+                _isCompleted.value = Event(true)
+                _sharedLists.value = Event(it.values.toList())
+            }.onError { code, message ->
+                _isLoading.value = Event(false)
+                _isError.value = Event(true)
+                Log.d("OnlineListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                _isLoading.value = Event(false)
+                _isError.value = Event(true)
+                Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
     }
@@ -44,12 +63,13 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     fun getMyLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            val myLists = repository.getMyLists(uid)
-
-            if (myLists.isNullOrEmpty()) {
-                return@launch
-            } else {
-                _myLists.value = Event(myLists)
+            val result = repository.getMyLists(uid)
+            result.onSuccess {
+                _myLists.value = Event(it.values.toList())
+            }.onError { code, message ->
+                Log.d("OnlineListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
     }
@@ -68,6 +88,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
         viewModelScope.launch {
             val uid = repository.getUid()
             val date = getCurrentTime()
+            val review = Review(firstReview = false, secondReview = false, thirdReview = false)
             val alarmCode = getAlarmCode()
             if (alarmCode == 0) {
                 _snackbarMessage.value = Event(R.string.alarm_code_error_try_again)
@@ -79,9 +100,9 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
                 creator = list.creator,
                 createdDate = date,
                 totalCount = list.totalCount,
-                reviewCount = 0,
                 isSetAlarm = false,
                 alarmCode = alarmCode,
+                review = review,
                 vocabularies = list.vocabularies
             )
             repository.uploadList(uid, newListInfo)
