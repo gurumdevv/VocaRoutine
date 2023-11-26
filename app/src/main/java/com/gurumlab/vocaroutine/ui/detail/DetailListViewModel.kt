@@ -13,7 +13,7 @@ import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.model.onError
 import com.gurumlab.vocaroutine.data.model.onException
 import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
+import com.gurumlab.vocaroutine.data.source.repository.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -56,14 +56,15 @@ class DetailListViewModel @Inject constructor(
             if (isNotificationSet.value?.content == true) {
                 cancelAlarm(alarmCode)
             } else {
+                val id = list.id
                 val content = list.title
                 val dayOne = getDate(1)
                 val dayThree = getDate(3)
                 val daySeven = getDate(7)
 
-                _isNotificationSet.value = Event(setAlarm(alarmCode, content, dayOne))
-                setAlarm(alarmCode + 1, content, dayThree)
-                setAlarm(alarmCode + 2, content, daySeven)
+                _isNotificationSet.value = Event(setAlarm(id, alarmCode, content, dayOne))
+                setAlarm(id, alarmCode + 1, content, dayThree)
+                setAlarm(id, alarmCode + 2, content, daySeven)
             }
         }
     }
@@ -77,10 +78,10 @@ class DetailListViewModel @Inject constructor(
         return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
     }
 
-    private suspend fun setAlarm(alarmCode: Int, content: String, date: String): Boolean {
+    private suspend fun setAlarm(id: String, alarmCode: Int, content: String, date: String): Boolean {
         val isSet = alarmHandler.callAlarm(date, alarmCode, content)
         if (isSet) {
-            val alarm = Alarm(alarmCode, date, content)
+            val alarm = Alarm(alarmCode, id, date, content)
             repository.addAlarm(alarm)
             _isClickAlarmIcon.value = Event(true)
         } else {

@@ -11,7 +11,7 @@ import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.onError
 import com.gurumlab.vocaroutine.data.model.onException
 import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.remote.HomeRepository
+import com.gurumlab.vocaroutine.data.source.repository.HomeRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

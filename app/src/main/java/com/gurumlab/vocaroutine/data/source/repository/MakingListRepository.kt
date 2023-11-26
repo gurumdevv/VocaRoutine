@@ -1,8 +1,9 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.model.ChatMessage
 import com.gurumlab.vocaroutine.data.model.ChatRequest
 import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
+import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

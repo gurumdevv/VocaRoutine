@@ -8,7 +8,7 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
-import com.gurumlab.vocaroutine.data.source.remote.MakingListRepository
+import com.gurumlab.vocaroutine.data.source.repository.MakingListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
