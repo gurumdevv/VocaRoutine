@@ -24,9 +24,6 @@ import javax.inject.Inject
 class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
     @Inject
-    lateinit var gptApiClient: GptApiClient
-
-    @Inject
     lateinit var dataStore: DataStoreModule
     private lateinit var uid: String
 
@@ -54,6 +51,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
         setTopAppBar()
         setObservers()
         setBtnNextClickListener()
+        setIvScanClickListener()
         hideBottomNavigation(false)
     }
 
@@ -104,6 +102,13 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             lifecycleScope.launch {
                 viewModel.createVocabulary()
             }
+        }
+    }
+
+    private fun setIvScanClickListener() {
+        binding!!.ivLoadPictureBackground.setOnClickListener {
+            val action = MakingListFragmentDirections.actionCreationToAfterPhoto()
+            findNavController().navigate(action)
         }
     }
 

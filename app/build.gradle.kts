@@ -61,6 +61,10 @@ kapt {
 
 dependencies {
 
+    implementation("com.airbnb.android:lottie:3.5.0")
+    implementation("com.websitebeaver:documentscanner:1.0.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.0")
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-compiler:2.48.1")
     ksp("androidx.room:room-compiler:2.6.0")
