@@ -1,6 +1,5 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
-import com.gurumlab.vocaroutine.data.model.ApiResponse
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit

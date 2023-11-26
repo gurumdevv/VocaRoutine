@@ -1,7 +1,7 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.model.Alarm
-import com.gurumlab.vocaroutine.data.model.ApiResponse
+import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient

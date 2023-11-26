@@ -1,9 +1,5 @@
 package com.gurumlab.vocaroutine.data.source.remote
 
-import com.gurumlab.vocaroutine.data.model.ApiResponse
-import com.gurumlab.vocaroutine.data.model.ApiResultError
-import com.gurumlab.vocaroutine.data.model.ApiResultException
-import com.gurumlab.vocaroutine.data.model.ApiResultSuccess
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call

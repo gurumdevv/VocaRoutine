@@ -1,6 +1,6 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
-import com.gurumlab.vocaroutine.data.model.ApiResponse
+import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject

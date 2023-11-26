@@ -1,12 +1,12 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
 import android.util.Log
-import com.gurumlab.vocaroutine.data.model.ApiResponse
+import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.model.onError
-import com.gurumlab.vocaroutine.data.model.onException
-import com.gurumlab.vocaroutine.data.model.onSuccess
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject
 

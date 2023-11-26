@@ -1,4 +1,4 @@
-package com.gurumlab.vocaroutine.data.model
+package com.gurumlab.vocaroutine.data.source.remote
 
 sealed interface ApiResponse<T : Any>
 
