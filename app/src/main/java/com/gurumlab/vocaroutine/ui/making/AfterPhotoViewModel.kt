@@ -39,7 +39,9 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
     val snackbarText: LiveData<Event<Int>> = _snackbarText
     private val _isCompleted = MutableLiveData<Event<Boolean>>()
     val isCompleted = _isCompleted
-    private val vocabularies = mutableListOf<Vocabulary>()
+    private val _vocabularies = mutableListOf<Vocabulary>()
+    val vocabularies: List<Vocabulary> = _vocabularies
+
 
     suspend fun createVocabulary() {
         val currentWord = word.value ?: ""
@@ -64,7 +66,7 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
         }
 
         val vocabulary = Vocabulary(currentWord, currentMeaning, etymology.value?.content ?: "")
-        vocabularies.add(vocabulary)
+        _vocabularies.add(vocabulary)
         _isCompleted.value = Event(true)
     }
 
@@ -97,7 +99,7 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
                             isSetAlarm = false,
                             alarmCode = currentAlarmCode,
                             review = review,
-                            vocabularies = vocabularies.toList()
+                            vocabularies = vocabularies
                         )
                     )
             }

@@ -79,7 +79,11 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
                 val ocrResult = result.data?.getStringExtra(Constants.KEY_OCR_RESULT) ?: ""
                 binding!!.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
             } else {
-                findNavController().navigateUp()
+                if (viewModel.vocabularies.isEmpty()) {
+                    findNavController().navigateUp()
+                } else {
+                    binding!!.etOcrResult.setText(getString(R.string.result_empty))
+                }
             }
         }
     }
