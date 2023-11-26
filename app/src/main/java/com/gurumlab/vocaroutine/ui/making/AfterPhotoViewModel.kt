@@ -73,6 +73,8 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
             if (vocabularies.isEmpty()) {
                 _snackbarText.value = Event(R.string.empty_list)
             } else {
+                val id = getId()
+                val uid = repository.getUid()
                 val totalCount = vocabularies.size
                 val date = getCurrentTime()
                 val currentAlarmCode = getAlarmCode()
@@ -85,12 +87,14 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
                 _tempList.value =
                     Event(
                         TempListInfo(
-                            date,
-                            totalCount,
-                            0,
-                            false,
-                            currentAlarmCode,
-                            vocabularies.toList()
+                            id = id,
+                            creator = uid,
+                            createdDate = date,
+                            totalCount = totalCount,
+                            reviewCount = 0,
+                            isSetAlarm = false,
+                            alarmCode = currentAlarmCode,
+                            vocabularies = vocabularies.toList()
                         )
                     )
             }
@@ -102,6 +106,13 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
         val currentTime = Date()
         return dateFormat.format(currentTime)
     }
+
+    private suspend fun getId(): String {
+        val uid = repository.getUid()
+        val alarmCode = getAlarmCode()
+        return ("${uid}${alarmCode}")
+    }
+
 
     private fun getAlarmCode(): Int {
         val calendar = Calendar.getInstance()

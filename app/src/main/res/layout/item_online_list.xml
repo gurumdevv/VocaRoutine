@@ -10,6 +10,10 @@
             type="com.gurumlab.vocaroutine.ui.common.ListClickListener" />
 
         <variable
+            name="plusClickListener"
+            type="com.gurumlab.vocaroutine.ui.common.PlusClickListener" />
+
+        <variable
             name="list"
             type="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </data>
@@ -59,6 +63,7 @@
             android:layout_marginTop="28dp"
             android:layout_marginEnd="14dp"
             android:contentDescription="@string/download_to_mine"
+            android:onClick="@{() -> plusClickListener.onClickToDownload(list)}"
             android:src="@drawable/ic_plus_disabled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

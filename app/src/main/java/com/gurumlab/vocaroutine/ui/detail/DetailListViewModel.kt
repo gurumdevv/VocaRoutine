@@ -1,16 +1,21 @@
 package com.gurumlab.vocaroutine.ui.detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.AlarmHandler
+import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.remote.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -25,6 +30,8 @@ class DetailListViewModel @Inject constructor(
     private var _isNotificationSetError: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val isNotificationSetError = _isNotificationSetError
     private val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
+    private val _snackbarMessage = MutableLiveData<Event<Int>>()
+    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
 
     fun handleNotification(list: ListInfo) {
 
@@ -74,5 +81,35 @@ class DetailListViewModel @Inject constructor(
         }
 
         _isNotificationSet.value = Event(false)
+    }
+
+    fun shareListToOnline(list: ListInfo) {
+        viewModelScope.launch {
+            val uid = repository.getUid()
+            if(uid != list.creator){
+                _snackbarMessage.value = Event(R.string.share_ignored)
+                return@launch
+            }
+
+            val sharedListInfo = SharedListInfo(
+                identifier = list.id,
+                creator = uid,
+                sharedDate = getCurrentDateTime(),
+                listInfo = list
+            )
+
+            val isAlreadyPost = repository.getSharedListById(list.id).isNotEmpty()
+            if (isAlreadyPost) {
+                _snackbarMessage.value = Event(R.string.already_share)
+            } else {
+                repository.shareList(sharedListInfo)
+                _snackbarMessage.value = Event(R.string.share_complete)
+            }
+        }
+    }
+
+    private fun getCurrentDateTime(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }

@@ -42,6 +42,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/set_upload_description"
+                    android:onClick="@{() -> viewModel.shareListToOnline(list)}"
                     android:src="@drawable/ic_upload_online" />
 
                 <ImageButton

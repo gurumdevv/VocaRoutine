@@ -24,6 +24,12 @@ interface ApiClient {
         @Query("equalTo") equalTo: String
     ): Map<String, SharedListInfo>
 
+    @GET("sharedList.json")
+    suspend fun getSharedListById(
+        @Query("orderBy") orderBy: String,
+        @Query("equalTo") equalTo: String
+    ): Map<String, SharedListInfo>
+
     @POST("privateList/{uid}.json")
     suspend fun uploadList(@Path("uid") uid: String, @Body newList: ListInfo)
 
