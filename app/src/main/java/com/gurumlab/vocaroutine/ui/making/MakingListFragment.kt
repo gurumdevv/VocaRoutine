@@ -57,11 +57,20 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     private fun setObservers() {
         viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
             if (isCompleted) {
-                binding!!.tvVocabulary.setText("")
-                binding!!.tvMeaning.setText("")
-
+                binding!!.etVocabulary.setText("")
+                binding!!.etMeaning.setText("")
+                binding!!.etVocabulary.isEnabled = true
+                binding!!.etMeaning.isEnabled = true
+                binding!!.btnNext.isEnabled = true
+                binding!!.btnDone.isEnabled = true
+                binding!!.ivCamera.isEnabled = true
                 binding!!.btnNext.text = getString(R.string.next)
             } else {
+                binding!!.etVocabulary.isEnabled = false
+                binding!!.etMeaning.isEnabled = false
+                binding!!.btnNext.isEnabled = false
+                binding!!.btnDone.isEnabled = false
+                binding!!.ivCamera.isEnabled = true
                 binding!!.btnNext.text = getString(R.string.loading_etymology_now)
             }
         })
@@ -82,12 +91,6 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding!!.btnDone)
                 .show()
-        })
-
-        viewModel.numberOfAttempts.observe(viewLifecycleOwner, EventObserver { count ->
-            if (count >= 2) {
-                viewModel.setErrorMessage(getString(R.string.gpt_response_error))
-            }
         })
     }
 

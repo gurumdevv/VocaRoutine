@@ -97,4 +97,5 @@
     <string name="review_count_update_error">복습 횟수 업데이트에 실패했습니다.</string>
     <string name="check_internet_status">인터넷 연결을 확인해주세요.</string>
     <string name="connection_out_description">인터넷과 연결이 끊긴 상태를 알리는 이미지</string>
+    <string name="fail_to_load_etymology">어원 불러오기를 실패했습니다.</string>
 </resources>
