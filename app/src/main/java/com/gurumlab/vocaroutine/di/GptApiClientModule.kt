@@ -1,6 +1,7 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.di
 
 import com.gurumlab.vocaroutine.BuildConfig
+import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -57,7 +58,7 @@ object GptModule{
 
     @Singleton
     @Provides
-    fun provideGptApiClient(@GptRetrofit retrofit: Retrofit): GptApiClient{
+    fun provideGptApiClient(@GptRetrofit retrofit: Retrofit): GptApiClient {
         return retrofit.create(GptApiClient::class.java)
     }
 }
