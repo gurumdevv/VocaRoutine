@@ -145,4 +145,8 @@ class MakingListViewModel @Inject constructor(private val repository: MakingList
         }
         return true
     }
+
+    suspend fun getUid(): String {
+        return repository.getUid()
+    }
 }

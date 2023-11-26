@@ -7,14 +7,12 @@ import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.model.onError
 import com.gurumlab.vocaroutine.data.model.onException
 import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class SettingRepository @Inject constructor(
     private val apiClient: ApiClient,
-    private val dataStore: DataStoreModule
+    private val userDataSource: UserDataSource
 ) {
 
     suspend fun getMyLists(uid: String): ApiResponse<Map<String, ListInfo>> {
@@ -43,10 +41,10 @@ class SettingRepository @Inject constructor(
     }
 
     suspend fun getUid(): String {
-        return dataStore.getUid.first()
+        return userDataSource.getUid()
     }
 
     suspend fun setUid(uid: String) {
-        dataStore.setUid(uid)
+        userDataSource.setUid(uid)
     }
 }

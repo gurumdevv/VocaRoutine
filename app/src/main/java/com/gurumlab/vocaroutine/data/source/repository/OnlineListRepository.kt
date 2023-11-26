@@ -3,14 +3,12 @@ package com.gurumlab.vocaroutine.data.source.repository
 import com.gurumlab.vocaroutine.data.model.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class OnlineListRepository @Inject constructor(
     private val apiClient: ApiClient,
-    private val dataStore: DataStoreModule
+    private val userDataSource: UserDataSource
 ) {
 
     suspend fun getSharedLists(): ApiResponse<Map<String, SharedListInfo>> {
@@ -26,6 +24,6 @@ class OnlineListRepository @Inject constructor(
     }
 
     suspend fun getUid(): String {
-        return dataStore.getUid.first()
+        return userDataSource.getUid()
     }
 }

@@ -14,21 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.databinding.FragmentAfterPhotoBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.Constants
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
-    @Inject
-    lateinit var dataStore: DataStoreModule
     private lateinit var uid: String
     private val viewModel by viewModels<AfterPhotoViewModel>()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -36,7 +31,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            uid = dataStore.getUid.first()
+            uid = viewModel.getUid()
         }
     }
 
