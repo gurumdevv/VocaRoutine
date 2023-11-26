@@ -81,7 +81,10 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         viewModel.myLists.observe(viewLifecycleOwner, EventObserver { myLists ->
             isAlreadyExist = viewModel.isAlreadyCreated(myLists, list)
             if (isAlreadyExist) return@EventObserver
-            viewModel.uploadList(list)
+            viewModel.uploadToMyList(list)
+        })
+        viewModel.isEmptyList.observe(viewLifecycleOwner, EventObserver { isEmptyList ->
+            if (isEmptyList) viewModel.uploadToMyList(list)
         })
     }
 }

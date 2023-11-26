@@ -41,6 +41,8 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     val isError: LiveData<Event<Boolean>> = _isError
     private val _isException = MutableLiveData<Event<Boolean>>()
     val isException: LiveData<Event<Boolean>> = _isException
+    private val _isEmptyList = MutableLiveData<Event<Boolean>>()
+    val isEmptyList: LiveData<Event<Boolean>> = _isEmptyList
 
     fun loadLists() {
         viewModelScope.launch {
@@ -69,6 +71,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
             result.onSuccess {
                 _myLists.value = Event(it.values.toList())
             }.onError { code, message ->
+                _isEmptyList.value = Event(true)
                 Log.d("OnlineListViewModel", "Error code: $code message: $message")
             }.onException { throwable ->
                 Log.d("OnlineListViewModel", "Exception: $throwable")
@@ -86,7 +89,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
         return false
     }
 
-    fun uploadList(list: ListInfo) {
+    fun uploadToMyList(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
             val date = getCurrentTime()
