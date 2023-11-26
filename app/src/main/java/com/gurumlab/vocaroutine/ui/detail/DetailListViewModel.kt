@@ -29,11 +29,24 @@ class DetailListViewModel @Inject constructor(
     val isNotificationSet = _isNotificationSet
     private var _isNotificationSetError: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val isNotificationSetError = _isNotificationSetError
-    private val alarmCode = 231103001 //해당 값은 서버에서 받아올 수 있도록 수정해야함(업로드 구현시 데이터 구조와 함께 수정)
     private val _snackbarMessage = MutableLiveData<Event<Int>>()
     val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
+    private val _isClickAlarmIcon: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
+    val isClickAlarmIcon: LiveData<Event<Boolean>> = _isClickAlarmIcon
+
+    fun loadAlarm(list: ListInfo) {
+        viewModelScope.launch {
+            val alarmCode = list.alarmCode
+            val alarms = intArrayOf(alarmCode, alarmCode + 1, alarmCode + 2)
+            val activeAlarms = repository.searchActiveAlarms(alarms)
+            if (activeAlarms.isNotEmpty()) {
+                _isNotificationSet.value = Event(true)
+            }
+        }
+    }
 
     fun handleNotification(list: ListInfo) {
+        val alarmCode = list.alarmCode
 
         viewModelScope.launch {
             if (isNotificationSet.value?.content == true) {
@@ -65,6 +78,7 @@ class DetailListViewModel @Inject constructor(
         if (isSet) {
             val alarm = Alarm(alarmCode, date, content)
             repository.addAlarm(alarm)
+            _isClickAlarmIcon.value = Event(true)
         } else {
             _isNotificationSetError.value = Event(true)
         }
@@ -81,12 +95,13 @@ class DetailListViewModel @Inject constructor(
         }
 
         _isNotificationSet.value = Event(false)
+        _isClickAlarmIcon.value = Event(true)
     }
 
     fun shareListToOnline(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
-            if(uid != list.creator){
+            if (uid != list.creator) {
                 _snackbarMessage.value = Event(R.string.share_ignored)
                 return@launch
             }
@@ -111,5 +126,9 @@ class DetailListViewModel @Inject constructor(
     private fun getCurrentDateTime(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return dateFormat.format(Date())
+    }
+
+    fun resetClickAlarmIcon() {
+        _isClickAlarmIcon.value = Event(false)
     }
 }

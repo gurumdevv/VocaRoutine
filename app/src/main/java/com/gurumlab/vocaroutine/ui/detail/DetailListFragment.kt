@@ -48,25 +48,35 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         hideBottomNavigation(false)
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.resetClickAlarmIcon()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         hideBottomNavigation(true)
     }
 
     private fun setNotification() {
+        viewModel.loadAlarm(list)
         viewModel.isNotificationSet.observe(viewLifecycleOwner, EventObserver { isNotificationSet ->
+            val isClickNotificationIcon = viewModel.isClickAlarmIcon.value?.content!!
             if (isNotificationSet) {
                 binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.set_review_notification_success),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                if (isClickNotificationIcon) {
+                    Snackbar.make(
+                        requireView(),
+                        getString(R.string.set_review_notification_success),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             } else {
                 binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
                 Snackbar.make(
                     requireView(),
-                    getString(R.string.cancel_review_notification_success), Snackbar.LENGTH_SHORT
+                    getString(R.string.cancel_review_notification_success),
+                    Snackbar.LENGTH_SHORT
                 ).show()
             }
         })
