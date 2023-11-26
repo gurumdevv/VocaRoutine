@@ -41,8 +41,13 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         })
 
         viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
-            binding!!.ivConnectionOut.isVisible = isError
-            binding!!.tvConnectionOut.isVisible = isError
+            binding!!.ivEmptyOnline.isVisible = isError
+            binding!!.tvEmptyOnline.isVisible = isError
+        })
+
+        viewModel.isException.observe(viewLifecycleOwner, EventObserver { isException ->
+            binding!!.ivConnectionOut.isVisible = isException
+            binding!!.tvConnectionOut.isVisible = isException
         })
     }
 
