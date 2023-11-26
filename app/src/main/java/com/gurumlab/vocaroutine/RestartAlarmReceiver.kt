@@ -7,7 +7,6 @@ import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class RestartAlarmReceiver : BroadcastReceiver() {
             }
             job.invokeOnCompletion {
                 it?.printStackTrace()
-                CoroutineScope(Dispatchers.IO).cancel()
+                job.cancel()
             }
         }
     }
