@@ -44,18 +44,33 @@ interface ApiClient {
     @POST("sharedList.json")
     suspend fun shareList(@Body newList: SharedListInfo)
 
+    @DELETE("privateList/{uid}/{listId}.json")
+    suspend fun deleteMyList(@Path("uid") uid: String, @Path("listId") listId: String)
+
     @DELETE("privateList/{uid}.json")
-    suspend fun deleteMyList(@Path("uid") uid: String)
+    suspend fun deleteAllMyLists(@Path("uid") uid: String)
 
     @DELETE("sharedList/{uid}.json")
     suspend fun deleteSharedList(@Path("uid") uid: String)
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
-    suspend fun updateFirstReviewCount(@Path("uid") uid: String, @Path("listKey") listKey: String, @Body firstReview: Review)
+    suspend fun updateFirstReviewCount(
+        @Path("uid") uid: String,
+        @Path("listKey") listKey: String,
+        @Body firstReview: Review
+    )
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
-    suspend fun updateSecondReviewCount(@Path("uid") uid: String, @Path("listKey") listKey: String, @Body secondReview: Review)
+    suspend fun updateSecondReviewCount(
+        @Path("uid") uid: String,
+        @Path("listKey") listKey: String,
+        @Body secondReview: Review
+    )
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
-    suspend fun updateThirdReviewCount(@Path("uid") uid: String, @Path("listKey") listKey: String, @Body thirdReview: Review)
+    suspend fun updateThirdReviewCount(
+        @Path("uid") uid: String,
+        @Path("listKey") listKey: String,
+        @Body thirdReview: Review
+    )
 }

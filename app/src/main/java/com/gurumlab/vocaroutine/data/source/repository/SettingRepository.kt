@@ -24,7 +24,7 @@ class SettingRepository @Inject constructor(
     }
 
     suspend fun deleteMyList(uid: String) {
-        apiClient.deleteMyList(uid)
+        apiClient.deleteAllMyLists(uid)
     }
 
     suspend fun deleteSharedList(uid: String) {

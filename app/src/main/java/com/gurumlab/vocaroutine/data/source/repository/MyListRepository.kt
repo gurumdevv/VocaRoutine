@@ -17,4 +17,15 @@ class MyListRepository @Inject constructor(
     suspend fun getUid(): String {
         return userDataSource.getUid()
     }
+
+    suspend fun deleteList(uid: String, listId: String){
+        apiClient.deleteMyList(uid, listId)
+    }
+
+    suspend fun getListsById(
+        uid: String,
+        listId: String
+    ): ApiResponse<Map<String, ListInfo>> {
+        return apiClient.getListsById(uid, "\"id\"", "\"${listId}\"")
+    }
 }

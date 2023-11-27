@@ -26,6 +26,8 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
     val isCompleted: LiveData<Event<Boolean>> = _isCompleted
     private val _isError = MutableLiveData<Event<Boolean>>()
     val isError: LiveData<Event<Boolean>> = _isError
+    private val _snackbarMessage = MutableLiveData<Event<Int>>()
+    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
 
     fun loadLists() {
         _isLoading.value = Event(true)
@@ -46,5 +48,24 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
                 Log.d("MyListViewModel", "Exception: $throwable")
             }
         }
+    }
+
+    fun deleteList(listInfo: ListInfo) {
+        viewModelScope.launch {
+            val uid = repository.getUid()
+            val result = repository.getListsById(uid, listInfo.id)
+            result.onSuccess {
+                val listKey = it.keys.first()
+                repository.deleteList(uid, listKey)
+            }.onError { code, message ->
+                Log.d("MyListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("MyListViewModel", "Exception: $throwable")
+            }
+        }
+    }
+
+    fun setSnackbarMessage(messageId: Int) {
+        _snackbarMessage.value = Event(messageId)
     }
 }
