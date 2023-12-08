@@ -2,12 +2,14 @@ package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject
 
 class MyListRepository @Inject constructor(
     private val apiClient: ApiClient,
-    private val userDataSource: UserDataSource
+    private val userDataSource: UserDataSource,
+    private val offlineModeDao: OfflineModeDao
 ) {
 
     suspend fun getLists(uid: String): ApiResponse<Map<String, ListInfo>> {
@@ -18,7 +20,7 @@ class MyListRepository @Inject constructor(
         return userDataSource.getUid()
     }
 
-    suspend fun deleteList(uid: String, listId: String){
+    suspend fun deleteList(uid: String, listId: String) {
         apiClient.deleteMyList(uid, listId)
     }
 
@@ -27,5 +29,13 @@ class MyListRepository @Inject constructor(
         listId: String
     ): ApiResponse<Map<String, ListInfo>> {
         return apiClient.getListsById(uid, "\"id\"", "\"${listId}\"")
+    }
+
+    suspend fun getAllOfflineLists(): List<ListInfo> {
+        return offlineModeDao.getAllListInfo()
+    }
+
+    suspend fun deleteOfflineList(listInfo: ListInfo) {
+        offlineModeDao.deleteListInfo(listInfo)
     }
 }

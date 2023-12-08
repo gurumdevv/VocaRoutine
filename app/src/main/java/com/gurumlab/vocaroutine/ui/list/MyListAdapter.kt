@@ -8,13 +8,18 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.ui.common.ListDiffUtil
 import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import com.gurumlab.vocaroutine.databinding.ItemMyListBinding
 import com.gurumlab.vocaroutine.ui.common.ItemTouchHelperListener
+import javax.inject.Inject
 
 class MyListAdapter(
     private val viewModel: MyListViewModel,
     private val clickListener: ListClickListener
 ) : ListAdapter<ListInfo, MyListAdapter.MyListViewHolder>(ListDiffUtil()), ItemTouchHelperListener {
+
+    @Inject
+    lateinit var offlineModeDao: OfflineModeDao
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -49,7 +54,14 @@ class MyListAdapter(
     override fun onItemSwipe(position: Int) {}
 
     override fun onRightClick(position: Int, viewHolder: RecyclerView.ViewHolder?) {
-        viewModel.deleteList(getItem(position))
+
+        val isAvailable = viewModel.isNetworkAvailable.value?.content ?: false
+        if (isAvailable) {
+            viewModel.deleteList(getItem(position))
+        } else {
+            viewModel.deleteOfflineList(getItem(position))
+        }
+
         val newList = this.currentList.toMutableList()
         newList.removeAt(position)
         submitList(newList)
