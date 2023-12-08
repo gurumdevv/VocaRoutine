@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import com.gurumlab.vocaroutine.NetworkConnection
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.R
@@ -45,6 +46,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         setSnackBar()
         setTopAppBar()
         setNotification()
+        setDownloadIcon()
         hideBottomNavigation(false)
     }
 
@@ -95,11 +97,35 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         val detailListAdapter = DetailListAdapter()
         binding!!.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
+
+        val networkConnection = NetworkConnection(requireContext())
+        networkConnection.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            viewModel.setIsNetworkAvailable(isAvailable)
+        })
+
+        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            if (!isAvailable) {
+                binding!!.ivSetDownload.isVisible = false
+                binding!!.ivSetNotification.isVisible = false
+                binding!!.ivSetUpload.isVisible = false
+            }
+        })
     }
 
     private fun setSnackBar() {
         viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { messageId ->
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun setDownloadIcon() {
+        viewModel.loadIsDownloaded(list)
+        viewModel.isDownloaded.observe(viewLifecycleOwner, EventObserver { isDownload ->
+            if (isDownload) {
+                binding!!.ivSetDownload.setImageResource(R.drawable.ic_download_enabled)
+            } else {
+                binding!!.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
+            }
         })
     }
 
