@@ -35,6 +35,16 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
 
         setLayout()
         setSnackbar()
+    }
+
+    private fun setLayout() {
+        val onlineListAdapter = OnlineListAdapter(this, this)
+        binding!!.rvOnlineList.adapter = onlineListAdapter
+
+        viewModel.loadLists()
+        viewModel.sharedList.observe(viewLifecycleOwner, EventObserver { sharedList ->
+            onlineListAdapter.submitList(sharedList.toList())
+        })
 
         viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
             binding!!.lottie.isVisible = isLoading
@@ -48,16 +58,6 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         viewModel.isException.observe(viewLifecycleOwner, EventObserver { isException ->
             binding!!.ivConnectionOut.isVisible = isException
             binding!!.tvConnectionOut.isVisible = isException
-        })
-    }
-
-    private fun setLayout() {
-        val onlineListAdapter = OnlineListAdapter(this, this)
-        binding!!.rvOnlineList.adapter = onlineListAdapter
-
-        viewModel.loadLists()
-        viewModel.sharedList.observe(viewLifecycleOwner, EventObserver { sharedList ->
-            onlineListAdapter.submitList(sharedList.toList())
         })
     }
 

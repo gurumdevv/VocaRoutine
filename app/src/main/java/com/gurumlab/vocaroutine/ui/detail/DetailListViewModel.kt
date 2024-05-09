@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailListViewModel @Inject constructor(
     private val repository: DetailListRepository,
-    private val alarmHandler: AlarmHandler
+    private val alarmHandler: AlarmHandler,
 ) : ViewModel() {
 
     private var _isNotificationSet: MutableLiveData<Event<Boolean>> = MutableLiveData()
@@ -37,6 +37,33 @@ class DetailListViewModel @Inject constructor(
     val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
     private val _isClickAlarmIcon: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
     val isClickAlarmIcon: LiveData<Event<Boolean>> = _isClickAlarmIcon
+    private val _isDownloaded = MutableLiveData<Event<Boolean>>()
+    val isDownloaded: LiveData<Event<Boolean>> = _isDownloaded
+    private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
+    val isNetworkAvailable: LiveData<Event<Boolean>> = _isNetworkAvailable
+
+    fun downloadList(listInfo: ListInfo) {
+        viewModelScope.launch {
+            if (_isDownloaded.value?.content == false || _isDownloaded.value?.content == null) {
+                repository.downloadListOnDevice(listInfo)
+                _isDownloaded.value = Event(true)
+                _snackbarMessage.value = Event(R.string.save_list_on_device_success)
+            } else {
+                repository.deleteListOnDevice(listInfo)
+                _isDownloaded.value = Event(false)
+                _snackbarMessage.value = Event(R.string.delete_list_on_device_success)
+            }
+        }
+    }
+
+    fun loadIsDownloaded(list: ListInfo) {
+        viewModelScope.launch {
+            val result = repository.getListById(list.id) ?: ""
+            if (result.isNotEmpty()) {
+                _isDownloaded.value = Event(true)
+            }
+        }
+    }
 
     fun loadAlarm(list: ListInfo) {
         viewModelScope.launch {
@@ -78,7 +105,12 @@ class DetailListViewModel @Inject constructor(
         return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
     }
 
-    private suspend fun setAlarm(id: String, alarmCode: Int, content: String, date: String): Boolean {
+    private suspend fun setAlarm(
+        id: String,
+        alarmCode: Int,
+        content: String,
+        date: String
+    ): Boolean {
         val isSet = alarmHandler.callAlarm(date, alarmCode, content)
         if (isSet) {
             val alarm = Alarm(alarmCode, id, date, content)
@@ -142,5 +174,9 @@ class DetailListViewModel @Inject constructor(
 
     fun resetClickAlarmIcon() {
         _isClickAlarmIcon.value = Event(false)
+    }
+
+    fun setIsNetworkAvailable(isAvailable: Boolean) {
+        _isNetworkAvailable.value = Event(isAvailable)
     }
 }

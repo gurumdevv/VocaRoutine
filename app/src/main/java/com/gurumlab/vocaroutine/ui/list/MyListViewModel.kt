@@ -26,8 +26,12 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
     val isCompleted: LiveData<Event<Boolean>> = _isCompleted
     private val _isError = MutableLiveData<Event<Boolean>>()
     val isError: LiveData<Event<Boolean>> = _isError
+    private val _isException = MutableLiveData<Event<Boolean>>()
+    val isException: LiveData<Event<Boolean>> = _isException
     private val _snackbarMessage = MutableLiveData<Event<Int>>()
     val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
+    private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
+    val isNetworkAvailable: LiveData<Event<Boolean>> = _isNetworkAvailable
 
     fun loadLists() {
         _isLoading.value = Event(true)
@@ -44,7 +48,7 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
                 Log.d("MyListViewModel", "Error code: $code message: $message")
             }.onException { throwable ->
                 _isLoading.value = Event(false)
-                _isError.value = Event(true)
+                _isException.value = Event(true)
                 Log.d("MyListViewModel", "Exception: $throwable")
             }
         }
@@ -65,7 +69,27 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
         }
     }
 
+    fun loadOfflineLists() {
+        viewModelScope.launch {
+            val result = repository.getAllOfflineLists()
+            _items.value = Event(result)
+            if (result.isEmpty()) {
+                _isError.value = Event(true)
+            }
+        }
+    }
+
+    fun deleteOfflineList(listInfo: ListInfo) {
+        viewModelScope.launch {
+            repository.deleteOfflineList(listInfo)
+        }
+    }
+
     fun setSnackbarMessage(messageId: Int) {
         _snackbarMessage.value = Event(messageId)
+    }
+
+    fun setIsNetworkAvailable(isAvailable: Boolean) {
+        _isNetworkAvailable.value = Event(isAvailable)
     }
 }

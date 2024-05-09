@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
+import com.gurumlab.vocaroutine.NetworkConnection
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
@@ -40,14 +41,37 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
     }
 
     private fun setLayout() {
+        val networkConnection = NetworkConnection(requireContext())
+        networkConnection.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            viewModel.setIsNetworkAvailable(isAvailable)
+        })
+
+        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            if (isAvailable) {
+                viewModel.loadLists()
+            } else {
+                viewModel.loadOfflineLists()
+                binding!!.btnNewList.isVisible = false
+            }
+        })
+
         val myListAdapter = MyListAdapter(viewModel, this)
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(myListAdapter, requireContext()))
+        val itemTouchHelper =
+            ItemTouchHelper(ItemTouchHelperCallback(myListAdapter, requireContext()))
         itemTouchHelper.attachToRecyclerView(binding!!.rvMyList)
         binding!!.rvMyList.adapter = myListAdapter
 
-        viewModel.loadLists()
         viewModel.item.observe(viewLifecycleOwner, EventObserver { myLists ->
             myListAdapter.submitList(myLists)
+        })
+
+        viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
+            binding!!.ivEmptyMine.isVisible = isError
+            if (viewModel.isNetworkAvailable.value?.content == true) {
+                binding!!.tvEmptyMine.isVisible = isError
+            } else {
+                binding!!.tvEmptyDownloaded.isVisible = isError
+            }
         })
     }
 

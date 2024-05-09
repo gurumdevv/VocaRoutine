@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.data.source.local.AppDatabase
+import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,12 +21,17 @@ object DatabaseModule {
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
-            AppDatabase::class.java, "scheduledAlarm"
+            AppDatabase::class.java, "VocaRoutineDatabase"
         ).build()
     }
 
     @Provides
     fun provideAlarmDao(appDatabase: AppDatabase): AlarmDao {
         return appDatabase.alarmDao()
+    }
+
+    @Provides
+    fun provideOfflineModeDao(appDatabase: AppDatabase): OfflineModeDao{
+        return appDatabase.offlineModeDao()
     }
 }

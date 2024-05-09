@@ -1,28 +1,31 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.model.Alarm
+import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.local.AlarmDao
+import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject
 
 class DetailListRepository @Inject constructor(
     private val apiClient: ApiClient,
-    private val dao: AlarmDao,
+    private val alarmDao: AlarmDao,
+    private val offlineModeDao: OfflineModeDao,
     private val userDataSource: UserDataSource
 ) {
 
     suspend fun addAlarm(alarm: Alarm) {
-        dao.addAlarm(alarm)
+        alarmDao.addAlarm(alarm)
     }
 
     suspend fun deleteAlarm(alarmCode: Int) {
-        dao.deleteAlarm(alarmCode)
+        alarmDao.deleteAlarm(alarmCode)
     }
 
     suspend fun searchActiveAlarms(alarms: IntArray): List<Int> {
-        return dao.searchActiveAlarms(alarms)
+        return alarmDao.searchActiveAlarms(alarms)
     }
 
     suspend fun getUid(): String {
@@ -36,5 +39,17 @@ class DetailListRepository @Inject constructor(
 
     suspend fun getSharedListById(postId: String): ApiResponse<Map<String, SharedListInfo>> {
         return apiClient.getSharedListById("\"identifier\"", "\"${postId}\"")
+    }
+
+    suspend fun downloadListOnDevice(listInfo: ListInfo){
+        offlineModeDao.insertListInfo(listInfo)
+    }
+
+    suspend fun deleteListOnDevice(listInfo: ListInfo){
+        offlineModeDao.deleteListInfo(listInfo)
+    }
+
+    suspend fun getListById(id: String): String{
+        return offlineModeDao.getListById(id)
     }
 }
