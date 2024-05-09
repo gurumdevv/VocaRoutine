@@ -44,8 +44,8 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         startScanActivity()
         setTopAppBar()
@@ -77,12 +77,12 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 val ocrResult = result.data?.getStringExtra(Constants.KEY_OCR_RESULT) ?: ""
-                binding!!.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
+                binding.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
             } else {
                 if (viewModel.vocabularies.isEmpty()) {
                     findNavController().navigateUp()
                 } else {
-                    binding!!.etOcrResult.setText(getString(R.string.result_empty))
+                    binding.etOcrResult.setText(getString(R.string.result_empty))
                 }
             }
         }
@@ -91,21 +91,21 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     private fun setObservers() {
         viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
             if (isCompleted) {
-                binding!!.etVocabulary.setText("")
-                binding!!.etMeaning.setText("")
-                binding!!.etVocabulary.isEnabled = true
-                binding!!.etMeaning.isEnabled = true
-                binding!!.btnNext.isEnabled = true
-                binding!!.btnDone.isEnabled = true
-                binding!!.btnCamera.isEnabled = true
-                binding!!.btnNext.text = getString(R.string.next)
+                binding.etVocabulary.setText("")
+                binding.etMeaning.setText("")
+                binding.etVocabulary.isEnabled = true
+                binding.etMeaning.isEnabled = true
+                binding.btnNext.isEnabled = true
+                binding.btnDone.isEnabled = true
+                binding.btnCamera.isEnabled = true
+                binding.btnNext.text = getString(R.string.next)
             } else {
-                binding!!.etVocabulary.isEnabled = false
-                binding!!.etMeaning.isEnabled = false
-                binding!!.btnNext.isEnabled = false
-                binding!!.btnDone.isEnabled = false
-                binding!!.btnCamera.isEnabled = false
-                binding!!.btnNext.text = getString(R.string.loading_etymology_now)
+                binding.etVocabulary.isEnabled = false
+                binding.etMeaning.isEnabled = false
+                binding.btnNext.isEnabled = false
+                binding.btnDone.isEnabled = false
+                binding.btnCamera.isEnabled = false
+                binding.btnNext.text = getString(R.string.loading_etymology_now)
             }
         })
 
@@ -123,13 +123,13 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
         viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver { messageId ->
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
-                .setAnchorView(binding!!.btnDone)
+                .setAnchorView(binding.btnDone)
                 .show()
         })
     }
 
     private fun setBtnNextClickListener() {
-        binding!!.btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.createVocabulary()
             }
@@ -137,14 +137,14 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     }
 
     private fun setCameraClickListener() {
-        binding!!.btnCamera.setOnClickListener {
+        binding.btnCamera.setOnClickListener {
             val intent = Intent(requireContext(), ScanActivity::class.java)
             resultLauncher.launch(intent)
         }
     }
 
     private fun setTopAppBar() {
-        binding!!.topAppBar.setNavigationOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

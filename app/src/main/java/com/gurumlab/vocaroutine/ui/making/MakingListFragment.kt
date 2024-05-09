@@ -39,8 +39,8 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         setTopAppBar()
         setObservers()
@@ -57,21 +57,21 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     private fun setObservers() {
         viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
             if (isCompleted) {
-                binding!!.etVocabulary.setText("")
-                binding!!.etMeaning.setText("")
-                binding!!.etVocabulary.isEnabled = true
-                binding!!.etMeaning.isEnabled = true
-                binding!!.btnNext.isEnabled = true
-                binding!!.btnDone.isEnabled = true
-                binding!!.ivCamera.isEnabled = true
-                binding!!.btnNext.text = getString(R.string.next)
+                binding.etVocabulary.setText("")
+                binding.etMeaning.setText("")
+                binding.etVocabulary.isEnabled = true
+                binding.etMeaning.isEnabled = true
+                binding.btnNext.isEnabled = true
+                binding.btnDone.isEnabled = true
+                binding.ivCamera.isEnabled = true
+                binding.btnNext.text = getString(R.string.next)
             } else {
-                binding!!.etVocabulary.isEnabled = false
-                binding!!.etMeaning.isEnabled = false
-                binding!!.btnNext.isEnabled = false
-                binding!!.btnDone.isEnabled = false
-                binding!!.ivCamera.isEnabled = true
-                binding!!.btnNext.text = getString(R.string.loading_etymology_now)
+                binding.etVocabulary.isEnabled = false
+                binding.etMeaning.isEnabled = false
+                binding.btnNext.isEnabled = false
+                binding.btnDone.isEnabled = false
+                binding.ivCamera.isEnabled = true
+                binding.btnNext.text = getString(R.string.loading_etymology_now)
             }
         })
 
@@ -89,13 +89,13 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
         viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver { messageId ->
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
-                .setAnchorView(binding!!.btnDone)
+                .setAnchorView(binding.btnDone)
                 .show()
         })
     }
 
     private fun setBtnNextClickListener() {
-        binding!!.btnNext.setOnClickListener {
+        binding.btnNext.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.createVocabulary()
             }
@@ -103,14 +103,14 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     }
 
     private fun setIvScanClickListener() {
-        binding!!.ivLoadPictureBackground.setOnClickListener {
+        binding.ivLoadPictureBackground.setOnClickListener {
             val action = MakingListFragmentDirections.actionCreationToAfterPhoto()
             findNavController().navigate(action)
         }
     }
 
     private fun setTopAppBar() {
-        binding!!.topAppBar.setNavigationOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

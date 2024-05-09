@@ -38,9 +38,9 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.lifecycleOwner = viewLifecycleOwner
-        binding!!.list = list
-        binding!!.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.list = list
+        binding.viewModel = viewModel
 
         setLayout()
         setSnackBar()
@@ -65,7 +65,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         viewModel.isNotificationSet.observe(viewLifecycleOwner, EventObserver { isNotificationSet ->
             val isClickNotificationIcon = viewModel.isClickAlarmIcon.value?.content!!
             if (isNotificationSet) {
-                binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
+                binding.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
                 if (isClickNotificationIcon) {
                     Snackbar.make(
                         requireView(),
@@ -74,7 +74,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
                     ).show()
                 }
             } else {
-                binding!!.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
+                binding.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
                 Snackbar.make(
                     requireView(),
                     getString(R.string.cancel_review_notification_success),
@@ -95,7 +95,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
     private fun setLayout() {
         val detailListAdapter = DetailListAdapter()
-        binding!!.rvDetailList.adapter = detailListAdapter
+        binding.rvDetailList.adapter = detailListAdapter
         detailListAdapter.submitList(list.vocabularies)
 
         val networkConnection = NetworkConnection(requireContext())
@@ -105,9 +105,9 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
 
         viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
             if (!isAvailable) {
-                binding!!.ivSetDownload.isVisible = false
-                binding!!.ivSetNotification.isVisible = false
-                binding!!.ivSetUpload.isVisible = false
+                binding.ivSetDownload.isVisible = false
+                binding.ivSetNotification.isVisible = false
+                binding.ivSetUpload.isVisible = false
             }
         })
     }
@@ -122,15 +122,15 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         viewModel.loadIsDownloaded(list)
         viewModel.isDownloaded.observe(viewLifecycleOwner, EventObserver { isDownload ->
             if (isDownload) {
-                binding!!.ivSetDownload.setImageResource(R.drawable.ic_download_enabled)
+                binding.ivSetDownload.setImageResource(R.drawable.ic_download_enabled)
             } else {
-                binding!!.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
+                binding.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
             }
         })
     }
 
     private fun setTopAppBar() {
-        binding!!.topAppBar.setNavigationOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

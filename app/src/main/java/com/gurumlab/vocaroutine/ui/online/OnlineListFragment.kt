@@ -39,7 +39,7 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
 
     private fun setLayout() {
         val onlineListAdapter = OnlineListAdapter(this, this)
-        binding!!.rvOnlineList.adapter = onlineListAdapter
+        binding.rvOnlineList.adapter = onlineListAdapter
 
         viewModel.loadLists()
         viewModel.sharedList.observe(viewLifecycleOwner, EventObserver { sharedList ->
@@ -47,17 +47,17 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         })
 
         viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
-            binding!!.lottie.isVisible = isLoading
+            binding.lottie.isVisible = isLoading
         })
 
         viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
-            binding!!.ivEmptyOnline.isVisible = isError
-            binding!!.tvEmptyOnline.isVisible = isError
+            binding.ivEmptyOnline.isVisible = isError
+            binding.tvEmptyOnline.isVisible = isError
         })
 
         viewModel.isException.observe(viewLifecycleOwner, EventObserver { isException ->
-            binding!!.ivConnectionOut.isVisible = isException
-            binding!!.tvConnectionOut.isVisible = isException
+            binding.ivConnectionOut.isVisible = isException
+            binding.tvConnectionOut.isVisible = isException
         })
     }
 
