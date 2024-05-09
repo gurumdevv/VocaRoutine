@@ -102,10 +102,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun setLoadingLayout() {
         viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
             if (isLoading) {
-                binding!!.lottieLoading.visibility = View.VISIBLE
+                binding.lottieLoading.visibility = View.VISIBLE
             } else {
-                binding!!.lottieLoading.visibility = View.GONE
-                binding!!.containerQuiz.visibility = View.VISIBLE
+                binding.lottieLoading.visibility = View.GONE
+                binding.containerQuiz.visibility = View.VISIBLE
             }
         })
     }
@@ -113,10 +113,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun setEmptyLayout() {
         viewModel.isEmpty.observe(viewLifecycleOwner, EventObserver { isEmpty ->
             if (isEmpty) {
-                binding!!.lottieStudy.visibility = View.VISIBLE
-                binding!!.containerQuiz.visibility = View.GONE
-                binding!!.tvStudy.isVisible = true
-                binding!!.tvStudy.startAnimation(
+                binding.lottieStudy.visibility = View.VISIBLE
+                binding.containerQuiz.visibility = View.GONE
+                binding.tvStudy.isVisible = true
+                binding.tvStudy.startAnimation(
                     AnimationUtils.loadAnimation(
                         requireContext(),
                         R.anim.fade_in
@@ -129,10 +129,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private fun setFinishLayout() {
         viewModel.isFinish.observe(viewLifecycleOwner, EventObserver { isFinish ->
             if (isFinish) {
-                binding!!.containerQuiz.visibility = View.GONE
-                binding!!.lottieFinish.visibility = View.VISIBLE
-                binding!!.tvFinish.visibility = View.VISIBLE
-                binding!!.tvFinish.startAnimation(
+                binding.containerQuiz.visibility = View.GONE
+                binding.lottieFinish.visibility = View.VISIBLE
+                binding.tvFinish.visibility = View.VISIBLE
+                binding.tvFinish.startAnimation(
                     AnimationUtils.loadAnimation(
                         requireContext(),
                         R.anim.fade_in

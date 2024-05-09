@@ -29,8 +29,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.viewModel = viewModel
-        binding!!.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         setMyListsCount()
         setSharedListsCount()
@@ -42,14 +42,14 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
     private fun setMyListsCount() {
         viewModel.loadMyListCount()
         viewModel.myListCount.observe(viewLifecycleOwner, EventObserver { count ->
-            binding!!.tvCountMyList.text = getString(R.string.count_my_list, count)
+            binding.tvCountMyList.text = getString(R.string.count_my_list, count)
         })
     }
 
     private fun setSharedListsCount() {
         viewModel.loadSharedListCount()
         viewModel.sharedListCount.observe(viewLifecycleOwner, EventObserver { count ->
-            binding!!.tvCountShareList.text = getString(R.string.count_share_list, count)
+            binding.tvCountShareList.text = getString(R.string.count_share_list, count)
         })
     }
 
@@ -74,8 +74,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
         val user = Firebase.auth.currentUser
         user?.let {
             for (profile in it.providerData) {
-                binding!!.ivAccountProfile.load(profile.photoUrl)
-                binding!!.tvAccountNickName.text = profile.displayName
+                binding.ivAccountProfile.load(profile.photoUrl)
+                binding.tvAccountNickName.text = profile.displayName
             }
         }
     }

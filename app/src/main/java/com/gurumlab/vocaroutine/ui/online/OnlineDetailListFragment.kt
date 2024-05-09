@@ -30,8 +30,8 @@ class OnlineDetailListFragment : BaseFragment<FragmentOnlineDetailListBinding>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.lifecycleOwner = viewLifecycleOwner
-        binding!!.list = list
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.list = list
 
         setLayout()
         setTopAppBar()
@@ -45,12 +45,12 @@ class OnlineDetailListFragment : BaseFragment<FragmentOnlineDetailListBinding>()
 
     private fun setLayout() {
         val onlineDetailListAdapter = OnlineDetailListAdapter()
-        binding!!.rvDetailList.adapter = onlineDetailListAdapter
+        binding.rvDetailList.adapter = onlineDetailListAdapter
         onlineDetailListAdapter.submitList(list.vocabularies)
     }
 
     private fun setTopAppBar() {
-        binding!!.topAppBar.setNavigationOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

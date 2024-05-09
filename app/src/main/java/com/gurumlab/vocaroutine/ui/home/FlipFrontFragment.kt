@@ -56,14 +56,14 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
     }
 
     private fun setButtonClickListener() {
-        binding!!.btnYes.setOnClickListener {
+        binding.btnYes.setOnClickListener {
             if (vocabularies.isNotEmpty()) {
                 vocabularies.removeFirst()
                 updateVocabularyText()
             }
         }
 
-        binding!!.btnNo.setOnClickListener {
+        binding.btnNo.setOnClickListener {
             if (vocabularies.isNotEmpty()) {
                 val currentVocabulary = vocabularies.first()
                 vocabularies.add(currentVocabulary)
@@ -83,7 +83,7 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
     private fun updateVocabularyText() {
         if (vocabularies.isNotEmpty()) {
-            binding!!.tvVocabulary.text = vocabularies.first().word
+            binding.tvVocabulary.text = vocabularies.first().word
         } else {
             viewModel.finishReview()
             vocabularies.clear()
@@ -95,8 +95,8 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
     private fun setTitleAndDate() {
         if (title != "" && createdDate != "") {
-            binding!!.tvListTitle.text = title
-            binding!!.tvListCreatedDate.text = calculatePassedDate(createdDate)
+            binding.tvListTitle.text = title
+            binding.tvListCreatedDate.text = calculatePassedDate(createdDate)
         }
     }
 
@@ -115,7 +115,7 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
     }
 
     private fun enableButton() {
-        binding!!.btnYes.isEnabled = true
-        binding!!.btnNo.isEnabled = true
+        binding.btnYes.isEnabled = true
+        binding.btnNo.isEnabled = true
     }
 }

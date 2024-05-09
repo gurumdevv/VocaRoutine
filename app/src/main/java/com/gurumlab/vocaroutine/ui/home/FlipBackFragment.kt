@@ -29,10 +29,10 @@ class FlipBackFragment: BaseFragment<FragmentFlipBackBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.lifecycleOwner = viewLifecycleOwner
-        binding!!.vocabulary = vocabulary
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.vocabulary = vocabulary
 
-        binding!!.btnAgain.setOnClickListener {
+        binding.btnAgain.setOnClickListener {
             findNavController().navigateUp()
         }
     }

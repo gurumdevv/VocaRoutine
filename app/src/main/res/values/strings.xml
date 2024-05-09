@@ -111,4 +111,6 @@
     <string name="permission_information">권한 안내</string>
     <string name="require_notification_permission">복습 알림을 위해서는 알림 권한이 필요합니다.</string>
     <string name="agree">확인</string>
+    <string name="message_sign_in_failure">로그인에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="logout_success">로그아웃됨</string>
 </resources>
