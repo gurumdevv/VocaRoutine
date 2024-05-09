@@ -10,27 +10,18 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
-import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentOnlineListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.ui.common.PlusClickListener
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickListener,
     PlusClickListener {
 
     private val viewModel by viewModels<OnlineListViewModel>()
-
-    @Inject
-    lateinit var apiClient: ApiClient
-
-    @Inject
-    lateinit var dataStore: DataStoreModule
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -50,8 +41,13 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         })
 
         viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
-            binding!!.ivConnectionOut.isVisible = isError
-            binding!!.tvConnectionOut.isVisible = isError
+            binding!!.ivEmptyOnline.isVisible = isError
+            binding!!.tvEmptyOnline.isVisible = isError
+        })
+
+        viewModel.isException.observe(viewLifecycleOwner, EventObserver { isException ->
+            binding!!.ivConnectionOut.isVisible = isException
+            binding!!.tvConnectionOut.isVisible = isException
         })
     }
 
@@ -85,7 +81,10 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         viewModel.myLists.observe(viewLifecycleOwner, EventObserver { myLists ->
             isAlreadyExist = viewModel.isAlreadyCreated(myLists, list)
             if (isAlreadyExist) return@EventObserver
-            viewModel.uploadList(list)
+            viewModel.uploadToMyList(list)
+        })
+        viewModel.isEmptyList.observe(viewLifecycleOwner, EventObserver { isEmptyList ->
+            if (isEmptyList) viewModel.uploadToMyList(list)
         })
     }
 }

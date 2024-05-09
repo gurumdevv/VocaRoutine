@@ -1,7 +1,9 @@
-package com.gurumlab.vocaroutine.data.source.local
+package com.gurumlab.vocaroutine.di
 
 import android.content.Context
 import androidx.room.Room
+import com.gurumlab.vocaroutine.data.source.local.AlarmDao
+import com.gurumlab.vocaroutine.data.source.local.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

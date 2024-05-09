@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurumlab.vocaroutine.data.model.ListInfo
-import com.gurumlab.vocaroutine.data.model.onError
-import com.gurumlab.vocaroutine.data.model.onException
-import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.remote.MyListRepository
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.data.source.repository.MyListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,6 +26,8 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
     val isCompleted: LiveData<Event<Boolean>> = _isCompleted
     private val _isError = MutableLiveData<Event<Boolean>>()
     val isError: LiveData<Event<Boolean>> = _isError
+    private val _snackbarMessage = MutableLiveData<Event<Int>>()
+    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
 
     fun loadLists() {
         _isLoading.value = Event(true)
@@ -46,5 +48,24 @@ class MyListViewModel @Inject constructor(private val repository: MyListReposito
                 Log.d("MyListViewModel", "Exception: $throwable")
             }
         }
+    }
+
+    fun deleteList(listInfo: ListInfo) {
+        viewModelScope.launch {
+            val uid = repository.getUid()
+            val result = repository.getListsById(uid, listInfo.id)
+            result.onSuccess {
+                val listKey = it.keys.first()
+                repository.deleteList(uid, listKey)
+            }.onError { code, message ->
+                Log.d("MyListViewModel", "Error code: $code message: $message")
+            }.onException { throwable ->
+                Log.d("MyListViewModel", "Exception: $throwable")
+            }
+        }
+    }
+
+    fun setSnackbarMessage(messageId: Int) {
+        _snackbarMessage.value = Event(messageId)
     }
 }

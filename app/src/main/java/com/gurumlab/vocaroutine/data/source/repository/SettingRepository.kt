@@ -1,19 +1,18 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.data.source.repository
 
 import android.util.Log
-import com.gurumlab.vocaroutine.data.model.ApiResponse
+import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.model.onError
-import com.gurumlab.vocaroutine.data.model.onException
-import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
-import kotlinx.coroutines.flow.first
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject
 
 class SettingRepository @Inject constructor(
     private val apiClient: ApiClient,
-    private val dataStore: DataStoreModule
+    private val userDataSource: UserDataSource
 ) {
 
     suspend fun getMyLists(uid: String): ApiResponse<Map<String, ListInfo>> {
@@ -25,7 +24,7 @@ class SettingRepository @Inject constructor(
     }
 
     suspend fun deleteMyList(uid: String) {
-        apiClient.deleteMyList(uid)
+        apiClient.deleteAllMyLists(uid)
     }
 
     suspend fun deleteSharedList(uid: String) {
@@ -42,10 +41,10 @@ class SettingRepository @Inject constructor(
     }
 
     suspend fun getUid(): String {
-        return dataStore.getUid.first()
+        return userDataSource.getUid()
     }
 
     suspend fun setUid(uid: String) {
-        dataStore.setUid(uid)
+        userDataSource.setUid(uid)
     }
 }

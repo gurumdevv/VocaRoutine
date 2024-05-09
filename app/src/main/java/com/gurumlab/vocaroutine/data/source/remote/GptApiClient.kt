@@ -8,5 +8,5 @@ import retrofit2.http.POST
 interface GptApiClient {
 
     @POST("v1/chat/completions")
-    suspend fun getResponse(@Body requestBody: ChatRequest): ChatResponse
+    suspend fun getResponse(@Body requestBody: ChatRequest): ApiResponse<ChatResponse>
 }

@@ -1,5 +1,7 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.di
 
+import com.gurumlab.vocaroutine.data.source.remote.ApiCallAdapterFactory
+import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

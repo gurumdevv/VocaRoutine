@@ -1,6 +1,8 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.di
 
 import com.gurumlab.vocaroutine.BuildConfig
+import com.gurumlab.vocaroutine.data.source.remote.ApiCallAdapterFactory
+import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -52,12 +54,13 @@ object GptModule{
             .baseUrl("https://api.openai.com/")
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(ApiCallAdapterFactory.create())
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideGptApiClient(@GptRetrofit retrofit: Retrofit): GptApiClient{
+    fun provideGptApiClient(@GptRetrofit retrofit: Retrofit): GptApiClient {
         return retrofit.create(GptApiClient::class.java)
     }
 }

@@ -14,21 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
 import com.gurumlab.vocaroutine.databinding.FragmentAfterPhotoBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.Constants
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
-    @Inject
-    lateinit var dataStore: DataStoreModule
     private lateinit var uid: String
     private val viewModel by viewModels<AfterPhotoViewModel>()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -36,7 +31,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            uid = dataStore.getUid.first()
+            uid = viewModel.getUid()
         }
     }
 
@@ -84,7 +79,11 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
                 val ocrResult = result.data?.getStringExtra(Constants.KEY_OCR_RESULT) ?: ""
                 binding!!.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
             } else {
-                findNavController().navigateUp()
+                if (viewModel.vocabularies.isEmpty()) {
+                    findNavController().navigateUp()
+                } else {
+                    binding!!.etOcrResult.setText(getString(R.string.result_empty))
+                }
             }
         }
     }
@@ -92,11 +91,20 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     private fun setObservers() {
         viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
             if (isCompleted) {
-                binding!!.tvVocabulary.setText("")
-                binding!!.tvMeaning.setText("")
-
+                binding!!.etVocabulary.setText("")
+                binding!!.etMeaning.setText("")
+                binding!!.etVocabulary.isEnabled = true
+                binding!!.etMeaning.isEnabled = true
+                binding!!.btnNext.isEnabled = true
+                binding!!.btnDone.isEnabled = true
+                binding!!.btnCamera.isEnabled = true
                 binding!!.btnNext.text = getString(R.string.next)
             } else {
+                binding!!.etVocabulary.isEnabled = false
+                binding!!.etMeaning.isEnabled = false
+                binding!!.btnNext.isEnabled = false
+                binding!!.btnDone.isEnabled = false
+                binding!!.btnCamera.isEnabled = false
                 binding!!.btnNext.text = getString(R.string.loading_etymology_now)
             }
         })
@@ -117,12 +125,6 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding!!.btnDone)
                 .show()
-        })
-
-        viewModel.numberOfAttempts.observe(viewLifecycleOwner, EventObserver { count ->
-            if (count >= 2) {
-                viewModel.setErrorMessage(getString(R.string.gpt_response_error))
-            }
         })
     }
 

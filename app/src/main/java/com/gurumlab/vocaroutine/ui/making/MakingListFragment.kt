@@ -10,21 +10,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
-import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentMakingListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
 
-    @Inject
-    lateinit var dataStore: DataStoreModule
     private lateinit var uid: String
 
     private val viewModel by viewModels<MakingListViewModel>()
@@ -32,7 +26,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
-            uid = dataStore.getUid.first()
+            uid = viewModel.getUid()
         }
     }
 
@@ -63,11 +57,20 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     private fun setObservers() {
         viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
             if (isCompleted) {
-                binding!!.tvVocabulary.setText("")
-                binding!!.tvMeaning.setText("")
-
+                binding!!.etVocabulary.setText("")
+                binding!!.etMeaning.setText("")
+                binding!!.etVocabulary.isEnabled = true
+                binding!!.etMeaning.isEnabled = true
+                binding!!.btnNext.isEnabled = true
+                binding!!.btnDone.isEnabled = true
+                binding!!.ivCamera.isEnabled = true
                 binding!!.btnNext.text = getString(R.string.next)
             } else {
+                binding!!.etVocabulary.isEnabled = false
+                binding!!.etMeaning.isEnabled = false
+                binding!!.btnNext.isEnabled = false
+                binding!!.btnDone.isEnabled = false
+                binding!!.ivCamera.isEnabled = true
                 binding!!.btnNext.text = getString(R.string.loading_etymology_now)
             }
         })
@@ -88,12 +91,6 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
             Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding!!.btnDone)
                 .show()
-        })
-
-        viewModel.numberOfAttempts.observe(viewLifecycleOwner, EventObserver { count ->
-            if (count >= 2) {
-                viewModel.setErrorMessage(getString(R.string.gpt_response_error))
-            }
         })
     }
 

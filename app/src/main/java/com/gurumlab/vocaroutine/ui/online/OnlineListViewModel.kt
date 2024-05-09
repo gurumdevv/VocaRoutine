@@ -9,10 +9,10 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.model.onError
-import com.gurumlab.vocaroutine.data.model.onException
-import com.gurumlab.vocaroutine.data.model.onSuccess
-import com.gurumlab.vocaroutine.data.source.remote.OnlineListRepository
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.data.source.repository.OnlineListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -39,6 +39,10 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
     val isCompleted: LiveData<Event<Boolean>> = _isCompleted
     private val _isError = MutableLiveData<Event<Boolean>>()
     val isError: LiveData<Event<Boolean>> = _isError
+    private val _isException = MutableLiveData<Event<Boolean>>()
+    val isException: LiveData<Event<Boolean>> = _isException
+    private val _isEmptyList = MutableLiveData<Event<Boolean>>()
+    val isEmptyList: LiveData<Event<Boolean>> = _isEmptyList
 
     fun loadLists() {
         viewModelScope.launch {
@@ -54,7 +58,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
                 Log.d("OnlineListViewModel", "Error code: $code message: $message")
             }.onException { throwable ->
                 _isLoading.value = Event(false)
-                _isError.value = Event(true)
+                _isException.value = Event(true)
                 Log.d("OnlineListViewModel", "Exception: $throwable")
             }
         }
@@ -67,6 +71,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
             result.onSuccess {
                 _myLists.value = Event(it.values.toList())
             }.onError { code, message ->
+                _isEmptyList.value = Event(true)
                 Log.d("OnlineListViewModel", "Error code: $code message: $message")
             }.onException { throwable ->
                 Log.d("OnlineListViewModel", "Exception: $throwable")
@@ -84,7 +89,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
         return false
     }
 
-    fun uploadList(list: ListInfo) {
+    fun uploadToMyList(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
             val date = getCurrentTime()

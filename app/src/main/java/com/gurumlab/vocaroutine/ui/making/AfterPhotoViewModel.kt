@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.ui.making
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +9,10 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
-import com.gurumlab.vocaroutine.data.source.remote.MakingListRepository
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.data.source.repository.MakingListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,7 +29,8 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
 
     val word = MutableLiveData<String>()
     val meaning = MutableLiveData<String>()
-    private val etymology = MutableLiveData<String>()
+    private val _etymology = MutableLiveData<Event<String>>()
+    val etymology: LiveData<Event<String>> = _etymology
     private val _alarmCode = MutableLiveData<Event<Int>>()
     val alarmCode: LiveData<Event<Int>> = _alarmCode
     private val _tempList = MutableLiveData<Event<TempListInfo>>()
@@ -34,9 +39,9 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
     val snackbarText: LiveData<Event<Int>> = _snackbarText
     private val _isCompleted = MutableLiveData<Event<Boolean>>()
     val isCompleted = _isCompleted
-    private val _numberOfAttempts = MutableLiveData<Event<Int>>()
-    val numberOfAttempts = _numberOfAttempts
-    private val vocabularies = mutableListOf<Vocabulary>()
+    private val _vocabularies = mutableListOf<Vocabulary>()
+    val vocabularies: List<Vocabulary> = _vocabularies
+
 
     suspend fun createVocabulary() {
         val currentWord = word.value ?: ""
@@ -47,23 +52,21 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
 
         _isCompleted.value = Event(false)
 
-        etymology.value = repository.getEtymology(currentWord)
+        val result = repository.getEtymology(currentWord)
+        result.onSuccess { chatResponse ->
+            _etymology.value = Event(chatResponse.choices.first().message.content)
+        }.onError { code, message ->
+            _snackbarText.value = Event(R.string.fail_to_load_etymology)
 
-        var count = 0
-        numberOfAttempts.value = Event(count)
+            Log.d("AfterPhotoViewModel", "Error code: $code message: $message")
+        }.onException { throwable ->
+            _snackbarText.value = Event(R.string.fail_to_load_etymology)
 
-        while (etymology.value == "error") {
-            etymology.value = repository.getEtymology(currentWord)
-
-            count++
-            numberOfAttempts.value = Event(count)
-            if (count >= 2) {
-                break
-            }
+            Log.d("AfterPhotoViewModel", "Exception: $throwable")
         }
 
-        val vocabulary = Vocabulary(currentWord, currentMeaning, etymology.value!!)
-        vocabularies.add(vocabulary)
+        val vocabulary = Vocabulary(currentWord, currentMeaning, etymology.value?.content ?: "")
+        _vocabularies.add(vocabulary)
         _isCompleted.value = Event(true)
     }
 
@@ -96,7 +99,7 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
                             isSetAlarm = false,
                             alarmCode = currentAlarmCode,
                             review = review,
-                            vocabularies = vocabularies.toList()
+                            vocabularies = vocabularies
                         )
                     )
             }
@@ -134,15 +137,15 @@ class AfterPhotoViewModel @Inject constructor(private val repository: MakingList
         }
     }
 
-    fun setErrorMessage(message: String) {
-        etymology.value = message
-    }
-
     private fun isValidValue(value: String, messageId: Int): Boolean {
         if (value.isBlank()) {
             _snackbarText.value = Event(messageId)
             return false
         }
         return true
+    }
+
+    suspend fun getUid(): String {
+        return repository.getUid()
     }
 }

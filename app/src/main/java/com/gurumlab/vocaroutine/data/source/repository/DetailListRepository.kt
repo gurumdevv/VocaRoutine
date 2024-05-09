@@ -1,20 +1,17 @@
-package com.gurumlab.vocaroutine.data.source.remote
+package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.model.Alarm
-import com.gurumlab.vocaroutine.data.model.ApiResponse
+import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.source.local.AppDatabase
-import com.gurumlab.vocaroutine.data.source.local.DataStoreModule
-import kotlinx.coroutines.flow.first
+import com.gurumlab.vocaroutine.data.source.local.AlarmDao
+import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import javax.inject.Inject
 
 class DetailListRepository @Inject constructor(
-    database: AppDatabase,
     private val apiClient: ApiClient,
-    private val dataStore: DataStoreModule
+    private val dao: AlarmDao,
+    private val userDataSource: UserDataSource
 ) {
-
-    private val dao = database.alarmDao()
 
     suspend fun addAlarm(alarm: Alarm) {
         dao.addAlarm(alarm)
@@ -29,10 +26,11 @@ class DetailListRepository @Inject constructor(
     }
 
     suspend fun getUid(): String {
-        return dataStore.getUid.first()
+        return userDataSource.getUid()
     }
 
-    suspend fun shareList(sharedListInfo: SharedListInfo) {
+    suspend fun shareList(
+        sharedListInfo: SharedListInfo) {
         apiClient.shareList(sharedListInfo)
     }
 
