@@ -4,28 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".ui.making.ScanActivity">
 
-    <ImageView
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/view_background_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/iv_cropped_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:contentDescription="@string/capture_image"
         android:scaleType="fitCenter"
         android:src="@color/gray000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/capture_image" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/gray_transparent_45"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:roundPercent="0.2" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
@@ -37,14 +39,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/animation_loading_bar" />
+        app:lottie_rawRes="@raw/animation_loading_orange" />
 
     <TextView
         android:id="@+id/tv_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/extract_word_from_picture"
-        android:textColor="@color/black"
+        android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lottie" />

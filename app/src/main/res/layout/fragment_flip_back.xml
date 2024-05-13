@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="토익 뽀개기 850+" />
@@ -34,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_list_title"
             tools:text="3일전" />
@@ -46,6 +48,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="30dp"
             android:text="@{vocabulary.word}"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_list_created_date"
@@ -60,6 +63,7 @@
             android:layout_marginTop="40dp"
             android:lines="3"
             android:text="@{vocabulary.meaning}"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_vocabulary"
             tools:text="1. 과제, 임무\n2. 배정, 배치" />
@@ -72,6 +76,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             android:text="@string/etymology"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_meaning" />
@@ -85,6 +90,7 @@
             android:lines="5"
             android:paddingHorizontal="16dp"
             android:text="@{vocabulary.etymology}"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_etymology"

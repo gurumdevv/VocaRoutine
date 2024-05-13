@@ -34,6 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/tv_list_title"
             style="@style/MediumTitle"
             android:layout_width="0dp"
@@ -51,6 +52,7 @@
         <TextView
             android:id="@+id/tv_total_count"
             style="@style/SmallBody"
+            android:textColor="@color/black"
             totalCount="@{list.totalCount}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

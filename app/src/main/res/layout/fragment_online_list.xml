@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".ui.online.OnlineListFragment">
 
     <TextView
@@ -14,6 +15,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="10dp"
         android:text="@string/app_name_kr"
+        android:textColor="@color/text_color"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +28,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="8dp"
         android:text="@string/online_list"
+        android:textColor="@color/text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_app_title" />
 
@@ -52,7 +55,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/animation_loading_bar" />
+        app:lottie_rawRes="@raw/animation_loading_orange" />
 
     <ImageView
         android:id="@+id/iv_connection_out"
@@ -64,7 +67,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/icon_color" />
 
     <TextView
         android:id="@+id/tv_connection_out"
@@ -72,6 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/check_internet_status"
+        android:textColor="@color/text_color"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +93,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/icon_color"
         tools:visibility="visible" />
 
     <TextView
@@ -97,6 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
         android:text="@string/nothing_shared_yet"
+        android:textColor="@color/text_color"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

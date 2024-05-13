@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_color">
 
     <data>
 
@@ -27,8 +28,10 @@
                 android:id="@+id/top_app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/background_color"
                 android:minHeight="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_back">
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationIconTint="@color/icon_color">
 
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
@@ -40,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="18dp"
             android:text="@string/making_list"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
 
@@ -51,6 +55,7 @@
             android:layout_marginStart="18dp"
             android:layout_marginTop="18dp"
             android:text="@string/load_from_picture"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
@@ -82,6 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/taking_photo"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_camera" />
@@ -93,6 +99,7 @@
             android:layout_marginStart="18dp"
             android:layout_marginTop="10dp"
             android:text="@string/fill_in_self"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_load_picture_background" />
 
@@ -104,7 +111,7 @@
             android:layout_marginTop="5dp"
             android:hint="@string/vocabulary"
             android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
-            app:boxStrokeColor="@color/orange200"
+            app:boxStrokeColor="@drawable/selector_box_stroke_color"
             app:endIconMode="clear_text"
             app:hintTextColor="@color/orange200"
             app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +136,7 @@
             android:layout_marginTop="10dp"
             android:hint="@string/meaning"
             android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
-            app:boxStrokeColor="@color/orange200"
+            app:boxStrokeColor="@drawable/selector_box_stroke_color"
             app:endIconMode="clear_text"
             app:helperText="@string/meaning_separation"
             app:helperTextEnabled="true"
@@ -158,6 +165,7 @@
             android:insetRight="0dp"
             android:minWidth="0dp"
             android:text="@string/next"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_meaning_layout" />
@@ -173,6 +181,7 @@
             android:minWidth="0dp"
             android:onClick="@{()->viewModel.createList()}"
             android:text="@string/done"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

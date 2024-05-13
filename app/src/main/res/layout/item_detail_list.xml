@@ -24,6 +24,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="14dp"
             android:text="@{vocabulary.word}"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,6 +39,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="10dp"
             android:maxLines="3"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_vocabulary"
             tools:text="1. 나란히 만들다 \n2. ~을 조정하다" />
@@ -50,6 +52,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="10dp"
             android:text="@string/etymology"
+            android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_meaning" />
@@ -63,6 +66,7 @@
             android:layout_marginVertical="10dp"
             android:maxLines="4"
             android:text="@{vocabulary.etymology}"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

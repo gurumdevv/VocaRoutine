@@ -9,11 +9,10 @@
     <color name="red">#FF0000</color>
     <color name="gray_transparent_45">#B3ECECEC</color>
     <color name="gray100">#79747E</color>
-    <color name="background_color">@color/white</color>
-    <color name="icon_color">@color/black</color>
-    <color name="text_color">@color/black</color>
-    <color name="button_color">@color/black</color>
-    <color name="button_text_color">@color/white</color>
-    <color name="view_background_color">@color/gray_transparent_45</color>
-    <color name="text_input_edit_text">@color/gray000</color>
+    <color name="background_color">#121212</color>
+    <color name="icon_color">@color/white</color>
+    <color name="text_color">@color/white</color>
+    <color name="button_color">@color/white</color>
+    <color name="button_text_color">@color/black</color>
+    <color name="view_background_color">@color/background_color</color>
 </resources>
