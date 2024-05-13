@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".ui.list.MyListFragment">
 
     <TextView
@@ -14,6 +15,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="10dp"
         android:text="@string/app_name_kr"
+        android:textColor="@color/text_color"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,6 +28,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="8dp"
         android:text="@string/my_list"
+        android:textColor="@color/text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_app_title" />
 
@@ -71,7 +74,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/animation_loading_bar" />
+        app:lottie_rawRes="@raw/animation_loading_orange"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/iv_empty_mine"
@@ -84,6 +88,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/icon_color"
         tools:visibility="visible" />
 
     <TextView
@@ -93,6 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
         android:text="@string/nothing_mine_yet"
+        android:textColor="@color/text_color"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
         android:text="@string/nothing_downloaded_yet"
+        android:textColor="@color/text_color"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

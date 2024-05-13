@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_color">
 
     <data>
 
@@ -31,8 +32,10 @@
                 android:id="@+id/top_app_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/background_color"
                 android:minHeight="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_back">
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationIconTint="@color/icon_color">
 
                 <ImageButton
                     android:id="@+id/iv_setUpload"
@@ -43,7 +46,8 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/set_upload_description"
                     android:onClick="@{() -> viewModel.shareListToOnline(list)}"
-                    android:src="@drawable/ic_upload_online" />
+                    android:src="@drawable/ic_upload_online"
+                    app:tint="@color/icon_color" />
 
                 <ImageButton
                     android:id="@+id/iv_setDownload"
@@ -54,7 +58,8 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/set_download_description"
                     android:onClick="@{() -> viewModel.downloadList(list)}"
-                    android:src="@drawable/ic_download_disabled" />
+                    android:src="@drawable/ic_download_disabled"
+                    app:tint="@color/icon_color" />
 
                 <ImageButton
                     android:id="@+id/iv_setNotification"
@@ -65,7 +70,8 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/set_notification_description"
                     android:onClick="@{() -> viewModel.handleNotification(list)}"
-                    android:src="@drawable/ic_bell_disabled" />
+                    android:src="@drawable/ic_bell_disabled"
+                    app:tint="@color/icon_color" />
 
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
@@ -77,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="18dp"
             android:text="@{list.title}"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_app_bar"
             tools:text="토익 뽀개기 850+" />
@@ -89,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="18dp"
             android:layout_marginTop="18dp"
+            android:textColor="@color/text_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_current_title"
             tools:text="3일전 추가됨" />
