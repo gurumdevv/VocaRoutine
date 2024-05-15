@@ -22,5 +22,5 @@ interface OfflineModeDao {
     suspend fun getAllListInfo(): List<ListInfo>
 
     @Query("SELECT id FROM ListInfo WHERE id = :id")
-    suspend fun getListById(id: String): String
+    suspend fun getListById(id: String): String?
 }

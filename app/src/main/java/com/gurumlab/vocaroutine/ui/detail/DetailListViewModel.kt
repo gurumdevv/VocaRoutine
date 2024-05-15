@@ -1,21 +1,24 @@
 package com.gurumlab.vocaroutine.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.AlarmHandler
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.source.remote.onError
-import com.gurumlab.vocaroutine.data.source.remote.onException
-import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.data.source.repository.DetailListRepository
 import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,52 +30,51 @@ import javax.inject.Inject
 class DetailListViewModel @Inject constructor(
     private val repository: DetailListRepository,
     private val alarmHandler: AlarmHandler,
+    private val crashlytics: FirebaseCrashlytics
 ) : ViewModel() {
 
-    private var _isNotificationSet: MutableLiveData<Event<Boolean>> = MutableLiveData()
-    val isNotificationSet = _isNotificationSet
-    private var _isNotificationSetError: MutableLiveData<Event<Boolean>> = MutableLiveData()
-    val isNotificationSetError = _isNotificationSetError
-    private val _snackbarMessage = MutableLiveData<Event<Int>>()
-    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
-    private val _isClickAlarmIcon: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
-    val isClickAlarmIcon: LiveData<Event<Boolean>> = _isClickAlarmIcon
-    private val _isDownloaded = MutableLiveData<Event<Boolean>>()
-    val isDownloaded: LiveData<Event<Boolean>> = _isDownloaded
+    private var _isNotificationSet: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val isNotificationSet: StateFlow<Boolean?> = _isNotificationSet
+
+    private val _isClickAlarmIcon: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isClickAlarmIcon: SharedFlow<Boolean> = _isClickAlarmIcon
+
+    private val _isDownloaded: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isDownloaded: StateFlow<Boolean> = _isDownloaded
+
+    private val _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackbarMessage: SharedFlow<Int> = _snackbarMessage
+
     private val _isNetworkAvailable = MutableLiveData<Event<Boolean>>()
     val isNetworkAvailable: LiveData<Event<Boolean>> = _isNetworkAvailable
 
     fun downloadList(listInfo: ListInfo) {
         viewModelScope.launch {
-            if (_isDownloaded.value?.content == false || _isDownloaded.value?.content == null) {
+            if (!_isDownloaded.value) {
                 repository.downloadListOnDevice(listInfo)
-                _isDownloaded.value = Event(true)
-                _snackbarMessage.value = Event(R.string.save_list_on_device_success)
+                _isDownloaded.value = true
+                setSnackbarMessage(R.string.save_list_on_device_success)
             } else {
                 repository.deleteListOnDevice(listInfo)
-                _isDownloaded.value = Event(false)
-                _snackbarMessage.value = Event(R.string.delete_list_on_device_success)
+                _isDownloaded.value = false
+                setSnackbarMessage(R.string.delete_list_on_device_success)
             }
         }
     }
 
-    fun loadIsDownloaded(list: ListInfo) {
-        viewModelScope.launch {
-            val result = repository.getListById(list.id) ?: ""
-            if (result.isNotEmpty()) {
-                _isDownloaded.value = Event(true)
-            }
+    suspend fun loadIsDownloaded(list: ListInfo) {
+        val result = repository.getListById(list.id)
+        if (!result.isNullOrEmpty()) {
+            _isDownloaded.value = true
         }
     }
 
-    fun loadAlarm(list: ListInfo) {
-        viewModelScope.launch {
-            val alarmCode = list.alarmCode
-            val alarms = intArrayOf(alarmCode, alarmCode + 1, alarmCode + 2)
-            val activeAlarms = repository.searchActiveAlarms(alarms)
-            if (activeAlarms.isNotEmpty()) {
-                _isNotificationSet.value = Event(true)
-            }
+    suspend fun loadAlarm(list: ListInfo) {
+        val alarmCode = list.alarmCode
+        val alarms = intArrayOf(alarmCode, alarmCode + 1, alarmCode + 2)
+        val activeAlarms = repository.searchActiveAlarms(alarms)
+        if (activeAlarms.isNotEmpty()) {
+            _isNotificationSet.value = true
         }
     }
 
@@ -80,7 +82,7 @@ class DetailListViewModel @Inject constructor(
         val alarmCode = list.alarmCode
 
         viewModelScope.launch {
-            if (isNotificationSet.value?.content == true) {
+            if (isNotificationSet.value == true) {
                 cancelAlarm(alarmCode)
             } else {
                 val id = list.id
@@ -89,20 +91,11 @@ class DetailListViewModel @Inject constructor(
                 val dayThree = getDate(3)
                 val daySeven = getDate(7)
 
-                _isNotificationSet.value = Event(setAlarm(id, alarmCode, content, dayOne))
+                _isNotificationSet.value = setAlarm(id, alarmCode, content, dayOne)
                 setAlarm(id, alarmCode + 1, content, dayThree)
                 setAlarm(id, alarmCode + 2, content, daySeven)
             }
         }
-    }
-
-    private fun getDate(daysToAdd: Int): String {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, daysToAdd)
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
     }
 
     private suspend fun setAlarm(
@@ -115,9 +108,9 @@ class DetailListViewModel @Inject constructor(
         if (isSet) {
             val alarm = Alarm(alarmCode, id, date, content)
             repository.addAlarm(alarm)
-            _isClickAlarmIcon.value = Event(true)
+            _isClickAlarmIcon.value = true
         } else {
-            _isNotificationSetError.value = Event(true)
+            setSnackbarMessage(R.string.set_review_notification_fail)
         }
         return isSet
     }
@@ -131,15 +124,24 @@ class DetailListViewModel @Inject constructor(
             repository.deleteAlarm(activeAlarmCode)
         }
 
-        _isNotificationSet.value = Event(false)
-        _isClickAlarmIcon.value = Event(true)
+        _isNotificationSet.value = false
+        _isClickAlarmIcon.value = true
+    }
+
+    private fun getDate(daysToAdd: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, daysToAdd)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
     }
 
     fun shareListToOnline(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
             if (uid != list.creator) {
-                _snackbarMessage.value = Event(R.string.share_ignored)
+                setSnackbarMessage(R.string.share_ignored)
                 return@launch
             }
 
@@ -150,19 +152,32 @@ class DetailListViewModel @Inject constructor(
                 listInfo = list
             )
 
-            val result = repository.getSharedListById(list.id)
-            result.onSuccess {
-                val isAlreadyPost = it.values.toList().isNotEmpty()
+            val sharedList = repository.getSharedListById(
+                list.id,
+                onError = {
+                    setSnackbarMessage(R.string.share_fail)
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    setSnackbarMessage(R.string.share_fail)
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                }
+            ).map { data ->
+                data.values.toList()
+            }.firstOrNull()
+
+            sharedList?.let {
+                val isAlreadyPost = it.isNotEmpty()
                 if (isAlreadyPost) {
-                    _snackbarMessage.value = Event(R.string.already_share)
+                    setSnackbarMessage(R.string.already_share)
                 } else {
                     repository.shareList(sharedListInfo)
-                    _snackbarMessage.value = Event(R.string.share_complete)
+                    setSnackbarMessage(R.string.share_complete)
                 }
-            }.onError { code, message ->
-                Log.d("DetailListViewModel", "Error code: $code message: $message")
-            }.onException { throwable ->
-                Log.d("DetailListViewModel", "Exception: $throwable")
             }
         }
     }
@@ -173,7 +188,13 @@ class DetailListViewModel @Inject constructor(
     }
 
     fun resetClickAlarmIcon() {
-        _isClickAlarmIcon.value = Event(false)
+        _isClickAlarmIcon.value = false
+    }
+
+    fun setSnackbarMessage(messageId: Int) {
+        viewModelScope.launch {
+            _snackbarMessage.emit(messageId)
+        }
     }
 
     fun setIsNetworkAvailable(isAvailable: Boolean) {
