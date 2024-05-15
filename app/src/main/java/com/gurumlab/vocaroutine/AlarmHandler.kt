@@ -8,6 +8,7 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -16,7 +17,10 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class AlarmHandler @Inject constructor(@ApplicationContext private val context: Context) {
+class AlarmHandler @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val crashlytics: FirebaseCrashlytics
+) {
 
     private lateinit var pendingIntent: PendingIntent
     private lateinit var alarmManager: AlarmManager
@@ -45,7 +49,7 @@ class AlarmHandler @Inject constructor(@ApplicationContext private val context: 
             try {
                 dateTime = dateFormat.parse(date) as Date
             } catch (e: ParseException) {
-                e.printStackTrace()
+                crashlytics.log("${e.message}")
             }
 
             val calendar = Calendar.getInstance()
