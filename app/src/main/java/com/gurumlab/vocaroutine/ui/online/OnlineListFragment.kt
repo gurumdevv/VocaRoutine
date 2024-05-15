@@ -6,16 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentOnlineListBinding
-import com.gurumlab.vocaroutine.ui.common.EventObserver
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.ui.common.PlusClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickListener,
@@ -41,32 +45,47 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
         val onlineListAdapter = OnlineListAdapter(this, this)
         binding.rvOnlineList.adapter = onlineListAdapter
 
-        viewModel.loadLists()
-        viewModel.sharedList.observe(viewLifecycleOwner, EventObserver { sharedList ->
-            onlineListAdapter.submitList(sharedList.toList())
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.sharedList.collect { sharedList ->
+                        onlineListAdapter.submitList(sharedList)
+                    }
+                }
 
-        viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
-            binding.lottie.isVisible = isLoading
-        })
+                launch {
+                    viewModel.isLoading.collect { isLoading ->
+                        binding.lottie.isVisible = isLoading
+                    }
+                }
 
-        viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
-            binding.ivEmptyOnline.isVisible = isError
-            binding.tvEmptyOnline.isVisible = isError
-        })
+                launch {
+                    viewModel.isError.collect { isError ->
+                        binding.ivEmptyOnline.isVisible = isError
+                        binding.tvEmptyOnline.isVisible = isError
+                    }
+                }
 
-        viewModel.isException.observe(viewLifecycleOwner, EventObserver { isException ->
-            binding.ivConnectionOut.isVisible = isException
-            binding.tvConnectionOut.isVisible = isException
-        })
+                launch {
+                    viewModel.isException.collect { isException ->
+                        binding.ivConnectionOut.isVisible = isException
+                        binding.tvConnectionOut.isVisible = isException
+                    }
+                }
+            }
+        }
     }
 
     private fun setSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { messageId ->
-            Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottom_navigation)
-                .show()
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.snackbarMessage
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { messageId ->
+                    Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
+                        .setAnchorView(R.id.bottom_navigation)
+                        .show()
+                }
+        }
     }
 
 
@@ -76,15 +95,21 @@ class OnlineListFragment : BaseFragment<FragmentOnlineListBinding>(), ListClickL
     }
 
     override fun onClickToDownload(list: ListInfo) {
-        var isAlreadyExist: Boolean
-        viewModel.getMyLists()
-        viewModel.myLists.observe(viewLifecycleOwner, EventObserver { myLists ->
-            isAlreadyExist = viewModel.isAlreadyCreated(myLists, list)
-            if (isAlreadyExist) return@EventObserver
-            viewModel.uploadToMyList(list)
-        })
-        viewModel.isEmptyList.observe(viewLifecycleOwner, EventObserver { isEmptyList ->
-            if (isEmptyList) viewModel.uploadToMyList(list)
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.getMyLists().collect { myLists ->
+                        val isAlreadyExist = viewModel.isAlreadyCreated(myLists, list)
+                        if (!isAlreadyExist) viewModel.uploadToMyList(list)
+                    }
+                }
+
+                launch {
+                    viewModel.isEmptyList.collect { isEmptyList ->
+                        if (isEmptyList) viewModel.uploadToMyList(list)
+                    }
+                }
+            }
+        }
     }
 }
