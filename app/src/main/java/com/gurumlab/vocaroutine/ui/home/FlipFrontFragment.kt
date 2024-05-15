@@ -4,21 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Vocabulary
 import com.gurumlab.vocaroutine.databinding.FragmentFlipFrontBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
-import com.gurumlab.vocaroutine.ui.common.EventObserver
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.absoluteValue
 
+@AndroidEntryPoint
 class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var crashlytics: FirebaseCrashlytics
     private var title = ""
     private var createdDate = ""
     private var isLoadList = false
@@ -41,15 +48,21 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
     private fun setReview() {
         if (!isLoadList) {
-            viewModel.loadLists()
-            viewModel.reviewList.observe(viewLifecycleOwner, EventObserver {
-                title = it.title
-                createdDate = it.createdDate
-                vocabularies.addAll(it.vocabularies)
-                isLoadList = true
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.reviewList
+                    .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                    .collect {
+                        if (it.isNotEmpty()) {
+                            val list = it.first()
+                            title = list.title
+                            createdDate = list.createdDate
+                            vocabularies.addAll(list.vocabularies)
+                            isLoadList = true
 
-                loadReview()
-            })
+                            loadReview()
+                        }
+                    }
+            }
         } else {
             loadReview()
         }
@@ -110,7 +123,8 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
             val passedDays = (diff / (24 * 60 * 60 * 1000)).toInt().absoluteValue
             return getString(R.string.passedDays, passedDays)
         } else {
-            throw IllegalArgumentException(getString(R.string.invalid_date_format))
+            crashlytics.log(getString(R.string.invalid_date_format))
+            return ""
         }
     }
 

@@ -1,19 +1,23 @@
 package com.gurumlab.vocaroutine.ui.home
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
-import com.gurumlab.vocaroutine.data.source.remote.onError
-import com.gurumlab.vocaroutine.data.source.remote.onException
-import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.data.source.repository.HomeRepository
-import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.time.LocalDate
@@ -22,80 +26,83 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: HomeRepository
+    private val repository: HomeRepository,
+    private val crashlytics: FirebaseCrashlytics
 ) : ViewModel() {
 
-    private val _reviewList = MutableLiveData<Event<ListInfo>>()
-    val reviewList: LiveData<Event<ListInfo>> = _reviewList
-    private val _isEmpty = MutableLiveData<Event<Boolean>>()
-    val isEmpty: LiveData<Event<Boolean>> = _isEmpty
-    private val _isFinish = MutableLiveData<Event<Boolean>>()
-    val isFinish: LiveData<Event<Boolean>> = _isFinish
-    private val _isLoading = MutableLiveData<Event<Boolean>>()
-    val isLoading: LiveData<Event<Boolean>> = _isLoading
-    private val _isCompleted = MutableLiveData<Event<Boolean>>()
-    val isCompleted: LiveData<Event<Boolean>> = _isCompleted
-    private val _isError = MutableLiveData<Event<Boolean>>()
-    val isError: LiveData<Event<Boolean>> = _isError
-    private val _snackbarMessage = MutableLiveData<Event<Int>>()
-    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
+    val reviewList: StateFlow<List<ListInfo>> = loadLists().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    private val _isEmpty: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isEmpty: StateFlow<Boolean> = _isEmpty
+
+    private val _isFinish: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    val isFinish: SharedFlow<Boolean> = _isFinish
+
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _isError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isError: StateFlow<Boolean> = _isError
+
+    private val _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackbarMessage: SharedFlow<Int> = _snackbarMessage
+
     private var listKey = ""
     private val currentDate = getToday()
     private val yesterday = getYesterday()
 
-    fun loadLists() {
-        _isLoading.value = Event(true)
+    private fun loadLists(): Flow<List<ListInfo>> = flow {
+        repository.deleteOutOfDateReviews(yesterday)
 
-        viewModelScope.launch {
-            repository.deleteOutOfDateReviews(yesterday)
+        val uid = repository.getUid()
+        val reviewListIds = repository.getReviewListIds(currentDate)
 
-            val uid = repository.getUid()
-            val reviewListIds = repository.getReviewListIds(currentDate)
-
-            if (reviewListIds.isNotEmpty()) {
-                val result = repository.getListsById(uid, reviewListIds.first())
-                result.onSuccess { listInfo ->
-                    _isLoading.value = Event(false)
-                    _isCompleted.value = Event(true)
-
-                    if (listInfo.isNotEmpty()) {
-                        _reviewList.value = Event(listInfo.values.first())
-                        listKey = listInfo.keys.first()
-                    } else {
-                        _isEmpty.value = Event(true)
-                        repository.deleteAlarm(reviewListIds.first(), currentDate)
+        if (reviewListIds.isNotEmpty()) {
+            val list = repository.getListsById(
+                uid,
+                reviewListIds.first(),
+                onComplete = { _isLoading.value = false },
+                onError = {
+                    _isError.value = true
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
                     }
-                }.onError { code, message ->
-                    _isLoading.value = Event(false)
-                    _isError.value = Event(true)
-
-                    Log.d("HomeViewModel", "Error code: $code message: $message")
-                }.onException { throwable ->
-                    _isLoading.value = Event(false)
-                    _isError.value = Event(true)
-
-                    Log.d("HomeViewModel", "Exception: $throwable")
+                },
+                onException = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
                 }
-            } else {
-                _isLoading.value = Event(false)
-                _isEmpty.value = Event(true)
+            ).map { data ->
+                listKey = data.keys.first()
+                data.values.toList()
             }
+
+            emitAll(list)
+        } else {
+            _isLoading.value = false
+            _isEmpty.value = true
+            emptyList<ListInfo>()
         }
     }
 
     fun finishReview() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            val alarmCode = repository.getAlarmCode(reviewList.value!!.content.id, currentDate)
+            val alarmCode = repository.getAlarmCode(reviewList.value.first().id, currentDate)
 
-            if (listKey.isNotEmpty()) {
+            if (listKey.isNotBlank()) {
                 updateReviewCount(uid, listKey, alarmCode)
-                _isFinish.value = Event(true)
+                _isFinish.emit(true)
             } else {
-                _snackbarMessage.value = Event(R.string.review_count_update_error)
-                _isFinish.value = Event(true)
+                _snackbarMessage.emit(R.string.review_count_update_error)
+                _isFinish.emit(true)
             }
-            repository.deleteAlarm(reviewList.value!!.content.id, currentDate)
+            repository.deleteAlarm(reviewList.value.first().id, currentDate)
         }
     }
 
@@ -110,33 +117,33 @@ class HomeViewModel @Inject constructor(
                     )
                     repository.updateFirstReviewCount(uid, listKey, review)
                 } catch (e: Exception) {
-                    _snackbarMessage.value = Event(R.string.review_count_update_error)
+                    _snackbarMessage.emit(R.string.review_count_update_error)
                 }
             }
 
             1 -> {
                 try {
                     val review = Review(
-                        firstReview = reviewList.value!!.content.review.firstReview,
+                        firstReview = reviewList.value.first().review.firstReview,
                         secondReview = true,
                         thirdReview = false
                     )
                     repository.updateSecondReviewCount(uid, listKey, review)
                 } catch (e: Exception) {
-                    _snackbarMessage.value = Event(R.string.review_count_update_error)
+                    _snackbarMessage.emit(R.string.review_count_update_error)
                 }
             }
 
             2 -> {
                 try {
                     val review = Review(
-                        firstReview = reviewList.value!!.content.review.firstReview,
-                        secondReview = reviewList.value!!.content.review.secondReview,
+                        firstReview = reviewList.value.first().review.firstReview,
+                        secondReview = reviewList.value.first().review.secondReview,
                         thirdReview = true
                     )
                     repository.updateThirdReviewCount(uid, listKey, review)
                 } catch (e: Exception) {
-                    _snackbarMessage.value = Event(R.string.review_count_update_error)
+                    _snackbarMessage.emit(R.string.review_count_update_error)
                 }
             }
         }
