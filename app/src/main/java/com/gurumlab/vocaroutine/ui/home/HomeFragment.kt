@@ -105,6 +105,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun setReviewLayout() {
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.loadList()
             viewModel.reviewList
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { reviewList ->

@@ -1,7 +1,6 @@
 package com.gurumlab.vocaroutine.ui.setting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
             viewModel.myList
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { myList ->
-                    Log.d("Setting", "$myList")
                     binding.tvCountMyList.text = getString(R.string.count_my_list, myList.size)
                 }
         }

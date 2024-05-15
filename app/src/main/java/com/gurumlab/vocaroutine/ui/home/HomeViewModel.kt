@@ -8,16 +8,11 @@ import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.source.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.time.LocalDate
@@ -30,11 +25,8 @@ class HomeViewModel @Inject constructor(
     private val crashlytics: FirebaseCrashlytics
 ) : ViewModel() {
 
-    val reviewList: StateFlow<List<ListInfo>> = loadLists().stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+    private val _reviewList: MutableStateFlow<List<ListInfo>> = MutableStateFlow(emptyList())
+    val reviewList: StateFlow<List<ListInfo>> = _reviewList
 
     private val _isEmpty: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isEmpty: StateFlow<Boolean> = _isEmpty
@@ -55,14 +47,14 @@ class HomeViewModel @Inject constructor(
     private val currentDate = getToday()
     private val yesterday = getYesterday()
 
-    private fun loadLists(): Flow<List<ListInfo>> = flow {
+    suspend fun loadList() {
         repository.deleteOutOfDateReviews(yesterday)
 
         val uid = repository.getUid()
         val reviewListIds = repository.getReviewListIds(currentDate)
 
         if (reviewListIds.isNotEmpty()) {
-            val list = repository.getListsById(
+            val result = repository.getListsById(
                 uid,
                 reviewListIds.first(),
                 onComplete = { _isLoading.value = false },
@@ -77,16 +69,15 @@ class HomeViewModel @Inject constructor(
                         crashlytics.log(it)
                     }
                 }
-            ).map { data ->
-                listKey = data.keys.first()
-                data.values.toList()
-            }
+            ).firstOrNull()
 
-            emitAll(list)
+            result?.let { data ->
+                _reviewList.value = data.values.toList()
+                listKey = data.keys.first()
+            }
         } else {
             _isLoading.value = false
             _isEmpty.value = true
-            emptyList<ListInfo>()
         }
     }
 
@@ -97,12 +88,13 @@ class HomeViewModel @Inject constructor(
 
             if (listKey.isNotBlank()) {
                 updateReviewCount(uid, listKey, alarmCode)
-                _isFinish.emit(true)
             } else {
                 _snackbarMessage.emit(R.string.review_count_update_error)
-                _isFinish.emit(true)
             }
+
             repository.deleteAlarm(reviewList.value.first().id, currentDate)
+            _isFinish.emit(true)
+            _reviewList.value = emptyList()
         }
     }
 
