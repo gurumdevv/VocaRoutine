@@ -3,7 +3,6 @@ package com.gurumlab.vocaroutine.ui.login
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
@@ -33,31 +33,29 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private typealias SignInSuccessListener = (uid: String) -> Unit
+
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>() {
 
     private var signInRequest: BeginSignInRequest = getBeginSignInRequest()
     private lateinit var signInClient: SignInClient
 
+    private val onSuccess: SignInSuccessListener = { idToken ->
+        getFirebaseCredential(idToken)
+    }
+
     @Inject
     lateinit var userDataSource: UserDataSource
+
+    @Inject
+    lateinit var crashlytics: FirebaseCrashlytics
 
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ): FragmentLoginBinding {
         return FragmentLoginBinding.inflate(inflater, container, false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            if (isLogin()) {
-                val action = LoginFragmentDirections.actionLoginToHome()
-                findNavController().navigate(action)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,8 +83,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
     private fun setSignInRequest() {
         signInClient = Identity.getSignInClient(requireActivity())
 
-        val legacySignInLauncher = getLegacySignInResultLauncher()
-        val oneTapSignInLauncher = getOneTapSignInResultLauncher(legacySignInLauncher)
+        val legacySignInLauncher = getLegacySignInResultLauncher(onSuccess)
+        val oneTapSignInLauncher = getOneTapSignInResultLauncher(onSuccess, legacySignInLauncher)
         binding.btnGoogleSignIn.setOnClickListener {
             startGoogleSignIn(oneTapSignInLauncher, legacySignInLauncher)
         }
@@ -114,28 +112,29 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                             .build()
                     )
                 } catch (e: IntentSender.SendIntentException) {
-                    Log.e(tag, "sign-in error: ${e.localizedMessage}")
+                    crashlytics.log("sign-in error: ${e.localizedMessage}")
                 }
             }
             .addOnFailureListener { e ->
-                Log.e(tag, "sign-in fail: ${e.localizedMessage}")
+                crashlytics.log("sign-in fail: ${e.localizedMessage}")
                 requestLegacySignIn(legacySignInLauncher)
             }
             .addOnCanceledListener {
-                Log.e(tag, "sign-in cancelled")
+                crashlytics.log("sign-in cancelled")
             }
     }
 
     private fun getOneTapSignInResultLauncher(
+        onSuccess: SignInSuccessListener,
         legacySignInLauncher: ActivityResultLauncher<IntentSenderRequest>
     ): ActivityResultLauncher<IntentSenderRequest> {
         return registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()
         ) { activityResult ->
             try {
-                signInWithGoogle(activityResult.data)
+                signInWithGoogle(activityResult.data, onSuccess)
             } catch (e: ApiException) {
-                Log.e("LoginFragment", "One Tap sign-in failed", e)
+                crashlytics.log("One Tap sign-in failed: ${e.message}")
                 requestLegacySignIn(legacySignInLauncher)
             }
         }
@@ -158,7 +157,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     )
                 }
                 .addOnFailureListener { e ->
-                    Log.e(tag, "Legacy sign-in fail: ${e.localizedMessage}")
+                    crashlytics.log("Legacy sign-in fail: ${e.localizedMessage}")
                     Snackbar.make(
                         binding.root,
                         getString(R.string.message_sign_in_failure),
@@ -166,30 +165,30 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                     ).show()
                 }
                 .addOnCanceledListener {
-                    Log.e(tag, "Legacy sign-in cancelled")
+                    crashlytics.log("Legacy sign-in cancelled")
                 }
         } else {
-            getFirebaseCredential(lastToken)
+            onSuccess(lastToken)
         }
     }
 
-    private fun getLegacySignInResultLauncher(): ActivityResultLauncher<IntentSenderRequest> {
+    private fun getLegacySignInResultLauncher(onSuccess: SignInSuccessListener): ActivityResultLauncher<IntentSenderRequest> {
         return registerForActivityResult(
             ActivityResultContracts.StartIntentSenderForResult()
         ) { activityResult ->
             try {
-                signInWithGoogle(activityResult.data)
+                signInWithGoogle(activityResult.data, onSuccess)
             } catch (e: Exception) {
-                Log.e(tag, "Legacy launcher error: ${e.localizedMessage}", e)
+                crashlytics.log("Legacy launcher error: ${e.localizedMessage}")
             }
         }
     }
 
-    private fun signInWithGoogle(data: Intent?) {
+    private fun signInWithGoogle(data: Intent?, onSuccess: SignInSuccessListener) {
         val credential = signInClient.getSignInCredentialFromIntent(data)
         val idToken = credential.googleIdToken
         if (idToken != null) {
-            getFirebaseCredential(idToken)
+            onSuccess(idToken)
         }
     }
 
@@ -209,11 +208,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                         }
                     }
                 } else {
-                    Log.e(
-                        "LoginFragment",
-                        "Firebase authentication failed",
-                        it.exception
-                    )
+                    crashlytics.log("Firebase authentication failed: ${it.exception}")
                     showLoginErrorSnackBar()
                 }
             }
@@ -225,12 +220,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             R.string.message_sign_in_failure,
             Snackbar.LENGTH_LONG
         ).show()
-    }
-
-    private suspend fun isLogin(): Boolean {
-        val userToken = userDataSource.getUid()
-
-        return userToken.isNotEmpty()
     }
 
     private fun hideBottomNavigation(visible: Boolean) {

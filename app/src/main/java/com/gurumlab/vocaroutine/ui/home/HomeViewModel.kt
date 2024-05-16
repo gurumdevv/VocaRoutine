@@ -154,4 +154,9 @@ class HomeViewModel @Inject constructor(
 
         return currentDate.format(formatter)
     }
+
+    suspend fun checkExistUid(): Boolean {
+        val uid = repository.getUid()
+        return uid.isNotEmpty()
+    }
 }

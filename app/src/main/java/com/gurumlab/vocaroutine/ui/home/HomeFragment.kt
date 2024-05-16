@@ -18,6 +18,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.BaseFragment
@@ -44,15 +46,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         return FragmentHomeBinding.inflate(inflater, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
+        verifySignInUid()
         checkNotificationPermission()
         setLoadingLayout()
         setReviewLayout()
@@ -110,14 +108,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun setReviewLayout() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.loadList()
-            viewModel.reviewList
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { reviewList ->
-                    if (reviewList.isNotEmpty()) {
-                        binding.containerQuiz.isVisible = true
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadList()
+                launch {
+                    viewModel.reviewList.collect { reviewList ->
+                        if (reviewList.isNotEmpty()) {
+                            binding.containerQuiz.isVisible = true
+                        }
                     }
                 }
+            }
         }
     }
 
@@ -175,6 +175,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                         .setAnchorView(R.id.bottom_navigation)
                         .show()
                 }
+        }
+    }
+
+    private fun verifySignInUid() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val isExistUid = viewModel.checkExistUid()
+            if (!isExistUid) {
+                val action = HomeFragmentDirections.actionHomeToLogin()
+                findNavController().navigate(action)
+            }
         }
     }
 }
