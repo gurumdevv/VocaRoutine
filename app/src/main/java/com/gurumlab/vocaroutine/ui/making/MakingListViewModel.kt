@@ -71,12 +71,10 @@ class MakingListViewModel @Inject constructor(
             }
         ).firstOrNull()
 
-        etymologyResponse?.let { chatResponse ->
-            val etymology = chatResponse.choices.first().message.content
-            val vocabulary = Vocabulary(currentWord, currentMeaning, etymology)
-            _vocabularies.add(vocabulary)
-            _isCompleted.emit(true)
-        }
+        val etymology = etymologyResponse?.choices?.first()?.message?.content ?: ""
+        val vocabulary = Vocabulary(currentWord, currentMeaning, etymology)
+        _vocabularies.add(vocabulary)
+        _isCompleted.emit(true)
     }
 
     fun createList() {
