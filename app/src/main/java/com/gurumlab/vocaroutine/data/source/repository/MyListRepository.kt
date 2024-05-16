@@ -22,12 +22,13 @@ class MyListRepository @Inject constructor(
 
     fun getLists(
         uid: String,
+        userToken: String,
         onComplete: () -> Unit,
         onSuccess: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getLists(uid)
+        val response = apiClient.getLists(uid, userToken)
         response.onSuccess {
             emit(it)
             onSuccess()
@@ -40,21 +41,18 @@ class MyListRepository @Inject constructor(
         onComplete()
     }.flowOn(Dispatchers.Default)
 
-    suspend fun getUid(): String {
-        return userDataSource.getUid()
-    }
-
-    suspend fun deleteList(uid: String, listId: String) {
-        apiClient.deleteMyList(uid, listId)
+    suspend fun deleteList(uid: String, userToken: String, listId: String) {
+        apiClient.deleteMyList(uid, userToken, listId)
     }
 
     fun getListsById(
         uid: String,
+        userToken: String,
         listId: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getListsById(uid, "\"id\"", "\"${listId}\"")
+        val response = apiClient.getListsById(uid, userToken, "\"id\"", "\"${listId}\"")
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -75,5 +73,13 @@ class MyListRepository @Inject constructor(
 
     suspend fun deleteOfflineList(listInfo: ListInfo) {
         offlineModeDao.deleteListInfo(listInfo)
+    }
+
+    suspend fun getUid(): String {
+        return userDataSource.getUid()
+    }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
     }
 }

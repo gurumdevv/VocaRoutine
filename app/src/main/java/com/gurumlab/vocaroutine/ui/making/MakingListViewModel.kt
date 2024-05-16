@@ -151,4 +151,8 @@ class MakingListViewModel @Inject constructor(
             _snackbarMessage.emit(messageId)
         }
     }
+
+    suspend fun getUserToken(): String {
+        return repository.getUserToken()
+    }
 }

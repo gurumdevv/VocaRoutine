@@ -51,11 +51,13 @@ class HomeViewModel @Inject constructor(
         repository.deleteOutOfDateReviews(yesterday)
 
         val uid = repository.getUid()
+        val userToken = repository.getUserToken()
         val reviewListIds = repository.getReviewListIds(currentDate)
 
         if (reviewListIds.isNotEmpty()) {
             val result = repository.getListsById(
                 uid,
+                userToken,
                 reviewListIds.first(),
                 onComplete = { _isLoading.value = false },
                 onError = {
@@ -84,10 +86,11 @@ class HomeViewModel @Inject constructor(
     fun finishReview() {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             val alarmCode = repository.getAlarmCode(reviewList.value.first().id, currentDate)
 
             if (listKey.isNotBlank()) {
-                updateReviewCount(uid, listKey, alarmCode)
+                updateReviewCount(uid, userToken, listKey, alarmCode)
             } else {
                 _snackbarMessage.emit(R.string.review_count_update_error)
             }
@@ -98,7 +101,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateReviewCount(uid: String, listKey: String, alarmCode: Int) {
+    private suspend fun updateReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        alarmCode: Int
+    ) {
         when (alarmCode % 10) {
             0 -> {
                 try {
@@ -107,7 +115,7 @@ class HomeViewModel @Inject constructor(
                         secondReview = false,
                         thirdReview = false
                     )
-                    repository.updateFirstReviewCount(uid, listKey, review)
+                    repository.updateFirstReviewCount(uid, userToken, listKey, review)
                 } catch (e: Exception) {
                     _snackbarMessage.emit(R.string.review_count_update_error)
                 }
@@ -120,7 +128,7 @@ class HomeViewModel @Inject constructor(
                         secondReview = true,
                         thirdReview = false
                     )
-                    repository.updateSecondReviewCount(uid, listKey, review)
+                    repository.updateSecondReviewCount(uid, userToken, listKey, review)
                 } catch (e: Exception) {
                     _snackbarMessage.emit(R.string.review_count_update_error)
                 }
@@ -133,7 +141,7 @@ class HomeViewModel @Inject constructor(
                         secondReview = reviewList.value.first().review.secondReview,
                         thirdReview = true
                     )
-                    repository.updateThirdReviewCount(uid, listKey, review)
+                    repository.updateThirdReviewCount(uid, userToken, listKey, review)
                 } catch (e: Exception) {
                     _snackbarMessage.emit(R.string.review_count_update_error)
                 }
@@ -157,6 +165,7 @@ class HomeViewModel @Inject constructor(
 
     suspend fun checkExistUid(): Boolean {
         val uid = repository.getUid()
-        return uid.isNotEmpty()
+        val userToken = repository.getUserToken()
+        return uid.isNotEmpty() && userToken.isNotEmpty()
     }
 }

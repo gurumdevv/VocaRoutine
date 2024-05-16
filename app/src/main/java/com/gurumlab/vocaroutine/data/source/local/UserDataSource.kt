@@ -13,7 +13,8 @@ import javax.inject.Inject
 
 class UserDataSource @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
-    private val stringKey = stringPreferencesKey("uid")
+    private val uidStringKey = stringPreferencesKey("uid")
+    private val tokenStringKey = stringPreferencesKey("userToken")
 
     suspend fun getUid(): String {
         return dataStore.data
@@ -25,13 +26,33 @@ class UserDataSource @Inject constructor(private val dataStore: DataStore<Prefer
                 }
             }
             .map { preferences ->
-                preferences[stringKey] ?: ""
+                preferences[uidStringKey] ?: ""
             }.firstOrNull() ?: ""
     }
 
     suspend fun setUid(uid: String) {
         dataStore.edit { preferences ->
-            preferences[stringKey] = uid
+            preferences[uidStringKey] = uid
+        }
+    }
+
+    suspend fun getUserToken(): String {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[tokenStringKey] ?: ""
+            }.firstOrNull() ?: ""
+    }
+
+    suspend fun setUserToken(userToken: String) {
+        dataStore.edit { preferences ->
+            preferences[tokenStringKey] = userToken
         }
     }
 }

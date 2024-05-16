@@ -20,10 +20,11 @@ class SettingRepository @Inject constructor(
 
     fun getMyLists(
         uid: String,
+        userToken: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getLists(uid)
+        val response = apiClient.getLists(uid, userToken)
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -35,10 +36,11 @@ class SettingRepository @Inject constructor(
 
     fun getSharedListByCreator(
         uid: String,
+        userToken: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, SharedListInfo>> = flow {
-        val response = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
+        val response = apiClient.getSharedListByCreator(userToken, "\"creator\"", "\"${uid}\"")
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -50,13 +52,14 @@ class SettingRepository @Inject constructor(
 
     suspend fun deleteSharedList(
         uid: String,
+        userToken: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ) {
-        val result = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
+        val result = apiClient.getSharedListByCreator(userToken, "\"creator\"", "\"${uid}\"")
         result.onSuccess {
             it.keys.forEach { key ->
-                apiClient.deleteSharedList(key)
+                apiClient.deleteSharedList(key, userToken)
             }
         }.onError { code, message ->
             onError("code: $code, message: $message")
@@ -65,8 +68,8 @@ class SettingRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteMyList(uid: String) {
-        apiClient.deleteAllMyLists(uid)
+    suspend fun deleteMyList(uid: String, userToken: String) {
+        apiClient.deleteAllMyLists(uid, userToken)
     }
 
     suspend fun getUid(): String {
@@ -75,5 +78,13 @@ class SettingRepository @Inject constructor(
 
     suspend fun setUid(uid: String) {
         userDataSource.setUid(uid)
+    }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
+    }
+
+    suspend fun setUserToken(userToken: String) {
+        userDataSource.setUserToken(userToken)
     }
 }

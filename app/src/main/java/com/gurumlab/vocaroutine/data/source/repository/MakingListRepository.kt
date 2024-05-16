@@ -47,4 +47,8 @@ class MakingListRepository @Inject constructor(
     suspend fun getUid(): String {
         return userDataSource.getUid()
     }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
+    }
 }

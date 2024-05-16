@@ -113,9 +113,13 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
                 }
 
                 launch {
+                    val userToken = viewModel.getUserToken()
                     viewModel.tempList.collect { tempListInfo ->
                         val action =
-                            AfterPhotoFragmentDirections.actionAfterPhotoToDialog(tempListInfo)
+                            AfterPhotoFragmentDirections.actionAfterPhotoToDialog(
+                                tempListInfo,
+                                userToken
+                            )
                         findNavController().navigate(action)
                     }
                 }

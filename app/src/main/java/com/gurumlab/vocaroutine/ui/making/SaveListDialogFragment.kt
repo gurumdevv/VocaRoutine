@@ -24,6 +24,7 @@ class SaveListDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
     private val args: SaveListDialogFragmentArgs by navArgs()
     private lateinit var tempListInfo: TempListInfo
+    private lateinit var userToken: String
 
     @Inject
     lateinit var apiClient: ApiClient
@@ -31,6 +32,7 @@ class SaveListDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tempListInfo = args.tempListInfo
+        userToken = args.userToken
     }
 
     override fun onCreateView(
@@ -60,7 +62,7 @@ class SaveListDialogFragment : DialogFragment() {
                 tempListInfo.vocabularies
             )
             lifecycleScope.launch {
-                apiClient.uploadList(tempListInfo.creator, listInfo)
+                apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
                 findNavController().navigateUp()
                 findNavController().navigateUp()
             }

@@ -76,9 +76,13 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
                 }
 
                 launch {
+                    val userToken = viewModel.getUserToken()
                     viewModel.tempList.collect { tempListInfo ->
                         val action =
-                            MakingListFragmentDirections.actionCreationToDialog(tempListInfo)
+                            MakingListFragmentDirections.actionCreationToDialog(
+                                tempListInfo,
+                                userToken
+                            )
                         findNavController().navigate(action)
                     }
                 }

@@ -24,11 +24,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.source.local.UserDataSource
 import com.gurumlab.vocaroutine.databinding.FragmentLoginBinding
+import com.gurumlab.vocaroutine.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -198,14 +198,26 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     val user = FirebaseAuth.getInstance().currentUser
-                    val uid = user?.uid
-                    if (uid.isNullOrBlank()) {
+                    if (user == null) {
                         showLoginErrorSnackBar()
                     } else {
-                        lifecycleScope.launch {
-                            userDataSource.setUid(uid)
-                            updateUI(user)
-                        }
+                        user.getIdToken(true)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val firebaseIdToken = task.result.token
+                                    if (firebaseIdToken.isNullOrBlank()) {
+                                        showLoginErrorSnackBar()
+                                    } else {
+                                        lifecycleScope.launch {
+                                            userDataSource.setUid(user.uid)
+                                            userDataSource.setUserToken(firebaseIdToken)
+                                            updateUI(user)
+                                        }
+                                    }
+                                } else {
+                                    showLoginErrorSnackBar()
+                                }
+                            }
                     }
                 } else {
                     crashlytics.log("Firebase authentication failed: ${it.exception}")

@@ -48,8 +48,10 @@ class SettingViewModel @Inject constructor(
 
     private fun loadMyList(): Flow<List<ListInfo>> = flow {
         val uid = repository.getUid()
+        val userToken = repository.getUserToken()
         val list = repository.getMyLists(
             uid,
+            userToken,
             onError = {
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
@@ -69,8 +71,10 @@ class SettingViewModel @Inject constructor(
 
     private fun loadSharedListCount(): Flow<List<SharedListInfo>> = flow {
         val uid = repository.getUid()
+        val userToken = repository.getUserToken()
         val list = repository.getSharedListByCreator(
             uid,
+            userToken,
             onError = {
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
@@ -91,8 +95,10 @@ class SettingViewModel @Inject constructor(
     fun deleteAllMyLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             repository.deleteSharedList(
                 uid,
+                userToken,
                 onError = {
                     if (!it.isNullOrBlank()) {
                         crashlytics.log(it)
@@ -104,7 +110,7 @@ class SettingViewModel @Inject constructor(
                     }
                 }
             )
-            repository.deleteMyList(uid)
+            repository.deleteMyList(uid, userToken)
             _snackbarMessage.emit(R.string.delete_complete_my_list)
         }
     }
@@ -112,8 +118,10 @@ class SettingViewModel @Inject constructor(
     fun deleteShareLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             repository.deleteSharedList(
                 uid,
+                userToken,
                 onError = {
                     if (!it.isNullOrBlank()) {
                         crashlytics.log(it)
@@ -132,6 +140,7 @@ class SettingViewModel @Inject constructor(
     fun logOut() {
         viewModelScope.launch {
             repository.setUid("")
+            repository.setUserToken("")
             FirebaseAuth.getInstance().signOut()
             _isLogout.emit(true)
             _snackbarMessage.emit(R.string.logout_done)

@@ -58,8 +58,11 @@ class MyListViewModel @Inject constructor(
     val isNetworkAvailable: LiveData<Event<Boolean>> = _isNetworkAvailable
 
     private fun loadLists(): Flow<List<ListInfo>> = flow {
+        val uid = repository.getUid()
+        val userToken = repository.getUserToken()
         val list = repository.getLists(
-            repository.getUid(),
+            uid,
+            userToken,
             onComplete = { _isLoading.value = false },
             onSuccess = {
                 _isError.value = false
@@ -85,8 +88,10 @@ class MyListViewModel @Inject constructor(
     fun deleteList(listInfo: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             val list = repository.getListsById(
                 uid,
+                userToken,
                 listInfo.id,
                 onError = {
                     setSnackbarMessage(R.string.delete_fail)
@@ -104,7 +109,7 @@ class MyListViewModel @Inject constructor(
 
             list?.let {
                 val listKey = it.keys.first()
-                repository.deleteList(uid, listKey)
+                repository.deleteList(uid, userToken, listKey)
             }
         }
     }

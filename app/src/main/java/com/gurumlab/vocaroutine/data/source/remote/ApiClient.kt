@@ -14,48 +14,74 @@ import retrofit2.http.Query
 interface ApiClient {
 
     @GET("privateList/{uid}.json")
-    suspend fun getLists(@Path("uid") uid: String): ApiResponse<Map<String, ListInfo>>
+    suspend fun getLists(
+        @Path("uid") uid: String,
+        @Query("auth") userToken: String
+    ): ApiResponse<Map<String, ListInfo>>
 
     @GET("privateList/{uid}.json")
     suspend fun getListsById(
         @Path("uid") uid: String,
+        @Query("auth") userToken: String,
         @Query("orderBy") orderBy: String,
         @Query("equalTo") equalTo: String
     ): ApiResponse<Map<String, ListInfo>>
 
     @GET("sharedList.json")
-    suspend fun getSharedList(): ApiResponse<Map<String, SharedListInfo>>
+    suspend fun getSharedList(
+        @Query("auth") userToken: String
+    ): ApiResponse<Map<String, SharedListInfo>>
 
     @GET("sharedList.json")
     suspend fun getSharedListByCreator(
+        @Query("auth") userToken: String,
         @Query("orderBy") orderBy: String,
         @Query("equalTo") equalTo: String
     ): ApiResponse<Map<String, SharedListInfo>>
 
     @GET("sharedList.json")
     suspend fun getSharedListById(
+        @Query("auth") userToken: String,
         @Query("orderBy") orderBy: String,
         @Query("equalTo") equalTo: String
     ): ApiResponse<Map<String, SharedListInfo>>
 
     @POST("privateList/{uid}.json")
-    suspend fun uploadList(@Path("uid") uid: String, @Body newList: ListInfo)
+    suspend fun uploadList(
+        @Path("uid") uid: String,
+        @Query("auth") userToken: String,
+        @Body newList: ListInfo
+    )
 
     @POST("sharedList.json")
-    suspend fun shareList(@Body newList: SharedListInfo)
+    suspend fun shareList(
+        @Query("auth") userToken: String,
+        @Body newList: SharedListInfo
+    )
 
     @DELETE("privateList/{uid}/{listId}.json")
-    suspend fun deleteMyList(@Path("uid") uid: String, @Path("listId") listId: String)
+    suspend fun deleteMyList(
+        @Path("uid") uid: String,
+        @Query("auth") userToken: String,
+        @Path("listId") listId: String
+    )
 
     @DELETE("privateList/{uid}.json")
-    suspend fun deleteAllMyLists(@Path("uid") uid: String)
+    suspend fun deleteAllMyLists(
+        @Path("uid") uid: String,
+        @Query("auth") userToken: String
+    )
 
     @DELETE("sharedList/{uid}.json")
-    suspend fun deleteSharedList(@Path("uid") uid: String)
+    suspend fun deleteSharedList(
+        @Path("uid") uid: String,
+        @Query("auth") userToken: String
+    )
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateFirstReviewCount(
         @Path("uid") uid: String,
+        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
         @Body firstReview: Review
     )
@@ -63,6 +89,7 @@ interface ApiClient {
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateSecondReviewCount(
         @Path("uid") uid: String,
+        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
         @Body secondReview: Review
     )
@@ -70,6 +97,7 @@ interface ApiClient {
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateThirdReviewCount(
         @Path("uid") uid: String,
+        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
         @Body thirdReview: Review
     )

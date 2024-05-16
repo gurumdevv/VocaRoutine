@@ -20,11 +20,12 @@ class OnlineListRepository @Inject constructor(
 ) {
 
     fun getSharedLists(
+        userToken: String,
         onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, SharedListInfo>> = flow {
-        val response = apiClient.getSharedList()
+        val response = apiClient.getSharedList(userToken)
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -38,10 +39,11 @@ class OnlineListRepository @Inject constructor(
 
     fun getMyLists(
         uid: String,
+        userToken: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getLists(uid)
+        val response = apiClient.getLists(uid, userToken)
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -51,11 +53,15 @@ class OnlineListRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.Default)
 
-    suspend fun uploadList(uid: String, listInfo: ListInfo) {
-        apiClient.uploadList(uid, listInfo)
+    suspend fun uploadList(uid: String, userToken: String, listInfo: ListInfo) {
+        apiClient.uploadList(uid, userToken, listInfo)
     }
 
     suspend fun getUid(): String {
         return userDataSource.getUid()
+    }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
     }
 }

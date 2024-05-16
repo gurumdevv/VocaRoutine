@@ -21,22 +21,19 @@ class HomeRepository @Inject constructor(
     private val dao: AlarmDao
 ) {
 
-    suspend fun getUid(): String {
-        return userDataSource.getUid()
-    }
-
     suspend fun getReviewListIds(currentDate: String): List<String> {
         return dao.getListIdsByDate(currentDate)
     }
 
     fun getListsById(
         uid: String,
+        userToken: String,
         reviewListId: String,
         onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getListsById(uid, "\"id\"", "\"${reviewListId}\"")
+        val response = apiClient.getListsById(uid, userToken, "\"id\"", "\"${reviewListId}\"")
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -60,15 +57,38 @@ class HomeRepository @Inject constructor(
         dao.deleteOutOfDateAlarms(currentDate)
     }
 
-    suspend fun updateFirstReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateFirstReviewCount(uid, listKey, review)
+    suspend fun updateFirstReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateFirstReviewCount(uid, userToken, listKey, review)
     }
 
-    suspend fun updateSecondReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateSecondReviewCount(uid, listKey, review)
+    suspend fun updateSecondReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateSecondReviewCount(uid, userToken, listKey, review)
     }
 
-    suspend fun updateThirdReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateThirdReviewCount(uid, listKey, review)
+    suspend fun updateThirdReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateThirdReviewCount(uid, userToken, listKey, review)
+    }
+
+    suspend fun getUid(): String {
+        return userDataSource.getUid()
+    }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
     }
 }

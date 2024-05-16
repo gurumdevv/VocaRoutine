@@ -145,6 +145,7 @@ class DetailListViewModel @Inject constructor(
     fun shareListToOnline(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             if (uid != list.creator) {
                 setSnackbarMessage(R.string.share_ignored)
                 return@launch
@@ -158,6 +159,7 @@ class DetailListViewModel @Inject constructor(
             )
 
             val sharedList = repository.getSharedListById(
+                userToken,
                 list.id,
                 onError = {
                     setSnackbarMessage(R.string.share_fail)
@@ -180,7 +182,7 @@ class DetailListViewModel @Inject constructor(
                 if (isAlreadyPost) {
                     setSnackbarMessage(R.string.already_share)
                 } else {
-                    repository.shareList(sharedListInfo)
+                    repository.shareList(userToken, sharedListInfo)
                     setSnackbarMessage(R.string.share_complete)
                 }
             }

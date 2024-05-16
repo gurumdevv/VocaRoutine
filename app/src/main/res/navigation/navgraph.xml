@@ -93,6 +93,9 @@
         <argument
             android:name="tempListInfo"
             app:argType="com.gurumlab.vocaroutine.data.model.TempListInfo" />
+        <argument
+            android:name="userToken"
+            app:argType="string" />
     </dialog>
     <fragment
         android:id="@+id/navigation_online_detail"

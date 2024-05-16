@@ -35,20 +35,17 @@ class DetailListRepository @Inject constructor(
         return alarmDao.searchActiveAlarms(alarms)
     }
 
-    suspend fun getUid(): String {
-        return userDataSource.getUid()
-    }
-
-    suspend fun shareList(sharedListInfo: SharedListInfo) {
-        apiClient.shareList(sharedListInfo)
+    suspend fun shareList(userToken: String, sharedListInfo: SharedListInfo) {
+        apiClient.shareList(userToken, sharedListInfo)
     }
 
     suspend fun getSharedListById(
+        userToken: String,
         postId: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, SharedListInfo>> = flow {
-        val response = apiClient.getSharedListById("\"identifier\"", "\"${postId}\"")
+        val response = apiClient.getSharedListById(userToken, "\"identifier\"", "\"${postId}\"")
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
@@ -68,5 +65,13 @@ class DetailListRepository @Inject constructor(
 
     suspend fun getListById(id: String): String? {
         return offlineModeDao.getListById(id)
+    }
+
+    suspend fun getUid(): String {
+        return userDataSource.getUid()
+    }
+
+    suspend fun getUserToken(): String {
+        return userDataSource.getUserToken()
     }
 }

@@ -153,4 +153,8 @@ class AfterPhotoViewModel @Inject constructor(
             _snackbarMessage.emit(messageId)
         }
     }
+
+    suspend fun getUserToken(): String {
+        return repository.getUserToken()
+    }
 }
