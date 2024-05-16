@@ -27,7 +27,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.data.source.repository.UserDataSource
+import com.gurumlab.vocaroutine.data.source.local.UserDataSource
 import com.gurumlab.vocaroutine.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

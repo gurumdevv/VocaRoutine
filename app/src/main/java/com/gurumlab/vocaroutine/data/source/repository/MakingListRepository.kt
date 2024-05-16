@@ -3,6 +3,7 @@ package com.gurumlab.vocaroutine.data.source.repository
 import com.gurumlab.vocaroutine.data.model.ChatMessage
 import com.gurumlab.vocaroutine.data.model.ChatRequest
 import com.gurumlab.vocaroutine.data.model.ChatResponse
+import com.gurumlab.vocaroutine.data.source.local.UserDataSource
 import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
 import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
@@ -12,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class MakingListRepository @Inject constructor(
