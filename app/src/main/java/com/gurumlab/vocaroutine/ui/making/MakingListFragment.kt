@@ -55,7 +55,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
                         binding.etMeaning.isEnabled = isCompleted
                         binding.btnNext.isEnabled = isCompleted
                         binding.btnDone.isEnabled = isCompleted
-                        binding.ivCamera.isEnabled = isCompleted
+                        binding.imgBtnCamera.isEnabled = isCompleted
                         if (isCompleted) {
                             binding.etVocabulary.setText("")
                             binding.etMeaning.setText("")
@@ -63,7 +63,6 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
                         } else {
                             binding.btnNext.text = getString(R.string.loading_etymology_now)
                         }
-
                     }
                 }
 
@@ -104,7 +103,7 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
     }
 
     private fun setIvScanClickListener() {
-        binding.ivLoadPictureBackground.setOnClickListener {
+        binding.imgBtnCamera.setOnClickListener {
             val action = MakingListFragmentDirections.actionCreationToAfterPhoto()
             findNavController().navigate(action)
         }
