@@ -91,9 +91,14 @@ class DetailListViewModel @Inject constructor(
                 val dayThree = getDate(3)
                 val daySeven = getDate(7)
 
-                _isNotificationSet.value = setAlarm(id, alarmCode, content, dayOne)
-                setAlarm(id, alarmCode + 1, content, dayThree)
-                setAlarm(id, alarmCode + 2, content, daySeven)
+                if (setAlarm(id, alarmCode, content, dayOne) &&
+                    setAlarm(id, alarmCode + 1, content, dayThree) &&
+                    setAlarm(id, alarmCode + 2, content, daySeven)
+                ) {
+                    _isNotificationSet.value = true
+                } else {
+                    setSnackbarMessage(R.string.set_review_notification_fail)
+                }
             }
         }
     }
