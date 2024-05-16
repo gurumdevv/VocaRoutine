@@ -3,8 +3,16 @@ package com.gurumlab.vocaroutine.data.source.repository
 import com.gurumlab.vocaroutine.data.model.ChatMessage
 import com.gurumlab.vocaroutine.data.model.ChatRequest
 import com.gurumlab.vocaroutine.data.model.ChatResponse
-import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.source.remote.GptApiClient
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.di.GptVersion
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class MakingListRepository @Inject constructor(
@@ -12,17 +20,31 @@ class MakingListRepository @Inject constructor(
     private val userDataSource: UserDataSource
 ) {
 
-    suspend fun getEtymology(word: String): ApiResponse<ChatResponse> {
-        return gptApiClient.getResponse(
+    suspend fun getEtymology(
+        word: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<ChatResponse> = flow {
+        val response = gptApiClient.getResponse(
             ChatRequest(
-                "gpt-3.5-turbo-1106", listOf(
-                    ChatMessage("system", "\'${word}\'에 대한 어원만 알려줘. 30자 이내로 간단하게 설명해줘.")
+                GptVersion.CURRENT_VERSION, listOf(
+                    ChatMessage(
+                        "system",
+                        "\'${word}\'를 분해해서 각 의미에 대해서 100자 이내로 어원만 알려줘. 문장의 끝은 \"니다\"로 끝내줘"
+                    )
                 )
             )
         )
-    }
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.flowOn(Dispatchers.Default)
 
-    suspend fun getUid(): String{
+    suspend fun getUid(): String {
         return userDataSource.getUid()
     }
 }

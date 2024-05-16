@@ -34,6 +34,11 @@ class NetworkConnection(context: Context) : LiveData<Event<Boolean>>() {
                 super.onUnavailable()
                 postValue(Event(false))
             }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                postValue(Event(false))
+            }
         }
         return networkCallback
     }

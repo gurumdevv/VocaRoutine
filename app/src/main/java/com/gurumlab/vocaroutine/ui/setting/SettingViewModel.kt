@@ -1,86 +1,140 @@
 package com.gurumlab.vocaroutine.ui.setting
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.data.source.remote.onError
-import com.gurumlab.vocaroutine.data.source.remote.onException
-import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.data.model.ListInfo
+import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.repository.SettingRepository
-import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(private val repository: SettingRepository) :
+class SettingViewModel @Inject constructor(
+    private val repository: SettingRepository,
+    private val crashlytics: FirebaseCrashlytics
+) :
     ViewModel() {
 
-    private val _myListCount = MutableLiveData<Event<Int>>()
-    val myListCount: LiveData<Event<Int>> = _myListCount
-    private val _sharedListCount = MutableLiveData<Event<Int>>()
-    val sharedListCount: LiveData<Event<Int>> = _sharedListCount
-    private val _snackbarMessage = MutableLiveData<Event<Int>>()
-    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
-    private val _isLogout = MutableLiveData<Event<Boolean>>()
-    val isLogout: LiveData<Event<Boolean>> = _isLogout
+    val myList: StateFlow<List<ListInfo>> = loadMyList().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
-    fun loadMyListCount() {
-        viewModelScope.launch {
-            val uid = repository.getUid()
-            val result = repository.getMyLists(uid)
-            result.onSuccess {
-                _myListCount.value = Event(it.values.size)
-            }.onError { code, message ->
-                _myListCount.value = Event(0)
-                Log.d("SettingViewModel", "Error code: $code message: $message")
-            }.onException { throwable ->
-                Log.d("SettingViewModel", "Exception: $throwable")
+    val sharedList: StateFlow<List<SharedListInfo>> = loadSharedListCount().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    private val _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackbarMessage: SharedFlow<Int> = _snackbarMessage
+
+    private val _isLogout: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    val isLogout: SharedFlow<Boolean> = _isLogout
+
+    private fun loadMyList(): Flow<List<ListInfo>> = flow {
+        val uid = repository.getUid()
+        val list = repository.getMyLists(
+            uid,
+            onError = {
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
+            },
+            onException = {
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
             }
+        ).map { data ->
+            data.values.toList()
         }
+
+        emitAll(list)
     }
 
-    fun loadSharedListCount() {
-        viewModelScope.launch {
-            val uid = repository.getUid()
-            val result = repository.getSharedListByCreator(uid)
-            result.onSuccess {
-                _sharedListCount.value = Event(it.values.size)
-            }.onError { code, message ->
-                Log.d("SettingViewModel", "Error code: $code message: $message")
-            }.onException { throwable ->
-                Log.d("SettingViewModel", "Exception: $throwable")
+    private fun loadSharedListCount(): Flow<List<SharedListInfo>> = flow {
+        val uid = repository.getUid()
+        val list = repository.getSharedListByCreator(
+            uid,
+            onError = {
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
+            },
+            onException = {
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
             }
+        ).map { data ->
+            data.values.toList()
         }
+
+        emitAll(list)
     }
 
     fun deleteAllMyLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            repository.deleteSharedList(uid)
+            repository.deleteSharedList(
+                uid,
+                onError = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                }
+            )
             repository.deleteMyList(uid)
+            _snackbarMessage.emit(R.string.delete_complete_my_list)
         }
-        _snackbarMessage.value = Event(R.string.delete_complete_my_list)
     }
 
     fun deleteShareLists() {
         viewModelScope.launch {
             val uid = repository.getUid()
-            repository.deleteSharedList(uid)
+            repository.deleteSharedList(
+                uid,
+                onError = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                }
+            )
+            _snackbarMessage.emit(R.string.delete_complete_shared_list)
         }
-        _snackbarMessage.value = Event(R.string.delete_complete_shared_list)
     }
 
     fun logOut() {
         viewModelScope.launch {
             repository.setUid("")
             FirebaseAuth.getInstance().signOut()
-            _isLogout.value = Event(true)
-            _snackbarMessage.value = Event(R.string.logout_done)
+            _isLogout.emit(true)
+            _snackbarMessage.emit(R.string.logout_done)
         }
     }
 }

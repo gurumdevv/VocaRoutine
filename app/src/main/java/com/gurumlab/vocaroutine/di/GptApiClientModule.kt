@@ -72,3 +72,7 @@ annotation class GptRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class GptOkHttpClient
+
+object GptVersion{
+    const val CURRENT_VERSION = "gpt-4o"
+}

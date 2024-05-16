@@ -1,13 +1,15 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
-import android.util.Log
-import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
 import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class SettingRepository @Inject constructor(
@@ -15,29 +17,55 @@ class SettingRepository @Inject constructor(
     private val userDataSource: UserDataSource
 ) {
 
-    suspend fun getMyLists(uid: String): ApiResponse<Map<String, ListInfo>> {
-        return apiClient.getLists(uid)
-    }
+    fun getMyLists(
+        uid: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, ListInfo>> = flow {
+        val response = apiClient.getLists(uid)
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.flowOn(Dispatchers.Default)
 
-    suspend fun getSharedListByCreator(uid: String): ApiResponse<Map<String, SharedListInfo>> {
-        return apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
-    }
+    fun getSharedListByCreator(
+        uid: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, SharedListInfo>> = flow {
+        val response = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.flowOn(Dispatchers.Default)
 
-    suspend fun deleteMyList(uid: String) {
-        apiClient.deleteAllMyLists(uid)
-    }
-
-    suspend fun deleteSharedList(uid: String) {
+    suspend fun deleteSharedList(
+        uid: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ) {
         val result = apiClient.getSharedListByCreator("\"creator\"", "\"${uid}\"")
         result.onSuccess {
             it.keys.forEach { key ->
                 apiClient.deleteSharedList(key)
             }
         }.onError { code, message ->
-            Log.d("SettingRepository", "Error code: $code message: $message")
-        }.onException { throwable ->
-            Log.d("SettingRepository", "Exception: $throwable")
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
         }
+    }
+
+    suspend fun deleteMyList(uid: String) {
+        apiClient.deleteAllMyLists(uid)
     }
 
     suspend fun getUid(): String {

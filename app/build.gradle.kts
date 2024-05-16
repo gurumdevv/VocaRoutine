@@ -9,6 +9,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -67,6 +68,8 @@ kapt {
 
 dependencies {
 
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("io.coil-kt:coil:2.5.0")
@@ -88,7 +91,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

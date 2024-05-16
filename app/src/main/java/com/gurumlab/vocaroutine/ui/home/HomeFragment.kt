@@ -14,12 +14,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentHomeBinding
-import com.gurumlab.vocaroutine.ui.common.EventObserver
+import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
@@ -47,6 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         checkNotificationPermission()
         setLoadingLayout()
+        setReviewLayout()
         setEmptyLayout()
         setFinishLayout()
         setSnackbar()
@@ -99,54 +103,73 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             .show()
     }
 
+    private fun setReviewLayout() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.loadList()
+            viewModel.reviewList
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { reviewList ->
+                    if (reviewList.isNotEmpty()) {
+                        binding.containerQuiz.isVisible = true
+                    }
+                }
+        }
+    }
+
     private fun setLoadingLayout() {
-        viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
-            if (isLoading) {
-                binding.lottieLoading.visibility = View.VISIBLE
-            } else {
-                binding.lottieLoading.visibility = View.GONE
-                binding.containerQuiz.visibility = View.VISIBLE
-            }
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isLoading ->
+                    binding.lottieLoading.isVisible = isLoading
+                }
+        }
     }
 
     private fun setEmptyLayout() {
-        viewModel.isEmpty.observe(viewLifecycleOwner, EventObserver { isEmpty ->
-            if (isEmpty) {
-                binding.lottieStudy.visibility = View.VISIBLE
-                binding.containerQuiz.visibility = View.GONE
-                binding.tvStudy.isVisible = true
-                binding.tvStudy.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        requireContext(),
-                        R.anim.fade_in
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isEmpty
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isEmpty ->
+                    binding.lottieStudy.isVisible = isEmpty
+                    binding.tvStudy.isVisible = isEmpty
+                    binding.tvStudy.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.fade_in
+                        )
                     )
-                )
-            }
-        })
+                }
+        }
     }
 
     private fun setFinishLayout() {
-        viewModel.isFinish.observe(viewLifecycleOwner, EventObserver { isFinish ->
-            if (isFinish) {
-                binding.containerQuiz.visibility = View.GONE
-                binding.lottieFinish.visibility = View.VISIBLE
-                binding.tvFinish.visibility = View.VISIBLE
-                binding.tvFinish.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        requireContext(),
-                        R.anim.fade_in
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isFinish
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isFinish ->
+                    binding.containerQuiz.isVisible = !isFinish
+                    binding.lottieFinish.isVisible = isFinish
+                    binding.tvFinish.isVisible = isFinish
+                    binding.tvFinish.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.fade_in
+                        )
                     )
-                )
-            }
-        })
+                }
+        }
     }
 
     private fun setSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarMessage ->
-            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.bottom_navigation)
-                .show()
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.snackbarMessage
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { snackbarMessage ->
+                    Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT)
+                        .setAnchorView(R.id.bottom_navigation)
+                        .show()
+                }
+        }
     }
 }

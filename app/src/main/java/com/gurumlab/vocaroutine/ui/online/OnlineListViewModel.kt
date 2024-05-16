@@ -1,20 +1,22 @@
 package com.gurumlab.vocaroutine.ui.online
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
-import com.gurumlab.vocaroutine.data.source.remote.onError
-import com.gurumlab.vocaroutine.data.source.remote.onException
-import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.data.source.repository.OnlineListRepository
-import com.gurumlab.vocaroutine.ui.common.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
@@ -24,65 +26,72 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class OnlineListViewModel @Inject constructor(private val repository: OnlineListRepository) :
+class OnlineListViewModel @Inject constructor(
+    private val repository: OnlineListRepository,
+    private val crashlytics: FirebaseCrashlytics
+) :
     ViewModel() {
 
-    private val _sharedLists = MutableLiveData<Event<List<SharedListInfo>>>()
-    val sharedList: LiveData<Event<List<SharedListInfo>>> = _sharedLists
-    private val _myLists = MutableLiveData<Event<List<ListInfo>>>()
-    val myLists: LiveData<Event<List<ListInfo>>> = _myLists
-    private val _snackbarMessage = MutableLiveData<Event<Int>>()
-    val snackbarMessage: LiveData<Event<Int>> = _snackbarMessage
-    private val _isLoading = MutableLiveData<Event<Boolean>>()
-    val isLoading: LiveData<Event<Boolean>> = _isLoading
-    private val _isCompleted = MutableLiveData<Event<Boolean>>()
-    val isCompleted: LiveData<Event<Boolean>> = _isCompleted
-    private val _isError = MutableLiveData<Event<Boolean>>()
-    val isError: LiveData<Event<Boolean>> = _isError
-    private val _isException = MutableLiveData<Event<Boolean>>()
-    val isException: LiveData<Event<Boolean>> = _isException
-    private val _isEmptyList = MutableLiveData<Event<Boolean>>()
-    val isEmptyList: LiveData<Event<Boolean>> = _isEmptyList
+    val sharedList: StateFlow<List<SharedListInfo>> = loadLists().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
-    fun loadLists() {
-        viewModelScope.launch {
-            _isLoading.value = Event(true)
-            val result = repository.getSharedLists()
-            result.onSuccess {
-                _isLoading.value = Event(false)
-                _isCompleted.value = Event(true)
-                _sharedLists.value = Event(it.values.toList())
-            }.onError { code, message ->
-                _isLoading.value = Event(false)
-                _isError.value = Event(true)
-                Log.d("OnlineListViewModel", "Error code: $code message: $message")
-            }.onException { throwable ->
-                _isLoading.value = Event(false)
-                _isException.value = Event(true)
-                Log.d("OnlineListViewModel", "Exception: $throwable")
+    private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _isError: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isError: StateFlow<Boolean> = _isError
+
+    private val _isException: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isException: StateFlow<Boolean> = _isException
+
+    private val _isEmptyList: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isEmptyList: StateFlow<Boolean> = _isEmptyList
+
+    private val _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
+    val snackbarMessage: SharedFlow<Int> = _snackbarMessage
+
+    private fun loadLists(): Flow<List<SharedListInfo>> = repository.getSharedLists(
+        onComplete = { _isLoading.value = false },
+        onError = {
+            _isError.value = true
+            if (!it.isNullOrBlank()) {
+                crashlytics.log(it)
+            }
+        },
+        onException = {
+            _isException.value = true
+            if (!it.isNullOrBlank()) {
+                crashlytics.log(it)
             }
         }
+    ).map { data ->
+        data.values.toList()
     }
 
-    fun getMyLists() {
-        viewModelScope.launch {
-            val uid = repository.getUid()
-            val result = repository.getMyLists(uid)
-            result.onSuccess {
-                _myLists.value = Event(it.values.toList())
-            }.onError { code, message ->
-                _isEmptyList.value = Event(true)
-                Log.d("OnlineListViewModel", "Error code: $code message: $message")
-            }.onException { throwable ->
-                Log.d("OnlineListViewModel", "Exception: $throwable")
+    suspend fun getMyLists(): Flow<List<ListInfo>> = repository.getMyLists(
+        repository.getUid(),
+        onError = {
+            _isEmptyList.value = true
+            if (!it.isNullOrBlank()) {
+                crashlytics.log(it)
+            }
+        },
+        onException = {
+            if (!it.isNullOrBlank()) {
+                crashlytics.log(it)
             }
         }
+    ).map { data ->
+        data.values.toList()
     }
 
-    fun isAlreadyCreated(response: List<ListInfo>, list: ListInfo): Boolean {
+    suspend fun isAlreadyCreated(response: List<ListInfo>, list: ListInfo): Boolean {
         response.forEach { myList ->
             if (myList.id == list.id) {
-                _snackbarMessage.value = Event(R.string.list_already_exist)
+                _snackbarMessage.emit(R.string.list_already_exist)
                 return true
             }
         }
@@ -96,7 +105,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
             val review = Review(firstReview = false, secondReview = false, thirdReview = false)
             val alarmCode = getAlarmCode()
             if (alarmCode == 0) {
-                _snackbarMessage.value = Event(R.string.alarm_code_error_try_again)
+                _snackbarMessage.emit(R.string.alarm_code_error_try_again)
                 return@launch
             }
             val newListInfo = ListInfo(
@@ -111,7 +120,7 @@ class OnlineListViewModel @Inject constructor(private val repository: OnlineList
                 vocabularies = list.vocabularies
             )
             repository.uploadList(uid, newListInfo)
-            _snackbarMessage.value = Event(R.string.list_download_complete)
+            _snackbarMessage.emit(R.string.list_download_complete)
         }
     }
 

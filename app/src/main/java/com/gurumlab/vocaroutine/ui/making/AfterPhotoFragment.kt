@@ -10,30 +10,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.FragmentAfterPhotoBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.Constants
-import com.gurumlab.vocaroutine.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
-    private lateinit var uid: String
     private val viewModel by viewModels<AfterPhotoViewModel>()
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            uid = viewModel.getUid()
-        }
-    }
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -89,43 +82,52 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     }
 
     private fun setObservers() {
-        viewModel.isCompleted.observe(viewLifecycleOwner, EventObserver { isCompleted ->
-            if (isCompleted) {
-                binding.etVocabulary.setText("")
-                binding.etMeaning.setText("")
-                binding.etVocabulary.isEnabled = true
-                binding.etMeaning.isEnabled = true
-                binding.btnNext.isEnabled = true
-                binding.btnDone.isEnabled = true
-                binding.btnCamera.isEnabled = true
-                binding.btnNext.text = getString(R.string.next)
-            } else {
-                binding.etVocabulary.isEnabled = false
-                binding.etMeaning.isEnabled = false
-                binding.btnNext.isEnabled = false
-                binding.btnDone.isEnabled = false
-                binding.btnCamera.isEnabled = false
-                binding.btnNext.text = getString(R.string.loading_etymology_now)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.isCompleted.collect { isCompleted ->
+                        binding.etVocabulary.isEnabled = isCompleted
+                        binding.etMeaning.isEnabled = isCompleted
+                        binding.btnNext.isEnabled = isCompleted
+                        binding.btnDone.isEnabled = isCompleted
+                        binding.btnCamera.isEnabled = isCompleted
+                        binding.etOcrResult.isEnabled = isCompleted
+                        if (isCompleted) {
+                            binding.etVocabulary.setText("")
+                            binding.etMeaning.setText("")
+                            binding.btnNext.text = getString(R.string.next)
+                        } else {
+                            binding.btnNext.text = getString(R.string.loading_etymology_now)
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.alarmCode.collect { alarmCode ->
+                        if (alarmCode == 0) {
+                            viewModel.setSnackbarMessage(R.string.alarm_code_creation_error)
+                            findNavController().navigateUp()
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.tempList.collect { tempListInfo ->
+                        val action =
+                            AfterPhotoFragmentDirections.actionAfterPhotoToDialog(tempListInfo)
+                        findNavController().navigate(action)
+                    }
+                }
+
+                launch {
+                    viewModel.snackbarMessage.collect { messageId ->
+                        Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
+                            .setAnchorView(binding.btnDone)
+                            .show()
+                    }
+                }
             }
-        })
-
-        viewModel.alarmCode.observe(viewLifecycleOwner, EventObserver { alarmCode ->
-            if (alarmCode == 0) {
-                findNavController().navigateUp()
-            }
-        })
-
-        viewModel.tempList.observe(viewLifecycleOwner, EventObserver { tempListInfo ->
-            val action =
-                AfterPhotoFragmentDirections.actionAfterPhotoToDialog(uid, tempListInfo)
-            findNavController().navigate(action)
-        })
-
-        viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver { messageId ->
-            Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
-                .setAnchorView(binding.btnDone)
-                .show()
-        })
+        }
     }
 
     private fun setBtnNextClickListener() {

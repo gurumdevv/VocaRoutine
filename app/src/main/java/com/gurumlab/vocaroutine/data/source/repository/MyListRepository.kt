@@ -1,9 +1,16 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
-import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class MyListRepository @Inject constructor(
@@ -12,9 +19,25 @@ class MyListRepository @Inject constructor(
     private val offlineModeDao: OfflineModeDao
 ) {
 
-    suspend fun getLists(uid: String): ApiResponse<Map<String, ListInfo>> {
-        return apiClient.getLists(uid)
-    }
+    fun getLists(
+        uid: String,
+        onComplete: () -> Unit,
+        onSuccess: () -> Unit,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, ListInfo>> = flow {
+        val response = apiClient.getLists(uid)
+        response.onSuccess {
+            emit(it)
+            onSuccess()
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.onCompletion {
+        onComplete()
+    }.flowOn(Dispatchers.Default)
 
     suspend fun getUid(): String {
         return userDataSource.getUid()
@@ -24,16 +47,30 @@ class MyListRepository @Inject constructor(
         apiClient.deleteMyList(uid, listId)
     }
 
-    suspend fun getListsById(
+    fun getListsById(
         uid: String,
-        listId: String
-    ): ApiResponse<Map<String, ListInfo>> {
-        return apiClient.getListsById(uid, "\"id\"", "\"${listId}\"")
-    }
+        listId: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, ListInfo>> = flow {
+        val response = apiClient.getListsById(uid, "\"id\"", "\"${listId}\"")
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.flowOn(Dispatchers.Default)
 
-    suspend fun getAllOfflineLists(): List<ListInfo> {
-        return offlineModeDao.getAllListInfo()
-    }
+    fun getAllOfflineLists(
+        onComplete: () -> Unit
+    ): Flow<List<ListInfo>> = flow {
+        emit(offlineModeDao.getAllListInfo())
+    }.onCompletion {
+        onComplete()
+    }.flowOn(Dispatchers.Default)
+
 
     suspend fun deleteOfflineList(listInfo: ListInfo) {
         offlineModeDao.deleteListInfo(listInfo)

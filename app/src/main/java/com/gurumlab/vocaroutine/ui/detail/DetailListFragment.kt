@@ -6,6 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +20,7 @@ import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.FragmentDetailListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
@@ -60,39 +65,6 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         hideBottomNavigation(true)
     }
 
-    private fun setNotification() {
-        viewModel.loadAlarm(list)
-        viewModel.isNotificationSet.observe(viewLifecycleOwner, EventObserver { isNotificationSet ->
-            val isClickNotificationIcon = viewModel.isClickAlarmIcon.value?.content!!
-            if (isNotificationSet) {
-                binding.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
-                if (isClickNotificationIcon) {
-                    Snackbar.make(
-                        requireView(),
-                        getString(R.string.set_review_notification_success),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                binding.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.cancel_review_notification_success),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-        })
-
-        viewModel.isNotificationSetError.observe(viewLifecycleOwner, EventObserver { isError ->
-            if (isError) {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.set_review_notification_fail), Snackbar.LENGTH_SHORT
-                ).show()
-            }
-        })
-    }
-
     private fun setLayout() {
         val detailListAdapter = DetailListAdapter()
         binding.rvDetailList.adapter = detailListAdapter
@@ -104,29 +76,63 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         })
 
         viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
-            if (!isAvailable) {
-                binding.ivSetDownload.isVisible = false
-                binding.ivSetNotification.isVisible = false
-                binding.ivSetUpload.isVisible = false
-            }
+            binding.ivSetDownload.isVisible = isAvailable
+            binding.ivSetNotification.isVisible = isAvailable
+            binding.ivSetUpload.isVisible = isAvailable
         })
     }
 
-    private fun setSnackBar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { messageId ->
-            Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT).show()
-        })
+    private fun setNotification() {
+        var isClickNotificationIcon = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.isClickAlarmIcon.collect { isClickAlarmIcon ->
+                        isClickNotificationIcon = isClickAlarmIcon
+                    }
+                }
+
+                launch {
+                    viewModel.loadAlarm(list)
+                    viewModel.isNotificationSet.collect { isNotificationSet ->
+                        if (isNotificationSet == true) {
+                            binding.ivSetNotification.setImageResource(R.drawable.ic_bell_enabled)
+                            if (isClickNotificationIcon) {
+                                viewModel.setSnackbarMessage(R.string.set_review_notification_success)
+                            }
+                        } else if (isNotificationSet == false) {
+                            binding.ivSetNotification.setImageResource(R.drawable.ic_bell_disabled)
+                            viewModel.setSnackbarMessage(R.string.cancel_review_notification_success)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setDownloadIcon() {
-        viewModel.loadIsDownloaded(list)
-        viewModel.isDownloaded.observe(viewLifecycleOwner, EventObserver { isDownload ->
-            if (isDownload) {
-                binding.ivSetDownload.setImageResource(R.drawable.ic_download_enabled)
-            } else {
-                binding.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
-            }
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.loadIsDownloaded(list)
+            viewModel.isDownloaded
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { isDownload ->
+                    if (isDownload) {
+                        binding.ivSetDownload.setImageResource(R.drawable.ic_download_enabled)
+                    } else {
+                        binding.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
+                    }
+                }
+        }
+    }
+
+    private fun setSnackBar() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.snackbarMessage
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { messageId ->
+                    Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT).show()
+                }
+        }
     }
 
     private fun setTopAppBar() {

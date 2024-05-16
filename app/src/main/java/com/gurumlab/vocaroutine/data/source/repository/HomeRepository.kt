@@ -1,10 +1,17 @@
 package com.gurumlab.vocaroutine.data.source.repository
 
-import com.gurumlab.vocaroutine.data.source.remote.ApiResponse
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
+import com.gurumlab.vocaroutine.data.source.remote.onError
+import com.gurumlab.vocaroutine.data.source.remote.onException
+import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
@@ -21,14 +28,26 @@ class HomeRepository @Inject constructor(
         return dao.getListIdsByDate(currentDate)
     }
 
-    suspend fun getListsById(
+    fun getListsById(
         uid: String,
-        reviewListId: String
-    ): ApiResponse<Map<String, ListInfo>> {
-        return apiClient.getListsById(uid, "\"id\"", "\"${reviewListId}\"")
-    }
+        reviewListId: String,
+        onComplete: () -> Unit,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, ListInfo>> = flow {
+        val response = apiClient.getListsById(uid, "\"id\"", "\"${reviewListId}\"")
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.onCompletion {
+        onComplete()
+    }.flowOn(Dispatchers.Default)
 
-    suspend fun getAlarmCode(id: String, currentDate: String): Int{
+    suspend fun getAlarmCode(id: String, currentDate: String): Int {
         return dao.getAlarmCode(id, currentDate)
     }
 

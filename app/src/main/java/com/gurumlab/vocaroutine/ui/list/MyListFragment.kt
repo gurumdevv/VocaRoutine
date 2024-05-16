@@ -6,6 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +22,7 @@ import com.gurumlab.vocaroutine.databinding.FragmentMyListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import com.gurumlab.vocaroutine.ui.common.ItemTouchHelperCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener {
@@ -36,41 +41,56 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
 
         setLayout()
         setNewListButton()
-        setLoadingView()
         setSnackbarMessage()
     }
 
     private fun setLayout() {
-        val networkConnection = NetworkConnection(requireContext())
-        networkConnection.observe(viewLifecycleOwner, EventObserver { isAvailable ->
-            viewModel.setIsNetworkAvailable(isAvailable)
-        })
-
-        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
-            if (isAvailable) {
-                viewModel.loadLists()
-            } else {
-                viewModel.loadOfflineLists()
-                binding.btnNewList.isVisible = false
-            }
-        })
-
         val myListAdapter = MyListAdapter(viewModel, this)
         val itemTouchHelper =
             ItemTouchHelper(ItemTouchHelperCallback(myListAdapter, requireContext()))
         itemTouchHelper.attachToRecyclerView(binding.rvMyList)
         binding.rvMyList.adapter = myListAdapter
 
-        viewModel.item.observe(viewLifecycleOwner, EventObserver { myLists ->
-            myListAdapter.submitList(myLists)
+        val networkConnection = NetworkConnection(requireContext())
+        networkConnection.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            viewModel.setIsNetworkAvailable(isAvailable)
         })
 
-        viewModel.isError.observe(viewLifecycleOwner, EventObserver { isError ->
-            binding.ivEmptyMine.isVisible = isError
-            if (viewModel.isNetworkAvailable.value?.content == true) {
-                binding.tvEmptyMine.isVisible = isError
-            } else {
-                binding.tvEmptyDownloaded.isVisible = isError
+        viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    if (isAvailable) {
+                        binding.btnNewList.isVisible = true
+                        launch {
+                            viewModel.onlineItems.collect { onlineItems ->
+                                myListAdapter.submitList(onlineItems)
+                            }
+                        }
+                    } else {
+                        launch {
+                            viewModel.offlineItems.collect { offlineItems ->
+                                offlineItems?.let {
+                                    myListAdapter.submitList(offlineItems)
+                                    binding.tvEmptyDownloaded.isVisible = offlineItems.isEmpty()
+                                    binding.ivEmptyMine.isVisible = offlineItems.isEmpty()
+                                }
+                            }
+                        }
+                    }
+
+                    launch {
+                        viewModel.isError.collect { isError ->
+                            binding.ivEmptyMine.isVisible = isError
+                            binding.tvEmptyMine.isVisible = isError
+                        }
+                    }
+
+                    launch {
+                        viewModel.isLoading.collect { isLoading ->
+                            binding.lottie.isVisible = isLoading
+                        }
+                    }
+                }
             }
         })
     }
@@ -84,18 +104,16 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
         }
     }
 
-    private fun setLoadingView() {
-        viewModel.isLoading.observe(viewLifecycleOwner, EventObserver { isLoading ->
-            binding.lottie.isVisible = isLoading
-        })
-    }
-
     private fun setSnackbarMessage() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { messageId ->
-            Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
-                .setAnchorView(R.id.btn_new_list)
-                .show()
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.snackbarMessage
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { messageId ->
+                    Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_SHORT)
+                        .setAnchorView(R.id.btn_new_list)
+                        .show()
+                }
+        }
     }
 
     override fun onClick(list: ListInfo) {
