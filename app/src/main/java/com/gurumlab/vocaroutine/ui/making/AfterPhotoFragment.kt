@@ -91,9 +91,11 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
                         binding.btnNext.isEnabled = isCompleted
                         binding.btnDone.isEnabled = isCompleted
                         binding.btnCamera.isEnabled = isCompleted
+                        binding.etOcrResult.isEnabled = isCompleted
                         if (isCompleted) {
                             binding.etVocabulary.setText("")
                             binding.etMeaning.setText("")
+                            binding.btnNext.text = getString(R.string.next)
                         } else {
                             binding.btnNext.text = getString(R.string.loading_etymology_now)
                         }
