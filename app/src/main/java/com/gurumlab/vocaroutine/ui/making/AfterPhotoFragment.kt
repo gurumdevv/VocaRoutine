@@ -68,6 +68,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
         resultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
+            binding.layoutAfterPhoto.isVisible = true
             if (result.resultCode == RESULT_OK) {
                 val ocrResult = result.data?.getStringExtra(Constants.KEY_OCR_RESULT) ?: ""
                 binding.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
