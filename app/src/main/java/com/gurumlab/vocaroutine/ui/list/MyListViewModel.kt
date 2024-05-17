@@ -69,10 +69,12 @@ class MyListViewModel @Inject constructor(
                 _isException.value = false
             }, onError = {
                 _isError.value = true
+                _isException.value = false
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
                 }
             }, onException = {
+                _isError.value = false
                 _isException.value = true
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
