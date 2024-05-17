@@ -205,7 +205,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     val firebaseIdToken = task.result.token
-                                    if (firebaseIdToken.isNullOrBlank()) {
+                                    if (firebaseIdToken.isNullOrBlank() || user.uid.isBlank()) {
                                         showLoginErrorSnackBar()
                                     } else {
                                         lifecycleScope.launch {
