@@ -1,7 +1,6 @@
 package com.gurumlab.vocaroutine.ui.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,6 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
                     viewModel.onlineItems
                         .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                         .collect { onlineItems ->
-                            Log.d("MyList", "$onlineItems")
                             myListAdapter.submitList(onlineItems)
                         }
                 }

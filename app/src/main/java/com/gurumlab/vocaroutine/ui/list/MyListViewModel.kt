@@ -38,7 +38,7 @@ class MyListViewModel @Inject constructor(
 
     val offlineItems: StateFlow<List<ListInfo>?> = loadOfflineLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = null
     )
 
