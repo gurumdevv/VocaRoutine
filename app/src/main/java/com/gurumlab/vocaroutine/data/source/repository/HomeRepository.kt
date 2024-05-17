@@ -63,7 +63,7 @@ class HomeRepository @Inject constructor(
         listKey: String,
         review: Review
     ) {
-        apiClient.updateFirstReviewCount(uid, userToken, listKey, review)
+        apiClient.updateFirstReviewCount(uid, listKey, userToken, review)
     }
 
     suspend fun updateSecondReviewCount(
@@ -72,7 +72,7 @@ class HomeRepository @Inject constructor(
         listKey: String,
         review: Review
     ) {
-        apiClient.updateSecondReviewCount(uid, userToken, listKey, review)
+        apiClient.updateSecondReviewCount(uid, listKey, userToken, review)
     }
 
     suspend fun updateThirdReviewCount(
@@ -81,7 +81,7 @@ class HomeRepository @Inject constructor(
         listKey: String,
         review: Review
     ) {
-        apiClient.updateThirdReviewCount(uid, userToken, listKey, review)
+        apiClient.updateThirdReviewCount(uid, listKey, userToken, review)
     }
 
     suspend fun getUid(): String {

@@ -42,7 +42,7 @@ class MyListRepository @Inject constructor(
     }.flowOn(Dispatchers.Default)
 
     suspend fun deleteList(uid: String, userToken: String, listId: String) {
-        apiClient.deleteMyList(uid, userToken, listId)
+        apiClient.deleteMyList(uid, listId, userToken)
     }
 
     fun getListsById(

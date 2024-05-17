@@ -62,8 +62,8 @@ interface ApiClient {
     @DELETE("privateList/{uid}/{listId}.json")
     suspend fun deleteMyList(
         @Path("uid") uid: String,
-        @Query("auth") userToken: String,
-        @Path("listId") listId: String
+        @Path("listId") listId: String,
+        @Query("auth") userToken: String
     )
 
     @DELETE("privateList/{uid}.json")
@@ -81,24 +81,24 @@ interface ApiClient {
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateFirstReviewCount(
         @Path("uid") uid: String,
-        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
+        @Query("auth") userToken: String,
         @Body firstReview: Review
     )
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateSecondReviewCount(
         @Path("uid") uid: String,
-        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
+        @Query("auth") userToken: String,
         @Body secondReview: Review
     )
 
     @PATCH("privateList/{uid}/{listKey}/review.json")
     suspend fun updateThirdReviewCount(
         @Path("uid") uid: String,
-        @Query("auth") userToken: String,
         @Path("listKey") listKey: String,
+        @Query("auth") userToken: String,
         @Body thirdReview: Review
     )
 }
