@@ -117,4 +117,5 @@
     <string name="share_fail">공유에 실패했습니다.</string>
     <string name="delete_fail">삭제에 실패했습니다.</string>
     <string name="fail_delete_list">단어장 삭제에 실패했습니다.</string>
+    <string name="fail_download_list">단어장 다운로드에 실패했습니다.</string>
 </resources>

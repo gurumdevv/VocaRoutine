@@ -85,8 +85,6 @@ class SettingViewModel @Inject constructor(
         result?.let { data ->
             _sharedListSize.value = data.size
         }
-
-
     }
 
     fun deleteAllMyLists() {

@@ -1,6 +1,5 @@
 package com.gurumlab.vocaroutine.ui.online
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -137,8 +136,13 @@ class OnlineListViewModel @Inject constructor(
                 review = review,
                 vocabularies = list.vocabularies
             )
-            repository.uploadList(uid, userToken, newListInfo)
-            _snackbarMessage.emit(R.string.list_download_complete)
+            try {
+                repository.uploadList(uid, userToken, newListInfo)
+                _snackbarMessage.emit(R.string.list_download_complete)
+            } catch (e: Exception) {
+                crashlytics.log("${e.message}")
+                _snackbarMessage.emit(R.string.fail_download_list)
+            }
         }
     }
 
