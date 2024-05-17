@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.android.material.snackbar.Snackbar
@@ -45,22 +46,24 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
     private fun setMyListsCount() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.myList
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { myList ->
-                    binding.tvCountMyList.text = getString(R.string.count_my_list, myList.size)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadMyListCount()
+                viewModel.myListSize.collect { size ->
+                    binding.tvCountMyList.text = getString(R.string.count_my_list, size)
                 }
+            }
         }
     }
 
     private fun setSharedListsCount() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.sharedList
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { sharedList ->
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadSharedListCount()
+                viewModel.sharedListSize.collect { size ->
                     binding.tvCountShareList.text =
-                        getString(R.string.count_share_list, sharedList.size)
+                        getString(R.string.count_share_list, size)
                 }
+            }
         }
     }
 

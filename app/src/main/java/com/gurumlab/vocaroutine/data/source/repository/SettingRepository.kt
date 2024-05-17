@@ -28,6 +28,7 @@ class SettingRepository @Inject constructor(
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)
@@ -44,6 +45,7 @@ class SettingRepository @Inject constructor(
         response.onSuccess {
             emit(it)
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)
@@ -53,6 +55,7 @@ class SettingRepository @Inject constructor(
     suspend fun deleteSharedList(
         uid: String,
         userToken: String,
+        onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ) {
@@ -61,6 +64,7 @@ class SettingRepository @Inject constructor(
             it.keys.forEach { key ->
                 apiClient.deleteSharedList(key, userToken)
             }
+            onComplete()
         }.onError { code, message ->
             onError("code: $code, message: $message")
         }.onException {
