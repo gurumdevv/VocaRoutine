@@ -1,5 +1,6 @@
 package com.gurumlab.vocaroutine.ui.online
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -36,7 +37,7 @@ class OnlineListViewModel @Inject constructor(
 
     val sharedList: StateFlow<List<SharedListInfo>> = loadLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
     )
 
@@ -60,6 +61,10 @@ class OnlineListViewModel @Inject constructor(
         val list = repository.getSharedLists(
             userToken,
             onComplete = { _isLoading.value = false },
+            onSuccess = {
+                _isError.value = false
+                _isException.value = false
+            },
             onError = {
                 _isError.value = true
                 if (!it.isNullOrBlank()) {
@@ -73,7 +78,8 @@ class OnlineListViewModel @Inject constructor(
                 }
             }
         ).map { data ->
-            data.values.toList()
+            if (data.isEmpty()) emptyList()
+            else data.values.toList()
         }
 
         emitAll(list)

@@ -32,7 +32,7 @@ class MyListViewModel @Inject constructor(
 
     val onlineItems: StateFlow<List<ListInfo>> = loadLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(0),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
     )
 

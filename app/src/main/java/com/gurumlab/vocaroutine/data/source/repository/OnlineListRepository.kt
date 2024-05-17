@@ -21,14 +21,17 @@ class OnlineListRepository @Inject constructor(
 
     fun getSharedLists(
         userToken: String,
+        onSuccess: () -> Unit,
         onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, SharedListInfo>> = flow {
         val response = apiClient.getSharedList(userToken)
         response.onSuccess {
+            onSuccess()
             emit(it)
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)
