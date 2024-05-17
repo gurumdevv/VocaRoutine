@@ -60,13 +60,19 @@ class HomeViewModel @Inject constructor(
                 userToken,
                 reviewListIds.first(),
                 onComplete = { _isLoading.value = false },
+                onSuccess = {
+                    _isError.value = false
+                    _isEmpty.value = false
+                },
                 onError = {
                     _isError.value = true
+                    _isEmpty.value = true
                     if (!it.isNullOrBlank()) {
                         crashlytics.log(it)
                     }
                 },
                 onException = {
+                    _isEmpty.value = true
                     if (!it.isNullOrBlank()) {
                         crashlytics.log(it)
                     }
@@ -74,8 +80,13 @@ class HomeViewModel @Inject constructor(
             ).firstOrNull()
 
             result?.let { data ->
-                _reviewList.value = data.values.toList()
-                listKey = data.keys.first()
+                if (data.isEmpty()) {
+                    _reviewList.value = emptyList()
+                    listKey = ""
+                } else {
+                    _reviewList.value = data.values.toList()
+                    listKey = data.keys.first()
+                }
             }
         } else {
             _isLoading.value = false

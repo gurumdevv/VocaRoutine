@@ -29,6 +29,7 @@ class HomeRepository @Inject constructor(
         uid: String,
         userToken: String,
         reviewListId: String,
+        onSuccess: () -> Unit,
         onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
@@ -36,7 +37,9 @@ class HomeRepository @Inject constructor(
         val response = apiClient.getListsById(uid, userToken, "\"id\"", "\"${reviewListId}\"")
         response.onSuccess {
             emit(it)
+            onSuccess()
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)
