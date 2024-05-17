@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
@@ -28,6 +29,9 @@ class SaveListDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var apiClient: ApiClient
+
+    @Inject
+    lateinit var crashlytics: FirebaseCrashlytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +66,11 @@ class SaveListDialogFragment : DialogFragment() {
                 tempListInfo.vocabularies
             )
             lifecycleScope.launch {
-                apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
+                try {
+                    apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
+                } catch (e: Exception) {
+                    crashlytics.log("${e.message}")
+                }
                 findNavController().navigateUp()
                 findNavController().navigateUp()
             }
