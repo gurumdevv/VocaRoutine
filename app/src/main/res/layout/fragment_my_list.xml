@@ -58,10 +58,12 @@
         android:minWidth="0dp"
         android:text="@string/new_list"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayExtended"
+        tools:visibility="visible" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
@@ -105,6 +107,20 @@
         app:layout_constraintTop_toBottomOf="@id/iv_empty_mine"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/iv_empty_downloaded"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="@string/empty_mine_description"
+        android:src="@drawable/ic_vocabulary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/icon_color"
+        tools:visibility="visible" />
+
     <TextView
         android:id="@+id/tv_empty_downloaded"
         style="@style/MediumBody"
@@ -116,7 +132,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_empty_mine"
+        app:layout_constraintTop_toBottomOf="@id/iv_empty_downloaded"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,7 @@ class MyListRepository @Inject constructor(
             emit(it)
             onSuccess()
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)

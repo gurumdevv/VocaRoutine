@@ -1,6 +1,7 @@
 package com.gurumlab.vocaroutine.ui.list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,12 +23,14 @@ import com.gurumlab.vocaroutine.databinding.FragmentMyListBinding
 import com.gurumlab.vocaroutine.ui.common.EventObserver
 import com.gurumlab.vocaroutine.ui.common.ItemTouchHelperCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener {
 
     private val viewModel by viewModels<MyListViewModel>()
+    private var job: Job? = null
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -57,42 +60,54 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
         })
 
         viewModel.isNetworkAvailable.observe(viewLifecycleOwner, EventObserver { isAvailable ->
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    if (isAvailable) {
-                        binding.btnNewList.isVisible = true
-                        launch {
-                            viewModel.onlineItems.collect { onlineItems ->
-                                myListAdapter.submitList(onlineItems)
+            if (isAvailable) {
+                binding.btnNewList.isVisible = true
+                binding.ivEmptyDownloaded.isVisible = false
+                binding.tvEmptyDownloaded.isVisible = false
+                job?.cancel()
+
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.onlineItems
+                        .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                        .collect { onlineItems ->
+                            Log.d("MyList", "$onlineItems")
+                            myListAdapter.submitList(onlineItems)
+                        }
+                }
+            } else {
+                binding.btnNewList.isVisible = false
+                job?.cancel()
+
+                job = viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.offlineItems
+                        .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                        .collect { offlineItems ->
+                            offlineItems?.let {
+                                myListAdapter.submitList(offlineItems)
+                                binding.ivEmptyDownloaded.isVisible = offlineItems.isEmpty()
+                                binding.tvEmptyDownloaded.isVisible = offlineItems.isEmpty()
                             }
                         }
-                    } else {
-                        launch {
-                            viewModel.offlineItems.collect { offlineItems ->
-                                offlineItems?.let {
-                                    myListAdapter.submitList(offlineItems)
-                                    binding.tvEmptyDownloaded.isVisible = offlineItems.isEmpty()
-                                    binding.ivEmptyMine.isVisible = offlineItems.isEmpty()
-                                }
-                            }
-                        }
-                    }
-
-                    launch {
-                        viewModel.isError.collect { isError ->
-                            binding.ivEmptyMine.isVisible = isError
-                            binding.tvEmptyMine.isVisible = isError
-                        }
-                    }
-
-                    launch {
-                        viewModel.isLoading.collect { isLoading ->
-                            binding.lottie.isVisible = isLoading
-                        }
-                    }
                 }
             }
         })
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.isError.collect { isError ->
+                        binding.ivEmptyMine.isVisible = isError
+                        binding.tvEmptyMine.isVisible = isError
+                    }
+                }
+
+                launch {
+                    viewModel.isLoading.collect { isLoading ->
+                        binding.lottie.isVisible = isLoading
+                    }
+                }
+            }
+        }
     }
 
     private fun setNewListButton() {

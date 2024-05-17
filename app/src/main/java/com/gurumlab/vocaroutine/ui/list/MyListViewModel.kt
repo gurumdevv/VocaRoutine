@@ -32,7 +32,7 @@ class MyListViewModel @Inject constructor(
 
     val onlineItems: StateFlow<List<ListInfo>> = loadLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(0),
         initialValue = emptyList()
     )
 
@@ -79,7 +79,8 @@ class MyListViewModel @Inject constructor(
                 }
             }
         ).map { data ->
-            data.values.toList()
+            if (data.isEmpty()) emptyList()
+            else data.values.toList()
         }
 
         emitAll(list)
@@ -115,7 +116,10 @@ class MyListViewModel @Inject constructor(
     }
 
     private fun loadOfflineLists(): Flow<List<ListInfo>> = repository.getAllOfflineLists(
-        onComplete = { _isLoading.value = false }
+        onComplete = {
+            _isLoading.value = false
+            _isError.value = false
+        }
     )
 
     fun deleteOfflineList(listInfo: ListInfo) {
