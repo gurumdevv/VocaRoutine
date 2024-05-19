@@ -79,7 +79,7 @@ class MakingListViewModel @Inject constructor(
 
     fun createList() {
         viewModelScope.launch {
-            createVocabulary()
+            if (word.value.isNotBlank() && meaning.value.isNotBlank()) createVocabulary()
 
             if (vocabularies.isEmpty()) {
                 setSnackbarMessage(R.string.empty_list)
