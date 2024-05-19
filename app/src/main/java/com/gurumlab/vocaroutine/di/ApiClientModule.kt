@@ -3,6 +3,7 @@ package com.gurumlab.vocaroutine.di
 import com.gurumlab.vocaroutine.data.source.remote.ApiCallAdapterFactory
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +23,7 @@ object NetworkModule {
     @Provides
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .build()
     }
 
