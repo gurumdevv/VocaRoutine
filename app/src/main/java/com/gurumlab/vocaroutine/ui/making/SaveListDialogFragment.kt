@@ -10,7 +10,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
@@ -68,11 +70,13 @@ class SaveListDialogFragment : DialogFragment() {
             lifecycleScope.launch {
                 try {
                     apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
+                    findNavController().navigateUp()
+                    findNavController().navigateUp()
                 } catch (e: Exception) {
                     crashlytics.log("${e.message}")
+                    Snackbar.make(requireView(), R.string.fail_create_list, Snackbar.LENGTH_LONG)
+                        .show()
                 }
-                findNavController().navigateUp()
-                findNavController().navigateUp()
             }
         }
 
