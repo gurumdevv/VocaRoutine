@@ -32,13 +32,13 @@ class MyListViewModel @Inject constructor(
 
     val onlineItems: StateFlow<List<ListInfo>> = loadLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
     )
 
     val offlineItems: StateFlow<List<ListInfo>?> = loadOfflineLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = null
     )
 
@@ -58,25 +58,31 @@ class MyListViewModel @Inject constructor(
     val isNetworkAvailable: LiveData<Event<Boolean>> = _isNetworkAvailable
 
     private fun loadLists(): Flow<List<ListInfo>> = flow {
+        val uid = repository.getUid()
+        val userToken = repository.getUserToken()
         val list = repository.getLists(
-            repository.getUid(),
+            uid,
+            userToken,
             onComplete = { _isLoading.value = false },
             onSuccess = {
                 _isError.value = false
                 _isException.value = false
             }, onError = {
                 _isError.value = true
+                _isException.value = false
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
                 }
             }, onException = {
+                _isError.value = false
                 _isException.value = true
                 if (!it.isNullOrBlank()) {
                     crashlytics.log(it)
                 }
             }
         ).map { data ->
-            data.values.toList()
+            if (data.isEmpty()) emptyList()
+            else data.values.toList()
         }
 
         emitAll(list)
@@ -85,8 +91,10 @@ class MyListViewModel @Inject constructor(
     fun deleteList(listInfo: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             val list = repository.getListsById(
                 uid,
+                userToken,
                 listInfo.id,
                 onError = {
                     setSnackbarMessage(R.string.delete_fail)
@@ -104,13 +112,16 @@ class MyListViewModel @Inject constructor(
 
             list?.let {
                 val listKey = it.keys.first()
-                repository.deleteList(uid, listKey)
+                repository.deleteList(uid, userToken, listKey)
             }
         }
     }
 
     private fun loadOfflineLists(): Flow<List<ListInfo>> = repository.getAllOfflineLists(
-        onComplete = { _isLoading.value = false }
+        onComplete = {
+            _isLoading.value = false
+            _isError.value = false
+        }
     )
 
     fun deleteOfflineList(listInfo: ListInfo) {

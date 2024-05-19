@@ -85,11 +85,11 @@ class AfterPhotoViewModel @Inject constructor(
             if (vocabularies.isEmpty()) {
                 setSnackbarMessage(R.string.empty_list)
             } else {
-                val id = getId()
                 val uid = repository.getUid()
                 val totalCount = vocabularies.size
                 val date = getCurrentTime()
                 val currentAlarmCode = getAlarmCode()
+                val id = getId(currentAlarmCode)
                 val review = Review(firstReview = false, secondReview = false, thirdReview = false)
                 _alarmCode.emit(currentAlarmCode)
 
@@ -115,9 +115,8 @@ class AfterPhotoViewModel @Inject constructor(
         return dateFormat.format(currentTime)
     }
 
-    private suspend fun getId(): String {
+    private suspend fun getId(alarmCode: Int): String {
         val uid = repository.getUid()
-        val alarmCode = getAlarmCode()
         return ("${uid}${alarmCode}")
     }
 
@@ -152,5 +151,9 @@ class AfterPhotoViewModel @Inject constructor(
         viewModelScope.launch {
             _snackbarMessage.emit(messageId)
         }
+    }
+
+    suspend fun getUserToken(): String {
+        return repository.getUserToken()
     }
 }

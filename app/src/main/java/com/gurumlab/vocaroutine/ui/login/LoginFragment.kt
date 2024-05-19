@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,11 +23,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.BuildConfig
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.source.local.UserDataSource
 import com.gurumlab.vocaroutine.databinding.FragmentLoginBinding
+import com.gurumlab.vocaroutine.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -75,8 +74,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             val action = LoginFragmentDirections.actionLoginToHome()
             findNavController().navigate(action)
         } else {
-            Snackbar.make(requireView(), getString(R.string.logout_success), Toast.LENGTH_SHORT)
-                .show()
+            setSnackbarMessage(R.string.logout_success)
         }
     }
 
@@ -158,11 +156,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                 }
                 .addOnFailureListener { e ->
                     crashlytics.log("Legacy sign-in fail: ${e.localizedMessage}")
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.message_sign_in_failure),
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    setSnackbarMessage(R.string.message_sign_in_failure)
                 }
                 .addOnCanceledListener {
                     crashlytics.log("Legacy sign-in cancelled")
@@ -198,28 +192,35 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     val user = FirebaseAuth.getInstance().currentUser
-                    val uid = user?.uid
-                    if (uid.isNullOrBlank()) {
-                        showLoginErrorSnackBar()
+                    if (user == null) {
+                        setSnackbarMessage(R.string.message_sign_in_failure)
                     } else {
-                        lifecycleScope.launch {
-                            userDataSource.setUid(uid)
-                            updateUI(user)
-                        }
+                        user.getIdToken(true)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val firebaseIdToken = task.result.token
+                                    if (firebaseIdToken.isNullOrBlank() || user.uid.isBlank()) {
+                                        setSnackbarMessage(R.string.message_sign_in_failure)
+                                    } else {
+                                        lifecycleScope.launch {
+                                            userDataSource.setUid(user.uid)
+                                            updateUI(user)
+                                        }
+                                    }
+                                } else {
+                                    setSnackbarMessage(R.string.message_sign_in_failure)
+                                }
+                            }
                     }
                 } else {
                     crashlytics.log("Firebase authentication failed: ${it.exception}")
-                    showLoginErrorSnackBar()
+                    setSnackbarMessage(R.string.message_sign_in_failure)
                 }
             }
     }
 
-    private fun showLoginErrorSnackBar() {
-        Snackbar.make(
-            requireView(),
-            R.string.message_sign_in_failure,
-            Snackbar.LENGTH_LONG
-        ).show()
+    private fun setSnackbarMessage(messageId: Int) {
+        Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_LONG).show()
     }
 
     private fun hideBottomNavigation(visible: Boolean) {

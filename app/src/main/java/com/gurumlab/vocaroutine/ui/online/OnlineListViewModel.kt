@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,7 +36,7 @@ class OnlineListViewModel @Inject constructor(
 
     val sharedList: StateFlow<List<SharedListInfo>> = loadLists().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
     )
 
@@ -53,26 +55,40 @@ class OnlineListViewModel @Inject constructor(
     private val _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage: SharedFlow<Int> = _snackbarMessage
 
-    private fun loadLists(): Flow<List<SharedListInfo>> = repository.getSharedLists(
-        onComplete = { _isLoading.value = false },
-        onError = {
-            _isError.value = true
-            if (!it.isNullOrBlank()) {
-                crashlytics.log(it)
+    private fun loadLists(): Flow<List<SharedListInfo>> = flow {
+        val userToken = repository.getUserToken()
+        val list = repository.getSharedLists(
+            userToken,
+            onComplete = { _isLoading.value = false },
+            onSuccess = {
+                _isError.value = false
+                _isException.value = false
+            },
+            onError = {
+                _isError.value = true
+                _isException.value = false
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
+            },
+            onException = {
+                _isError.value = false
+                _isException.value = true
+                if (!it.isNullOrBlank()) {
+                    crashlytics.log(it)
+                }
             }
-        },
-        onException = {
-            _isException.value = true
-            if (!it.isNullOrBlank()) {
-                crashlytics.log(it)
-            }
+        ).map { data ->
+            if (data.isEmpty()) emptyList()
+            else data.values.toList()
         }
-    ).map { data ->
-        data.values.toList()
+
+        emitAll(list)
     }
 
     suspend fun getMyLists(): Flow<List<ListInfo>> = repository.getMyLists(
         repository.getUid(),
+        repository.getUserToken(),
         onError = {
             _isEmptyList.value = true
             if (!it.isNullOrBlank()) {
@@ -101,6 +117,7 @@ class OnlineListViewModel @Inject constructor(
     fun uploadToMyList(list: ListInfo) {
         viewModelScope.launch {
             val uid = repository.getUid()
+            val userToken = repository.getUserToken()
             val date = getCurrentTime()
             val review = Review(firstReview = false, secondReview = false, thirdReview = false)
             val alarmCode = getAlarmCode()
@@ -119,8 +136,13 @@ class OnlineListViewModel @Inject constructor(
                 review = review,
                 vocabularies = list.vocabularies
             )
-            repository.uploadList(uid, newListInfo)
-            _snackbarMessage.emit(R.string.list_download_complete)
+            try {
+                repository.uploadList(uid, userToken, newListInfo)
+                _snackbarMessage.emit(R.string.list_download_complete)
+            } catch (e: Exception) {
+                crashlytics.log("${e.message}")
+                _snackbarMessage.emit(R.string.fail_download_list)
+            }
         }
     }
 

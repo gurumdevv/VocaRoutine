@@ -116,4 +116,8 @@
     <string name="scan_hint">먼저 스캔해 주세요.</string>
     <string name="share_fail">공유에 실패했습니다.</string>
     <string name="delete_fail">삭제에 실패했습니다.</string>
+    <string name="fail_delete_list">단어장 삭제에 실패했습니다.</string>
+    <string name="fail_download_list">단어장 다운로드에 실패했습니다.</string>
+    <string name="fail_authentication">사용자 인증에 실패했습니다.</string>
+    <string name="fail_create_list">단어장 생성에 실패했습니다.</string>
 </resources>

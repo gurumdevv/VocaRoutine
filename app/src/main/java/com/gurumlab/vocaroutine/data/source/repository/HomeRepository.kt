@@ -8,6 +8,7 @@ import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
 import com.gurumlab.vocaroutine.data.source.remote.onSuccess
+import com.gurumlab.vocaroutine.util.FirebaseAuthenticator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,25 +22,25 @@ class HomeRepository @Inject constructor(
     private val dao: AlarmDao
 ) {
 
-    suspend fun getUid(): String {
-        return userDataSource.getUid()
-    }
-
     suspend fun getReviewListIds(currentDate: String): List<String> {
         return dao.getListIdsByDate(currentDate)
     }
 
     fun getListsById(
         uid: String,
+        userToken: String,
         reviewListId: String,
+        onSuccess: () -> Unit,
         onComplete: () -> Unit,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
     ): Flow<Map<String, ListInfo>> = flow {
-        val response = apiClient.getListsById(uid, "\"id\"", "\"${reviewListId}\"")
+        val response = apiClient.getListsById(uid, userToken, "\"id\"", "\"${reviewListId}\"")
         response.onSuccess {
             emit(it)
+            onSuccess()
         }.onError { code, message ->
+            emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
             onException(it.message)
@@ -60,15 +61,38 @@ class HomeRepository @Inject constructor(
         dao.deleteOutOfDateAlarms(currentDate)
     }
 
-    suspend fun updateFirstReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateFirstReviewCount(uid, listKey, review)
+    suspend fun updateFirstReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateFirstReviewCount(uid, listKey, userToken, review)
     }
 
-    suspend fun updateSecondReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateSecondReviewCount(uid, listKey, review)
+    suspend fun updateSecondReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateSecondReviewCount(uid, listKey, userToken, review)
     }
 
-    suspend fun updateThirdReviewCount(uid: String, listKey: String, review: Review) {
-        apiClient.updateThirdReviewCount(uid, listKey, review)
+    suspend fun updateThirdReviewCount(
+        uid: String,
+        userToken: String,
+        listKey: String,
+        review: Review
+    ) {
+        apiClient.updateThirdReviewCount(uid, listKey, userToken, review)
+    }
+
+    suspend fun getUid(): String {
+        return userDataSource.getUid()
+    }
+
+    suspend fun getUserToken(): String {
+        return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
     }
 }
