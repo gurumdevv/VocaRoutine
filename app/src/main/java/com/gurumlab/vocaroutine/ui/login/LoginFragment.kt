@@ -210,7 +210,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>() {
                                     } else {
                                         lifecycleScope.launch {
                                             userDataSource.setUid(user.uid)
-                                            userDataSource.setUserToken(firebaseIdToken)
                                             updateUI(user)
                                         }
                                     }

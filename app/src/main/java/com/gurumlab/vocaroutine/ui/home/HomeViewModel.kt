@@ -175,8 +175,6 @@ class HomeViewModel @Inject constructor(
     }
 
     suspend fun checkExistUid(): Boolean {
-        val uid = repository.getUid()
-        val userToken = repository.getUserToken()
-        return uid.isNotEmpty() && userToken.isNotEmpty()
+        return repository.getUid().isNotEmpty()
     }
 }

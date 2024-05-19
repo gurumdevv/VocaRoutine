@@ -9,6 +9,7 @@ import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
 import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.di.GptVersion
+import com.gurumlab.vocaroutine.util.FirebaseAuthenticator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -49,6 +50,6 @@ class MakingListRepository @Inject constructor(
     }
 
     suspend fun getUserToken(): String {
-        return userDataSource.getUserToken()
+        return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
     }
 }

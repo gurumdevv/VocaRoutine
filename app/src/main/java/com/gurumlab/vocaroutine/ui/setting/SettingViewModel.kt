@@ -36,54 +36,56 @@ class SettingViewModel @Inject constructor(
     val isLogout: SharedFlow<Boolean> = _isLogout
 
     suspend fun loadMyListCount() {
-        val uid = repository.getUid()
-        val userToken = repository.getUserToken()
-        val result = repository.getMyLists(
-            uid,
-            userToken,
-            onError = {
-                if (!it.isNullOrBlank()) {
-                    crashlytics.log(it)
+        repository.getUserToken().takeIf { it.isNotBlank() }?.let { userToken ->
+            val uid = repository.getUid()
+            val result = repository.getMyLists(
+                uid,
+                userToken,
+                onError = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
                 }
-            },
-            onException = {
-                if (!it.isNullOrBlank()) {
-                    crashlytics.log(it)
-                }
-            }
-        ).map { data ->
-            if (data.isEmpty()) emptyList()
-            else data.values.toList()
-        }.firstOrNull()
+            ).map { data ->
+                if (data.isEmpty()) emptyList()
+                else data.values.toList()
+            }.firstOrNull()
 
-        result?.let { data ->
-            _myListSize.value = data.size
+            result?.let { data ->
+                _myListSize.value = data.size
+            }
         }
     }
 
     suspend fun loadSharedListCount() {
-        val uid = repository.getUid()
-        val userToken = repository.getUserToken()
-        val result = repository.getSharedListByCreator(
-            uid,
-            userToken,
-            onError = {
-                if (!it.isNullOrBlank()) {
-                    crashlytics.log(it)
+        repository.getUserToken().takeIf { it.isNotBlank() }?.let { userToken ->
+            val uid = repository.getUid()
+            val result = repository.getSharedListByCreator(
+                uid,
+                userToken,
+                onError = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
                 }
-            },
-            onException = {
-                if (!it.isNullOrBlank()) {
-                    crashlytics.log(it)
-                }
-            }
-        ).map { data ->
-            if (data.isEmpty()) emptyList()
-            else data.values.toList()
-        }.firstOrNull()
+            ).map { data ->
+                if (data.isEmpty()) emptyList()
+                else data.values.toList()
+            }.firstOrNull()
 
-        result?.let { data ->
-            _sharedListSize.value = data.size
+            result?.let { data ->
+                _sharedListSize.value = data.size
+            }
         }
     }
 
@@ -152,7 +154,6 @@ class SettingViewModel @Inject constructor(
     fun logOut() {
         viewModelScope.launch {
             repository.setUid("")
-            repository.setUserToken("")
             FirebaseAuth.getInstance().signOut()
             _isLogout.emit(true)
             setSnackbarMessage(R.string.logout_done)

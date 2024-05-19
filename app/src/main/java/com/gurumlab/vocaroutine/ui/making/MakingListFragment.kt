@@ -76,14 +76,16 @@ class MakingListFragment : BaseFragment<FragmentMakingListBinding>() {
                 }
 
                 launch {
-                    val userToken = viewModel.getUserToken()
-                    viewModel.tempList.collect { tempListInfo ->
-                        val action =
-                            MakingListFragmentDirections.actionCreationToDialog(
+                    viewModel.getUserToken().takeIf { it.isNotBlank() }?.let { userToken ->
+                        viewModel.tempList.collect { tempListInfo ->
+                            val action = MakingListFragmentDirections.actionCreationToDialog(
                                 tempListInfo,
                                 userToken
                             )
-                        findNavController().navigate(action)
+                            findNavController().navigate(action)
+                        }
+                    } ?: run {
+                        viewModel.setSnackbarMessage(R.string.fail_authentication)
                     }
                 }
 

@@ -182,8 +182,13 @@ class DetailListViewModel @Inject constructor(
                 if (isAlreadyPost) {
                     setSnackbarMessage(R.string.already_share)
                 } else {
-                    repository.shareList(userToken, sharedListInfo)
-                    setSnackbarMessage(R.string.share_complete)
+                    try {
+                        repository.shareList(userToken, sharedListInfo)
+                        setSnackbarMessage(R.string.share_complete)
+                    } catch (e: Exception) {
+                        setSnackbarMessage(R.string.share_fail)
+                        crashlytics.log("${e.message}")
+                    }
                 }
             }
         }
