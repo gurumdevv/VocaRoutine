@@ -1,4 +1,10 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 plugins {
     id("com.android.application")
@@ -13,6 +19,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
     namespace = "com.gurumlab.vocaroutine"
     compileSdk = 34
 
@@ -36,11 +50,19 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            versionNameSuffix = "-release"
+            ndk { debugSymbolLevel = "FULL" }
+        }
+        debug {
+            isMinifyEnabled = false
+            versionNameSuffix = "-debug"
         }
     }
     compileOptions {
@@ -68,6 +90,7 @@ kapt {
 
 dependencies {
 
+    implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
     implementation("com.squareup.moshi:moshi:1.15.1")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
     implementation("com.google.firebase:firebase-crashlytics")
@@ -76,7 +99,6 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("io.coil-kt:coil:2.6.0")
     implementation("com.airbnb.android:lottie:3.5.0")
-    implementation("com.websitebeaver:documentscanner:1.0.0")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.0")
     implementation("com.google.dagger:hilt-android:2.51.1")
