@@ -80,7 +80,7 @@ class AfterPhotoViewModel @Inject constructor(
 
     fun createList() {
         viewModelScope.launch {
-            createVocabulary()
+            if (word.value.isNotBlank() && meaning.value.isNotBlank()) createVocabulary()
 
             if (vocabularies.isEmpty()) {
                 setSnackbarMessage(R.string.empty_list)
@@ -151,9 +151,5 @@ class AfterPhotoViewModel @Inject constructor(
         viewModelScope.launch {
             _snackbarMessage.emit(messageId)
         }
-    }
-
-    suspend fun getUserToken(): String {
-        return repository.getUserToken()
     }
 }

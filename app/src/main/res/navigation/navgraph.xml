@@ -93,9 +93,6 @@
         <argument
             android:name="tempListInfo"
             app:argType="com.gurumlab.vocaroutine.data.model.TempListInfo" />
-        <argument
-            android:name="userToken"
-            app:argType="string" />
     </dialog>
     <fragment
         android:id="@+id/navigation_online_detail"
@@ -106,11 +103,6 @@
             android:name="list"
             app:argType="com.gurumlab.vocaroutine.data.model.ListInfo" />
     </fragment>
-    <activity
-        android:id="@+id/navigation_scan"
-        android:name="com.gurumlab.vocaroutine.ui.making.ScanActivity"
-        android:label="@string/navigation_scan"
-        tools:layout="@layout/activity_scan" />
     <fragment
         android:id="@+id/navigation_after_photo"
         android:name="com.gurumlab.vocaroutine.ui.making.AfterPhotoFragment"

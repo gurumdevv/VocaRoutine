@@ -120,4 +120,5 @@
     <string name="fail_download_list">단어장 다운로드에 실패했습니다.</string>
     <string name="fail_authentication">사용자 인증에 실패했습니다.</string>
     <string name="fail_create_list">단어장 생성에 실패했습니다.</string>
+    <string name="fail_scan_document">문서 스캐너 실행을 실패했습니다.</string>
 </resources>
