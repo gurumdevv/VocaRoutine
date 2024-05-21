@@ -1,10 +1,10 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.io.FileInputStream
 import java.util.Properties
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = Properties()
-keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+val keystoreProperties = Properties().apply { load(FileInputStream(keystorePropertiesFile)) }
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties().apply { load(FileInputStream(localPropertiesFile)) }
 
 plugins {
     id("com.android.application")
@@ -37,8 +37,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "GOOGLE_CLIENT_ID", getLocalProperty("google_client_id"))
-        buildConfigField("String", "GPT_API_KEY", getLocalProperty("gpt_api_key"))
+        buildConfigField(
+            "String", "GOOGLE_CLIENT_ID", localProperties["google_client_id"] as String
+        )
+        buildConfigField("String", "GPT_API_KEY", localProperties["gpt_api_key"] as String)
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         kapt {
@@ -78,10 +80,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-}
-
-fun getLocalProperty(propertyKey: String): String {
-    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
 kapt {
