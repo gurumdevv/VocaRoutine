@@ -13,6 +13,10 @@
             name="list"
             type="com.gurumlab.vocaroutine.data.model.ListInfo" />
 
+        <variable
+            name="days"
+            type="com.gurumlab.vocaroutine.data.model.Days" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,39 +70,42 @@
 
         <ImageView
             android:id="@+id/iv_day_seven"
-            reviewStamp="@{list.review.thirdReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="14dp"
             android:contentDescription="@string/day_seven"
             android:src="@drawable/ic_circle_seven"
+            app:day="@{days.third}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:reviewStamp="@{list.review.thirdReview}" />
 
         <ImageView
             android:id="@+id/iv_day_three"
-            reviewStamp="@{list.review.secondReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="12dp"
             android:contentDescription="@string/day_three"
             android:src="@drawable/ic_circle_three"
+            app:day="@{days.second}"
             app:layout_constraintEnd_toStartOf="@id/iv_day_seven"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:reviewStamp="@{list.review.secondReview}" />
 
         <ImageView
             android:id="@+id/iv_day_one"
-            reviewStamp="@{list.review.firstReview}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="12dp"
             android:contentDescription="@string/day_one"
             android:src="@drawable/ic_circle_one"
+            app:day="@{days.first}"
             app:layout_constraintEnd_toStartOf="@id/iv_day_three"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:reviewStamp="@{list.review.firstReview}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
