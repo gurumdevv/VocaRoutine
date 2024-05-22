@@ -35,6 +35,7 @@ class OnlineListRepository @Inject constructor(
             emit(emptyMap())
             onError("code: $code, message: $message")
         }.onException {
+            emit(emptyMap())
             onException(it.message)
         }
     }.onCompletion {

@@ -9,7 +9,6 @@ import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
 import com.gurumlab.vocaroutine.data.source.remote.onSuccess
 import com.gurumlab.vocaroutine.di.GptVersion
-import com.gurumlab.vocaroutine.util.FirebaseAuthenticator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -31,7 +30,7 @@ class MakingListRepository @Inject constructor(
                 GptVersion.CURRENT_VERSION, listOf(
                     ChatMessage(
                         "system",
-                        "\'${word}\'를 분해해서 각 의미에 대해서 100자 이내로 어원만 알려줘. 문장의 끝은 \"니다\"로 끝내줘"
+                        "\'${word}\'에 대해서 어원을 알고 싶은데 단어가 분해가 가능하면 분해해서 100자 이내로 알려주고 문장의 끝은 \"니다\"로 끝내줘"
                     )
                 )
             )
@@ -47,9 +46,5 @@ class MakingListRepository @Inject constructor(
 
     suspend fun getUid(): String {
         return userDataSource.getUid()
-    }
-
-    suspend fun getUserToken(): String {
-        return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
     }
 }

@@ -17,6 +17,7 @@ import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.databinding.FragmentSaveListDialogBinding
+import com.gurumlab.vocaroutine.util.FirebaseAuthenticator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +28,6 @@ class SaveListDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
     private val args: SaveListDialogFragmentArgs by navArgs()
     private lateinit var tempListInfo: TempListInfo
-    private lateinit var userToken: String
 
     @Inject
     lateinit var apiClient: ApiClient
@@ -38,7 +38,6 @@ class SaveListDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tempListInfo = args.tempListInfo
-        userToken = args.userToken
     }
 
     override fun onCreateView(
@@ -69,6 +68,8 @@ class SaveListDialogFragment : DialogFragment() {
             )
             lifecycleScope.launch {
                 try {
+                    val userToken =
+                        FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
                     apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
                     findNavController().navigateUp()
                     findNavController().navigateUp()

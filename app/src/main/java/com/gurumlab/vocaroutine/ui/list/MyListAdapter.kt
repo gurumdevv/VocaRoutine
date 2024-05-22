@@ -5,21 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gurumlab.vocaroutine.R
+import com.gurumlab.vocaroutine.data.model.InitializedDate
 import com.gurumlab.vocaroutine.ui.common.ListClickListener
 import com.gurumlab.vocaroutine.ui.common.ListDiffUtil
 import com.gurumlab.vocaroutine.data.model.ListInfo
-import com.gurumlab.vocaroutine.data.source.local.OfflineModeDao
 import com.gurumlab.vocaroutine.databinding.ItemMyListBinding
 import com.gurumlab.vocaroutine.ui.common.ItemTouchHelperListener
-import javax.inject.Inject
 
 class MyListAdapter(
     private val viewModel: MyListViewModel,
     private val clickListener: ListClickListener
 ) : ListAdapter<ListInfo, MyListAdapter.MyListViewHolder>(ListDiffUtil()), ItemTouchHelperListener {
-
-    @Inject
-    lateinit var offlineModeDao: OfflineModeDao
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -37,6 +33,7 @@ class MyListAdapter(
 
         fun bind(list: ListInfo, clickListener: ListClickListener) {
             binding.list = list
+            binding.days = InitializedDate.days
             binding.clickListener = clickListener
         }
 

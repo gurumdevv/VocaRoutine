@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -15,18 +15,29 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_FORMAT_JPEG
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.FragmentAfterPhotoBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
-import com.gurumlab.vocaroutine.ui.common.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 @AndroidEntryPoint
 class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
     private val viewModel by viewModels<AfterPhotoViewModel>()
-    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private val scannerOptions = setScannerOption()
+    private val textRecognizer = setTextRecognition()
+    private val scanner = setScanner()
+    private val scannerLauncher = setScannerLauncher()
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -40,7 +51,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        startScanActivity()
+        startScan()
         setTopAppBar()
         setObservers()
         setBtnNextClickListener()
@@ -56,30 +67,6 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
     override fun onDestroyView() {
         super.onDestroyView()
         hideBottomNavigation(true)
-    }
-
-    private fun startScanActivity() {
-        setResultLauncher()
-        val intent = Intent(requireContext(), ScanActivity::class.java)
-        resultLauncher.launch(intent)
-    }
-
-    private fun setResultLauncher() {
-        resultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            binding.layoutAfterPhoto.isVisible = true
-            if (result.resultCode == RESULT_OK) {
-                val ocrResult = result.data?.getStringExtra(Constants.KEY_OCR_RESULT) ?: ""
-                binding.etOcrResult.setText(ocrResult.ifEmpty { getString(R.string.result_empty) })
-            } else {
-                if (viewModel.vocabularies.isEmpty()) {
-                    findNavController().navigateUp()
-                } else {
-                    binding.etOcrResult.setText(getString(R.string.result_empty))
-                }
-            }
-        }
     }
 
     private fun setObservers() {
@@ -113,16 +100,10 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
                 }
 
                 launch {
-                    viewModel.getUserToken().takeIf { it.isNotBlank() }?.let { userToken ->
-                        viewModel.tempList.collect { tempListInfo ->
-                            val action = MakingListFragmentDirections.actionCreationToDialog(
-                                tempListInfo,
-                                userToken
-                            )
-                            findNavController().navigate(action)
-                        }
-                    } ?: run {
-                        viewModel.setSnackbarMessage(R.string.fail_authentication)
+                    viewModel.tempList.collect { tempListInfo ->
+                        val action =
+                            AfterPhotoFragmentDirections.actionAfterPhotoToDialog(tempListInfo)
+                        findNavController().navigate(action)
                     }
                 }
 
@@ -137,6 +118,72 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
         }
     }
 
+    private fun setScannerOption() = GmsDocumentScannerOptions.Builder()
+        .setGalleryImportAllowed(false)
+        .setPageLimit(1)
+        .setResultFormats(RESULT_FORMAT_JPEG)
+        .setScannerMode(SCANNER_MODE_FULL)
+        .build()
+
+    private fun setScanner() = GmsDocumentScanning.getClient(scannerOptions)
+
+    private fun setTextRecognition() =
+        TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+    private fun setScannerLauncher() =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            binding.layoutAfterPhoto.isVisible = true
+            if (result.resultCode == RESULT_OK) {
+                processScanResult(result.data)
+            }
+        }
+
+    private fun startScan() {
+        scanner.getStartScanIntent(requireActivity())
+            .addOnSuccessListener { intentSender ->
+                scannerLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+            }
+            .addOnFailureListener {
+                val snackbar = Snackbar.make(
+                    requireView(),
+                    getString(R.string.fail_scan_document),
+                    Snackbar.LENGTH_SHORT
+                ).setAnchorView(activity?.findViewById(R.id.bottom_navigation))
+                snackbar.addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        findNavController().navigateUp()
+                    }
+                })
+                snackbar.show()
+            }
+    }
+
+    private fun processScanResult(data: Intent?) {
+        val scanResult = GmsDocumentScanningResult.fromActivityResultIntent(data)
+        scanResult?.pages?.let { pages ->
+            for (page in pages) {
+                val imageUri = page.imageUri
+                try {
+                    val image = InputImage.fromFilePath(requireContext(), imageUri)
+                    recognizeTextFromImage(image)
+                } catch (e: IOException) {
+                    viewModel.setSnackbarMessage(R.string.please_scan_again)
+                }
+            }
+        }
+    }
+
+    private fun recognizeTextFromImage(image: InputImage) {
+        textRecognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                val resultText = visionText.text.ifEmpty { getString(R.string.result_empty) }
+                binding.etOcrResult.setText(resultText)
+            }
+            .addOnFailureListener {
+                viewModel.setSnackbarMessage(R.string.please_scan_again)
+            }
+    }
+
     private fun setBtnNextClickListener() {
         binding.btnNext.setOnClickListener {
             lifecycleScope.launch {
@@ -147,8 +194,7 @@ class AfterPhotoFragment : BaseFragment<FragmentAfterPhotoBinding>() {
 
     private fun setCameraClickListener() {
         binding.btnCamera.setOnClickListener {
-            val intent = Intent(requireContext(), ScanActivity::class.java)
-            resultLauncher.launch(intent)
+            startScan()
         }
     }
 
