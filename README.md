@@ -29,9 +29,9 @@ ML Kit의 Document Scan, OCR 기능을 도입했습니다. 카메라로 문서�
 <img width="960" alt="appArchitecure" src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/5cb4231e-3288-4101-b2e0-2fc16e8380ff">
 
 ## History
-- ✔️ **2023.10 ~ 2023.12:** 개발 완료
-- ✔️ **2024.05.13:** 다크모드 대응
-- ✔️ **2024.05.15 ~ 2024.05.22:** Flow 기술 전환, 버그 수정, PlayStore 출시 준비
+✔️ **2023.10 ~ 2023.12:** 개발 완료
+✔️ **2024.05.13:** 다크모드 대응
+✔️ **2024.05.15 ~ 2024.05.22:** Flow 기술 전환, 버그 수정, PlayStore 출시 준비
 
 ## Tech Skill
 | Category | Stack |
