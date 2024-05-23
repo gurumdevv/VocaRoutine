@@ -121,4 +121,15 @@
     <string name="fail_authentication">사용자 인증에 실패했습니다.</string>
     <string name="fail_create_list">단어장 생성에 실패했습니다.</string>
     <string name="fail_scan_document">문서 스캐너 실행을 실패했습니다.</string>
+    <string name="navigation_policy_agreement">약관 동의 화면</string>
+    <string name="policy_agreement_title">이용약관 동의</string>
+    <string name="policy_agreement_content">서비스 이용을 위해서 필수 약관 동의가 필요합니다.</string>
+    <string name="check">확인</string>
+    <string name="agree_privacy_policy">개인정보 수집 이용 동의</string>
+    <string name="essential">(필수)</string>
+    <string name="btn_privacy">개인정보 수집 안내 버튼</string>
+    <string name="agree_terms">이용약관 동의</string>
+    <string name="btn_terms">이용약관 안내 버튼</string>
+    <string name="order_than_fourteen">만 14세 이상입니다.</string>
+    <string name="all_agree">전체 동의</string>
 </resources>

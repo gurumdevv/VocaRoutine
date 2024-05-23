@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".ui.login.PolicyAgreementFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/layout_app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_color"
+            android:minHeight="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/icon_color" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/LargeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/policy_agreement_title"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/policy_agreement_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_agree"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/selector_btn_agree"
+        android:enabled="false"
+        android:stateListAnimator="@null"
+        android:text="@string/check"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cb_privacy"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/selector_ic_check"
+        android:button="@android:color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/btn_agree"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_privacy"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="33dp"
+        android:text="@string/agree_privacy_policy"
+        android:textColor="@color/text_color"
+        app:layout_constraintBottom_toTopOf="@id/btn_agree"
+        app:layout_constraintStart_toEndOf="@+id/cb_privacy" />
+
+    <TextView
+        android:id="@+id/tv_privacy_essential"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="33dp"
+        android:text="@string/essential"
+        android:textColor="@color/orange200"
+        app:layout_constraintBottom_toTopOf="@id/btn_agree"
+        app:layout_constraintStart_toEndOf="@+id/tv_privacy" />
+
+    <ImageButton
+        android:id="@+id/btn_privacy"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="30dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_privacy"
+        android:src="@drawable/ic_info"
+        app:layout_constraintBottom_toTopOf="@id/btn_agree"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cb_terms"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="13dp"
+        android:background="@drawable/selector_ic_check"
+        android:button="@android:color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/cb_privacy"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_terms"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/agree_terms"
+        android:textColor="@color/text_color"
+        app:layout_constraintBottom_toTopOf="@id/cb_privacy"
+        app:layout_constraintStart_toEndOf="@+id/cb_terms" />
+
+    <TextView
+        android:id="@+id/tv_terms_essential"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/essential"
+        android:textColor="@color/orange200"
+        app:layout_constraintBottom_toTopOf="@id/cb_privacy"
+        app:layout_constraintStart_toEndOf="@+id/tv_terms" />
+
+    <ImageButton
+        android:id="@+id/btn_terms"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="13dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_terms"
+        android:src="@drawable/ic_info"
+        app:layout_constraintBottom_toTopOf="@id/cb_privacy"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cb_age"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="13dp"
+        android:background="@drawable/selector_ic_check"
+        android:button="@android:color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/cb_terms"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_age"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/order_than_fourteen"
+        android:textColor="@color/text_color"
+        app:layout_constraintBottom_toTopOf="@id/cb_terms"
+        app:layout_constraintStart_toEndOf="@+id/cb_age" />
+
+    <TextView
+        android:id="@+id/tv_age_essential"
+        style="@style/MediumBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/essential"
+        android:textColor="@color/orange200"
+        app:layout_constraintBottom_toTopOf="@id/cb_terms"
+        app:layout_constraintStart_toEndOf="@+id/tv_age" />
+
+    <CheckBox
+        android:id="@+id/cb_all_agree"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/selector_ic_all_check"
+        android:button="@android:color/transparent"
+        app:layout_constraintBottom_toTopOf="@id/cb_age"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_all_agree"
+        style="@style/LargeBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="23dp"
+        android:text="@string/all_agree"
+        android:textColor="@color/text_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cb_age"
+        app:layout_constraintStart_toEndOf="@+id/cb_all_agree" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

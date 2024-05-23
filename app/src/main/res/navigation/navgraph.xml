@@ -112,4 +112,9 @@
             android:id="@+id/action_after_photo_to_dialog"
             app:destination="@id/navigation_dialog" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_policy_agreement"
+        android:name="com.gurumlab.vocaroutine.ui.login.PolicyAgreementFragment"
+        android:label="@string/navigation_policy_agreement"
+        tools:layout="@layout/fragment_policy_agreement" />
 </navigation>
