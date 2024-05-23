@@ -4,26 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.databinding.FragmentSettingBinding
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class SettingFragment : BaseFragment<FragmentSettingBinding>() {
-
-    private val viewModel by viewModels<SettingViewModel>()
 
     override fun inflateBinding(
         inflater: LayoutInflater,
@@ -34,61 +22,25 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
 
-        setMyListsCount()
-        setSharedListsCount()
-        setSnackbarMessage()
-        setLogout()
+        setLayout()
         setUserProfile()
     }
 
-    private fun setMyListsCount() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadMyListCount()
-                viewModel.myListSize.collect { size ->
-                    binding.tvCountMyList.text = getString(R.string.count_my_list, size)
-                }
-            }
+    private fun setLayout() {
+        binding.btnSettingAccount.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingToAccountSetting()
+            findNavController().navigate(action)
         }
-    }
 
-    private fun setSharedListsCount() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loadSharedListCount()
-                viewModel.sharedListSize.collect { size ->
-                    binding.tvCountShareList.text =
-                        getString(R.string.count_share_list, size)
-                }
-            }
+        binding.btnSettingList.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingToListSetting()
+            findNavController().navigate(action)
         }
-    }
 
-    private fun setSnackbarMessage() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.snackbarMessage
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { messageId ->
-                    Snackbar.make(requireView(), getString(messageId), Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.bottom_navigation)
-                        .show()
-                }
-        }
-    }
-
-    private fun setLogout() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isLogout
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect { isCompleted ->
-                    if (isCompleted) {
-                        val action = SettingFragmentDirections.actionSettingToLogin()
-                        findNavController().navigate(action)
-                    }
-                }
+        binding.btnPolicy.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingToPolicy()
+            findNavController().navigate(action)
         }
     }
 
