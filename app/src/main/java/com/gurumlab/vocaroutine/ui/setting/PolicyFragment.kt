@@ -1,4 +1,4 @@
-package com.gurumlab.vocaroutine.ui.login
+package com.gurumlab.vocaroutine.ui.setting
 
 import android.content.Intent
 import android.net.Uri
@@ -6,21 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.gurumlab.vocaroutine.R
-import com.gurumlab.vocaroutine.databinding.FragmentPolicyAgreementBinding
+import com.gurumlab.vocaroutine.databinding.FragmentPolicyBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import com.gurumlab.vocaroutine.ui.common.Constants.PRIVACY_URL
 import com.gurumlab.vocaroutine.ui.common.Constants.TERMS_URL
 
-class PolicyAgreementFragment : BaseFragment<FragmentPolicyAgreementBinding>() {
+class PolicyFragment : BaseFragment<FragmentPolicyBinding>() {
     override fun inflateBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentPolicyAgreementBinding {
-        return FragmentPolicyAgreementBinding.inflate(inflater, container, false)
+    ): FragmentPolicyBinding {
+        return FragmentPolicyBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,26 +36,7 @@ class PolicyAgreementFragment : BaseFragment<FragmentPolicyAgreementBinding>() {
     private fun setLayout() {
         setTopAppBar()
         setButtonClickListener()
-        setCheckBoxClickListener()
         hideBottomNavigation(false)
-    }
-
-    private fun setCheckBoxClickListener() {
-        binding.cbAllAgree.setOnClickListener {
-            val isChecked = binding.cbAllAgree.isChecked
-            binding.cbAge.isChecked = isChecked
-            binding.cbPrivacy.isChecked = isChecked
-            binding.cbTerms.isChecked = isChecked
-            binding.btnAgree.isEnabled = isChecked
-        }
-
-        val checkBoxListener = CompoundButton.OnCheckedChangeListener { _, _ ->
-            updateAgreeButtonState()
-        }
-
-        binding.cbAge.setOnCheckedChangeListener(checkBoxListener)
-        binding.cbPrivacy.setOnCheckedChangeListener(checkBoxListener)
-        binding.cbTerms.setOnCheckedChangeListener(checkBoxListener)
     }
 
     private fun setButtonClickListener() {
@@ -69,13 +49,6 @@ class PolicyAgreementFragment : BaseFragment<FragmentPolicyAgreementBinding>() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(PRIVACY_URL))
             startActivity(intent)
         }
-    }
-
-    private fun updateAgreeButtonState() {
-        val allChecked =
-            binding.cbAge.isChecked && binding.cbPrivacy.isChecked && binding.cbTerms.isChecked
-        binding.cbAllAgree.isChecked = allChecked
-        binding.btnAgree.isEnabled = allChecked
     }
 
     private fun setTopAppBar() {

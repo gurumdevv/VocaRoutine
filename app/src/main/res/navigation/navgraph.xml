@@ -46,10 +46,14 @@
         android:label="@string/fragment_setting"
         tools:layout="@layout/fragment_setting">
         <action
-            android:id="@+id/action_setting_to_login"
-            app:destination="@id/navigation_login"
-            app:popUpTo="@id/navigation_home"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_setting_to_policy"
+            app:destination="@id/navigation_policy" />
+        <action
+            android:id="@+id/action_setting_to_list_setting"
+            app:destination="@id/navigation_list_setting" />
+        <action
+            android:id="@+id/action_setting_to_account_setting"
+            app:destination="@id/navigation_account_setting" />
     </fragment>
     <fragment
         android:id="@+id/navigation_login"
@@ -117,4 +121,25 @@
         android:name="com.gurumlab.vocaroutine.ui.login.PolicyAgreementFragment"
         android:label="@string/navigation_policy_agreement"
         tools:layout="@layout/fragment_policy_agreement" />
+    <fragment
+        android:id="@+id/navigation_policy"
+        android:name="com.gurumlab.vocaroutine.ui.setting.PolicyFragment"
+        android:label="@string/navigation_policy"
+        tools:layout="@layout/fragment_policy" />
+    <fragment
+        android:id="@+id/navigation_list_setting"
+        android:name="com.gurumlab.vocaroutine.ui.setting.ListSettingFragment"
+        android:label="@string/navigation_list_setting"
+        tools:layout="@layout/fragment_list_setting" />
+    <fragment
+        android:id="@+id/navigation_account_setting"
+        android:name="com.gurumlab.vocaroutine.ui.setting.AccountSettingFragment"
+        android:label="@string/navigation_account_setting"
+        tools:layout="@layout/fragment_account_setting">
+        <action
+            android:id="@+id/action_account_setting_to_login"
+            app:destination="@id/navigation_login"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
