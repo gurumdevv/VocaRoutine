@@ -31,4 +31,7 @@ interface AlarmDao {
 
     @Query("SELECT alarmCode FROM activeAlarms WHERE (id = :id) AND (date LIKE :date || '%')")
     suspend fun getAlarmCode(id: String, date: String): Int
+
+    @Query("DELETE FROM activeAlarms")
+    suspend fun deleteAllAlarms()
 }

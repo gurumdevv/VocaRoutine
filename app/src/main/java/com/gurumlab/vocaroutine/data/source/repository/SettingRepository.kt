@@ -2,6 +2,7 @@ package com.gurumlab.vocaroutine.data.source.repository
 
 import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
+import com.gurumlab.vocaroutine.data.source.local.AlarmDao
 import com.gurumlab.vocaroutine.data.source.local.UserDataSource
 import com.gurumlab.vocaroutine.data.source.remote.onError
 import com.gurumlab.vocaroutine.data.source.remote.onException
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class SettingRepository @Inject constructor(
     private val apiClient: ApiClient,
+    private val dao: AlarmDao,
     private val userDataSource: UserDataSource
 ) {
 
@@ -75,6 +77,10 @@ class SettingRepository @Inject constructor(
 
     suspend fun deleteMyList(uid: String, userToken: String) {
         apiClient.deleteAllMyLists(uid, userToken)
+    }
+
+    suspend fun deleteAllMyAlarm() {
+        dao.deleteAllAlarms()
     }
 
     suspend fun getUid(): String {
