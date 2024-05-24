@@ -61,10 +61,8 @@
         android:label="@string/fragment_login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_login_to_home"
-            app:destination="@id/navigation_home"
-            app:popUpTo="@id/navigation_login"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_login_to_policy_agreement"
+            app:destination="@id/navigation_policy_agreement" />
     </fragment>
     <fragment
         android:id="@+id/navigation_detail"
@@ -120,7 +118,13 @@
         android:id="@+id/navigation_policy_agreement"
         android:name="com.gurumlab.vocaroutine.ui.login.PolicyAgreementFragment"
         android:label="@string/navigation_policy_agreement"
-        tools:layout="@layout/fragment_policy_agreement" />
+        tools:layout="@layout/fragment_policy_agreement">
+        <action
+            android:id="@+id/action_policy_agreement_to_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_login"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_policy"
         android:name="com.gurumlab.vocaroutine.ui.setting.PolicyFragment"

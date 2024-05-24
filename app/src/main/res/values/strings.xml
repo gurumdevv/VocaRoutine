@@ -143,6 +143,7 @@
     <string name="navigation_list_setting">단어장 관리 화면</string>
     <string name="navigation_account_setting">계정 관리 화면</string>
     <string name="account_delete">회원탈퇴</string>
-    <string name="fail_delete_account">계정 삭제에 실패했습니다.</string>
+    <string name="fail_delete_account">계정 삭제에 실패했습니다.\n로그아웃 후 다시 로그인한 후 재시도해 주세요.</string>
     <string name="success_account_delete">계정이 삭제되었습니다.</string>
+    <string name="sign_in_with_google">Google로 시작하기</string>
 </resources>
