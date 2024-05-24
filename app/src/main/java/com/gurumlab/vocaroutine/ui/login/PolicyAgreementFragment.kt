@@ -136,6 +136,11 @@ class PolicyAgreementFragment : BaseFragment<FragmentPolicyAgreementBinding>() {
         val legacySignInLauncher = getLegacySignInResultLauncher(onSuccess)
         val oneTapSignInLauncher = getOneTapSignInResultLauncher(onSuccess, legacySignInLauncher)
         binding.btnAgree.setOnClickListener {
+            binding.btnAgree.apply {
+                isEnabled = false
+                text = getString(R.string.btn_sign_in_progress)
+            }
+
             startGoogleSignIn(oneTapSignInLauncher, legacySignInLauncher)
         }
     }

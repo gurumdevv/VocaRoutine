@@ -22,8 +22,6 @@
     <string name="loading_etymology">어원을 불러오는 중입니다.</string>
     <string name="review_notification">복습 알림</string>
     <string name="time_to_review">복습할 시간입니다.</string>
-    <string name="check_alarm_permission">알림 권한을 활성화해 주세요.</string>
-    <string name="check_permission">권한을 확인해 주세요.</string>
     <string name="review_channel_description">복습 설정 알림 채널</string>
     <string name="set_notification_description">알림 설정 버튼</string>
     <string name="set_download_description">오프라인 저장 버튼</string>
@@ -108,8 +106,6 @@
     <string name="nothing_mine_yet">새 단어장 버튼을 눌러서\n단어장을 만들어 보세요!</string>
     <string name="nothing_downloaded_yet">다운로드한 단어장이 없습니다.</string>
     <string name="able_anything_except_review">복습 알림 기능 외 모두 사용 가능합니다.</string>
-    <string name="permission_information">권한 안내</string>
-    <string name="require_notification_permission">복습 알림을 위해서는 알림 권한이 필요합니다.</string>
     <string name="agree">확인</string>
     <string name="message_sign_in_failure">로그인에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="logout_success">로그아웃됨</string>
@@ -146,4 +142,16 @@
     <string name="fail_delete_account">계정 삭제에 실패했습니다.\n로그아웃 후 다시 로그인한 후 재시도해 주세요.</string>
     <string name="success_account_delete">계정이 삭제되었습니다.</string>
     <string name="sign_in_with_google">Google로 시작하기</string>
+    <string name="permission_information">권한 안내</string>
+    <string name="permission_agree">동의하기</string>
+    <string name="later">나중에 하기</string>
+    <string name="permission_description_first">복습 기능을 위해서는\n알림 권한이 필요합니다.</string>
+    <string name="permission_description_second">아래 \'동의하기\'버튼을 눌러서\n알림 권한 사용에 동의해주세요.</string>
+    <string name="permission_denied_content_first">복습 알림 기능 이외에는\n모두 사용 가능합니다.</string>
+    <string name="permission_denied_content_second">추후에 알림 권한을 설정하시려면\n상세 단어장에서 알림 버튼을 눌러주세요.</string>
+    <string name="navigation_permission_dialog">권한 요청 다이얼로그</string>
+    <string name="navigation_permission_denied_dialog">권한 거절됨 다이얼로그</string>
+    <string name="check_alarm_reminders_permission">알림 및 리마인더 권한이 필요합니다.</string>
+    <string name="check_alarm_permission">알림 권한이 필요합니다.</string>
+    <string name="btn_sign_in_progress">로그인 진행 중</string>
 </resources>

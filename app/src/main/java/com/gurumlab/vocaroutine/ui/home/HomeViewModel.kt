@@ -177,4 +177,12 @@ class HomeViewModel @Inject constructor(
     suspend fun checkExistUid(): Boolean {
         return repository.getUid().isNotEmpty()
     }
+
+    suspend fun getIsPermissionCheck(): Boolean {
+        return repository.getIsPermissionCheck()
+    }
+
+    suspend fun setPermissionCheck(check: Boolean) {
+        repository.setIsPermissionCheck(check)
+    }
 }

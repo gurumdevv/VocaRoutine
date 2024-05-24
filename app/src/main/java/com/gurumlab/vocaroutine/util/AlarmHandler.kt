@@ -94,7 +94,7 @@ class AlarmHandler @Inject constructor(
             context.startActivity(intent)
             Toast.makeText(
                 context,
-                context.getString(R.string.check_permission),
+                context.getString(R.string.check_alarm_reminders_permission),
                 Toast.LENGTH_SHORT
             ).show()
         }

@@ -59,7 +59,7 @@
         android:enabled="false"
         android:stateListAnimator="@null"
         android:text="@string/check"
-        android:textColor="@color/white"
+        android:textColor="@drawable/selector_button_text_color"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -15,6 +15,9 @@
             app:destination="@id/navigation_login"
             app:popUpTo="@id/navigation_home"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_home_to_permission_dialog"
+            app:destination="@id/navigation_permission_dialog" />
     </fragment>
     <fragment
         android:id="@+id/navigation_online"
@@ -146,4 +149,21 @@
             app:popUpTo="@id/navigation_home"
             app:popUpToInclusive="true" />
     </fragment>
+    <dialog
+        android:id="@+id/navigation_permission_dialog"
+        android:name="com.gurumlab.vocaroutine.ui.home.PermissionDialogFragment"
+        android:label="@string/navigation_permission_dialog"
+        tools:layout="@layout/fragment_permission_dialog">
+        <action
+            android:id="@+id/action_permission_dialog_to_permission_denied_dialog"
+            app:destination="@id/navigation_permission_denied_dialog"
+            app:popUpTo="@id/navigation_permission_dialog"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/navigation_permission_denied_dialog"
+        android:name="com.gurumlab.vocaroutine.ui.home.PermissionDeniedDialogFragment"
+        android:label="@string/navigation_permission_denied_dialog"
+        tools:layout="@layout/fragment_permission_denied_dialog" />
+
 </navigation>
