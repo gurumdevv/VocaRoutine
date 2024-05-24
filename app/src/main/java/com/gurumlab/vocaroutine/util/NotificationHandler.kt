@@ -1,4 +1,4 @@
-package com.gurumlab.vocaroutine
+package com.gurumlab.vocaroutine.util
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.gurumlab.vocaroutine.R
 
 class NotificationHandler(private val context: Context) {
 

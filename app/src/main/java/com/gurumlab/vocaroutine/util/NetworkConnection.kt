@@ -1,4 +1,4 @@
-package com.gurumlab.vocaroutine
+package com.gurumlab.vocaroutine.util
 
 import android.content.Context
 import android.net.ConnectivityManager

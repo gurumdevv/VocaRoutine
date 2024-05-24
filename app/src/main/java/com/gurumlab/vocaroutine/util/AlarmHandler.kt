@@ -1,4 +1,4 @@
-package com.gurumlab.vocaroutine
+package com.gurumlab.vocaroutine.util
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.gurumlab.vocaroutine.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.ParseException
 import java.text.SimpleDateFormat

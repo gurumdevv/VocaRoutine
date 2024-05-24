@@ -11,7 +11,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.gurumlab.vocaroutine.NetworkConnection
+import com.gurumlab.vocaroutine.util.NetworkConnection
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.FragmentAccountSettingBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
