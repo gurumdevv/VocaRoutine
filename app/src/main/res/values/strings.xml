@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VocaRoutine</string>
+    <string name="app_name">Voca루틴</string>
     <string name="app_name_kr">Voca루틴</string>
     <string name="fragment_login">로그인 화면</string>
     <string name="fragment_setting">설정 화면</string>

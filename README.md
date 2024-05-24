@@ -1,6 +1,6 @@
 ![VocaRoutine_introduce](https://github.com/gurumdevv/VocaRoutine/assets/129643788/90e983ed-9593-41ea-bdfb-fcf4e14dfb9e)
 
-# 보카루틴 - 암기부터 복습까지 모두 챙겨주는 스마트 단어장
+# Voca루틴 - 암기부터 복습까지 모두 챙겨주는 스마트 단어장
 
 ## Project Explanation
 🌟 단어장 작성, 퀴즈 기능을 넘어서 열심히 외웠던 단어를 까먹지 않도록 최적화된 주기로 복습할 수 있는 기능을 제공합니다.<br>
