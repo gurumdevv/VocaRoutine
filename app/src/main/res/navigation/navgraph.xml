@@ -98,6 +98,11 @@
         <argument
             android:name="tempListInfo"
             app:argType="com.gurumlab.vocaroutine.data.model.TempListInfo" />
+        <action
+            android:id="@+id/action_dialog_to_mine"
+            app:destination="@id/navigation_mine"
+            app:popUpTo="@id/navigation_mine"
+            app:popUpToInclusive="false" />
     </dialog>
     <fragment
         android:id="@+id/navigation_online_detail"
