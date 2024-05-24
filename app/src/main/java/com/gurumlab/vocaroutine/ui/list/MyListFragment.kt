@@ -109,7 +109,6 @@ class MyListFragment : BaseFragment<FragmentMyListBinding>(), ListClickListener 
     }
 
     private fun setNewListButton() {
-        binding.btnNewList.elevation = 0f
 
         binding.btnNewList.setOnClickListener {
             val action = MyListFragmentDirections.actionMineToCreation()

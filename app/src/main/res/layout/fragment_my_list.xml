@@ -57,6 +57,7 @@
         android:insetRight="5dp"
         android:minWidth="0dp"
         android:text="@string/new_list"
+        android:stateListAnimator="@null"
         android:textColor="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
