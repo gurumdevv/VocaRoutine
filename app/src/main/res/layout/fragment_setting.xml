@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background_color">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
-        <variable
-            name="viewModel"
-            type="com.gurumlab.vocaroutine.ui.setting.SettingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_color"
         tools:context=".ui.setting.SettingFragment">
 
         <TextView
@@ -41,144 +38,82 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_app_title" />
 
-        <TextView
-            android:id="@+id/tv_account_title"
-            style="@style/MediumBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="18dp"
-            android:text="@string/account_information"
-            android:textColor="@color/text_color"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
+        <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/iv_account_profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="18dp"
             android:src="@drawable/ic_google"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_account_title"
-            app:tint="@color/icon_color" />
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:roundPercent="1" />
 
         <TextView
             android:id="@+id/tv_account_nick_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="28dp"
             android:textColor="@color/text_color"
             app:layout_constraintStart_toEndOf="@id/iv_account_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_account_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:text="닉네임" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_logout"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_setting_account"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="18dp"
-            android:background="@drawable/item_custom_button"
-            android:backgroundTint="@color/button_color"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:onClick="@{() -> viewModel.logOut()}"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="5dp"
-            android:text="@string/logout"
-            android:textColor="@color/button_text_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_account_title" />
-
-        <TextView
-            android:id="@+id/tv_manage_share_list"
-            style="@style/MediumBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/manage_shared_list"
+            android:layout_marginTop="18dp"
+            android:background="@color/background_color"
+            android:drawableStart="@drawable/ic_profile"
+            android:drawableEnd="@drawable/ic_right_arrow"
+            android:drawablePadding="10dp"
+            android:paddingHorizontal="18dp"
+            android:stateListAnimator="@null"
+            android:text="@string/setting_account"
+            android:textAlignment="viewStart"
             android:textColor="@color/text_color"
-            android:textStyle="bold"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_account_profile" />
 
-        <TextView
-            android:id="@+id/tv_count_share_list"
-            style="@style/MediumBody"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_setting_list"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/load_data"
+            android:background="@color/background_color"
+            android:drawableStart="@drawable/ic_stack"
+            android:drawableEnd="@drawable/ic_right_arrow"
+            android:drawablePadding="10dp"
+            android:paddingHorizontal="18dp"
+            android:stateListAnimator="@null"
+            android:text="@string/setting_list"
+            android:textAlignment="viewStart"
             android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_manage_share_list"
-            tools:text="2개의 단어장이 공유됨" />
+            app:layout_constraintTop_toBottomOf="@id/btn_setting_account" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_delete_shared"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_policy"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="18dp"
-            android:background="@drawable/item_custom_button"
-            android:backgroundTint="@color/button_color"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:onClick="@{() -> viewModel.deleteShareLists()}"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="5dp"
-            android:text="@string/delete"
-            android:textColor="@color/button_text_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_manage_share_list" />
-
-        <TextView
-            android:id="@+id/tv_manage_my_list"
-            style="@style/MediumBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="30dp"
-            android:text="@string/manage_my_list"
+            android:background="@color/background_color"
+            android:drawableStart="@drawable/ic_chat"
+            android:drawableEnd="@drawable/ic_right_arrow"
+            android:drawablePadding="10dp"
+            android:paddingHorizontal="18dp"
+            android:stateListAnimator="@null"
+            android:text="@string/terms_and_privacy"
+            android:textAlignment="viewStart"
             android:textColor="@color/text_color"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_count_share_list" />
-
-        <TextView
-            android:id="@+id/tv_count_my_list"
-            style="@style/MediumBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/load_data"
-            android:textColor="@color/text_color"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_manage_my_list"
-            tools:text="3개의 내 단어장" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_delete_mine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="18dp"
-            android:background="@drawable/item_custom_button"
-            android:backgroundTint="@color/red"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:onClick="@{() -> viewModel.deleteAllMyLists()}"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="5dp"
-            android:text="@string/delete_all"
-            android:textColor="@color/white"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_manage_my_list" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_setting_list" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

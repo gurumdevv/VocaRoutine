@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="StampImageView">
+        <attr name="day" format="integer" />
+        <attr name="reviewStamp" format="boolean" />
+    </declare-styleable>
+</resources>

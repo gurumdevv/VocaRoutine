@@ -1,9 +1,10 @@
-package com.gurumlab.vocaroutine
+package com.gurumlab.vocaroutine.util
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.ui.MainActivity
 
 class AlarmReceiver : BroadcastReceiver() {

@@ -95,4 +95,12 @@ class HomeRepository @Inject constructor(
     suspend fun getUserToken(): String {
         return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
     }
+
+    suspend fun getIsPermissionCheck(): Boolean {
+        return userDataSource.getIsPermissionCheck()
+    }
+
+    suspend fun setIsPermissionCheck(isPermissionCheck: Boolean) {
+        userDataSource.setIsPermissionCheck(isPermissionCheck)
+    }
 }

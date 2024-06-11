@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.gurumlab.vocaroutine.AlarmHandler
+import com.gurumlab.vocaroutine.util.AlarmHandler
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.data.model.Alarm
 import com.gurumlab.vocaroutine.data.model.ListInfo

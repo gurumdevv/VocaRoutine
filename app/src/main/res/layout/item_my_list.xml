@@ -68,7 +68,7 @@
             app:barrierDirection="start"
             app:constraint_referenced_ids="iv_day_one" />
 
-        <ImageView
+        <com.gurumlab.vocaroutine.util.StampImageView
             android:id="@+id/iv_day_seven"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:reviewStamp="@{list.review.thirdReview}" />
 
-        <ImageView
+        <com.gurumlab.vocaroutine.util.StampImageView
             android:id="@+id/iv_day_three"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:reviewStamp="@{list.review.secondReview}" />
 
-        <ImageView
+        <com.gurumlab.vocaroutine.util.StampImageView
             android:id="@+id/iv_day_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

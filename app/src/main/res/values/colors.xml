@@ -16,4 +16,5 @@
     <color name="button_text_color">@color/white</color>
     <color name="view_background_color">@color/gray_transparent_45</color>
     <color name="text_input_edit_text">@color/gray000</color>
+    <color name="light_gray">#FFEAE8E8</color>
 </resources>

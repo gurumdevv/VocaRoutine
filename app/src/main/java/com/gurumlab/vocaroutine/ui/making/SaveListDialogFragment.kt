@@ -1,12 +1,9 @@
 package com.gurumlab.vocaroutine.ui.making
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,15 +14,15 @@ import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.source.remote.ApiClient
 import com.gurumlab.vocaroutine.databinding.FragmentSaveListDialogBinding
+import com.gurumlab.vocaroutine.ui.BaseDialogFragment
 import com.gurumlab.vocaroutine.util.FirebaseAuthenticator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SaveListDialogFragment : DialogFragment() {
-    private var _binding: FragmentSaveListDialogBinding? = null
-    private val binding get() = _binding!!
+class SaveListDialogFragment : BaseDialogFragment<FragmentSaveListDialogBinding>() {
+
     private val args: SaveListDialogFragmentArgs by navArgs()
     private lateinit var tempListInfo: TempListInfo
 
@@ -40,14 +37,11 @@ class SaveListDialogFragment : DialogFragment() {
         tempListInfo = args.tempListInfo
     }
 
-    override fun onCreateView(
+    override fun inflateBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSaveListDialogBinding.inflate(inflater, container, false)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return binding.root
+        container: ViewGroup?
+    ): FragmentSaveListDialogBinding {
+        return FragmentSaveListDialogBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,8 +65,9 @@ class SaveListDialogFragment : DialogFragment() {
                     val userToken =
                         FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
                     apiClient.uploadList(tempListInfo.creator, userToken, listInfo)
-                    findNavController().navigateUp()
-                    findNavController().navigateUp()
+
+                    val action = SaveListDialogFragmentDirections.actionDialogToMine()
+                    findNavController().navigate(action)
                 } catch (e: Exception) {
                     crashlytics.log("${e.message}")
                     Snackbar.make(requireView(), R.string.fail_create_list, Snackbar.LENGTH_LONG)
@@ -82,12 +77,7 @@ class SaveListDialogFragment : DialogFragment() {
         }
 
         binding.btnCancel.setOnClickListener {
-            findNavController().navigateUp()
+            dismiss()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
