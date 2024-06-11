@@ -145,10 +145,10 @@
     <string name="permission_information">권한 안내</string>
     <string name="permission_agree">동의하기</string>
     <string name="later">나중에 하기</string>
-    <string name="permission_description_first">복습 기능을 위해서는\n알림 권한이 필요합니다.</string>
-    <string name="permission_description_second">아래 \'동의하기\'버튼을 눌러서\n알림 권한 사용에 동의해주세요.</string>
+    <string name="permission_description_first">복습 기능을 위해서는 알림 권한과\n알람 및 리마인더 권한이 필요합니다.</string>
+    <string name="permission_description_second">아래 \'동의하기\'버튼을 눌러서\n권한 사용에 동의해주세요.</string>
     <string name="permission_denied_content_first">복습 알림 기능 이외에는\n모두 사용 가능합니다.</string>
-    <string name="permission_denied_content_second">추후에 알림 권한을 설정하시려면\n상세 단어장에서 알림 버튼을 눌러주세요.</string>
+    <string name="permission_denied_content_second">추후에 권한을 설정하시려면\n상세 단어장에서 알림 버튼을 눌러주세요.</string>
     <string name="navigation_permission_dialog">권한 요청 다이얼로그</string>
     <string name="navigation_permission_denied_dialog">권한 거절됨 다이얼로그</string>
     <string name="check_alarm_reminders_permission">알람 및 리마인더 권한이 필요합니다.</string>

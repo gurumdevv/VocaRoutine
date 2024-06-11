@@ -1,6 +1,7 @@
 package com.gurumlab.vocaroutine.ui.home
 
 import android.Manifest
+import android.app.AlarmManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -126,32 +127,35 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 val action = HomeFragmentDirections.actionHomeToLogin()
                 findNavController().navigate(action)
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    checkNotificationPermission()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    checkPermissions()
                 }
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun checkNotificationPermission() {
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun checkPermissions() {
         lifecycleScope.launch {
-            val isPermissionCheck = viewModel.getIsPermissionCheck()
+            if (!viewModel.getIsPermissionCheck()) {
+                val isNotNotificationPermissionGranted =
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            ContextCompat.checkSelfPermission(
+                                requireContext(),
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) != PackageManager.PERMISSION_GRANTED &&
+                            !ActivityCompat.shouldShowRequestPermissionRationale(
+                                requireActivity(),
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
 
-            if (!isPermissionCheck) {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.POST_NOTIFICATIONS
-                    )
-                    != PackageManager.PERMISSION_GRANTED &&
-                    !ActivityCompat.shouldShowRequestPermissionRationale(
-                        requireActivity(),
-                        Manifest.permission.POST_NOTIFICATIONS
-                    )
-                ) {
+                val isExactAlarmPermissionGranted =
+                    requireContext().getSystemService(AlarmManager::class.java)
+                        .canScheduleExactAlarms()
+
+                if (isNotNotificationPermissionGranted || !isExactAlarmPermissionGranted) {
                     viewModel.setPermissionCheck(true)
-                    val action = HomeFragmentDirections.actionHomeToPermissionDialog()
-                    findNavController().navigate(action)
+                    findNavController().navigate(HomeFragmentDirections.actionHomeToPermissionDialog())
                 }
             }
         }
