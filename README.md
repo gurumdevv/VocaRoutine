@@ -19,10 +19,10 @@ ML Kit의 Document Scan, OCR 기능을 도입했습니다. 카메라로 문서�
 
 ## Screenshot
 <p align="center">
-<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/60b32cde-11e2-47c2-8d40-da8e1007df47" width="23%" height="30%">
-<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/39780f2b-e423-4d61-8d5e-1a85d0597967" width="23%" height="30%">
-<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/62a0b8ff-5765-4359-a146-033a46ca3515" width="23%" height="30%">
-<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/334de7ff-a3b4-4a1a-8f8d-a016bd50cda1" width="23%" height="30%">
+<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/60b32cde-11e2-47c2-8d40-da8e1007df47" width="23%" height="30%" alt="Screenshot 1">
+<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/39780f2b-e423-4d61-8d5e-1a85d0597967" width="23%" height="30%" alt="Screenshot 2">
+<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/62a0b8ff-5765-4359-a146-033a46ca3515" width="23%" height="30%" alt="Screenshot 3">
+<img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/334de7ff-a3b4-4a1a-8f8d-a016bd50cda1" width="23%" height="30%" alt="Screenshot 4">
 </p>
 
 ## App Architecture
@@ -32,6 +32,7 @@ ML Kit의 Document Scan, OCR 기능을 도입했습니다. 카메라로 문서�
 ✔️ **2023.10 ~ 2023.12:** 개발 완료<br>
 ✔️ **2024.05.13:** 다크모드 대응<br>
 ✔️ **2024.05.15 ~ 2024.05.22:** Flow 기술 전환, 버그 수정, PlayStore 출시 준비<br>
+✔️ **2024.07.11:** PlayStore 출시<br>
 
 ## Tech Skill
 | Category | Stack |
@@ -40,16 +41,13 @@ ML Kit의 Document Scan, OCR 기능을 도입했습니다. 카메라로 문서�
 | **Android Jetpack** | ViewModel, LiveData, Navigation, Room, Data Binding |
 | **Dependency Injection** | Hilt |
 | **Networking** | Retrofit2, OkHttp3 |
-| **Asynchronous** | Coroutine, Flow, SharedFlow, StateFlow |
+| **Asynchronous** | Coroutine, Flow |
 | **Local DB** | Room, DataStore |
 | **Background** | AlarmManager |
 | **Notification** | NotificationManager |
 | **Firebase** | Crashlytics |
 
 ## How to Download
-PlayStore 출시를 위해 현재 비공개 테스트 중입니다. 출시가 완료되면 PlayStore에서 다운로드 가능합니다.<br>
-현재는 아래 링크에서 apk 파일을 다운받으실 수 있습니다.<br><br>
-<a href="https://drive.google.com/drive/folders/18l2NL2vXX4qghP2n8YrMIlTD-qJ9stF2?usp=sharing">
-    <img src="https://github.com/gurumdevv/VocaRoutine/assets/129643788/bb151951-8222-4d6d-b729-9cbc959707f5" alt="어원으로 암기" width="45" height="45">
-</a> 
-&nbsp;&nbsp;← 구글 드라이브 아이콘을 클릭해주세요.
+<a href="https://play.google.com/store/apps/details?id=com.gurumlab.vocaroutine">
+    <img src="https://github.com/user-attachments/assets/c4d051e5-85d9-46fe-bfd7-a5e479ef0f8c" alt="어원으로 암기" width="160" height="61">
+</a>
