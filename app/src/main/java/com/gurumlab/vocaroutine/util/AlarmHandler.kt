@@ -27,7 +27,7 @@ class AlarmHandler @Inject constructor(
     private lateinit var pendingIntent: PendingIntent
     private lateinit var alarmManager: AlarmManager
 
-    fun callAlarm(date: String, alarmCode: Int, content: String): Boolean {
+    fun callAlarm(dateTime: String, alarmCode: Int, content: String): Boolean {
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val receiverIntent = Intent(context, AlarmReceiver::class.java).apply {
@@ -55,16 +55,16 @@ class AlarmHandler @Inject constructor(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        var dateTime = Date()
+        val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        var formattedDateTime = Date()
         try {
-            dateTime = dateFormat.parse(date) as Date
+            formattedDateTime = dateTimeFormat.parse(dateTime) as Date
         } catch (e: ParseException) {
             crashlytics.log("${e.message}")
         }
 
         val calendar = Calendar.getInstance()
-        calendar.time = dateTime
+        calendar.time = formattedDateTime
 
         try {
             alarmManager.setExactAndAllowWhileIdle(

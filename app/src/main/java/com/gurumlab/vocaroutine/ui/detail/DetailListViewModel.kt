@@ -85,11 +85,12 @@ class DetailListViewModel @Inject constructor(
             if (isNotificationSet.value == true) {
                 cancelAlarm(alarmCode)
             } else {
+                val alertTime = repository.getAlertTime().ifBlank { "1:06:00" }
                 val id = list.id
                 val content = list.title
-                val dayOne = getDate(1)
-                val dayThree = getDate(3)
-                val daySeven = getDate(7)
+                val dayOne = getDate(1, alertTime)
+                val dayThree = getDate(3, alertTime)
+                val daySeven = getDate(7, alertTime)
 
                 if (setAlarm(id, alarmCode, content, dayOne) &&
                     setAlarm(id, alarmCode + 1, content, dayThree) &&
@@ -107,11 +108,11 @@ class DetailListViewModel @Inject constructor(
         id: String,
         alarmCode: Int,
         content: String,
-        date: String
+        dateTime: String
     ): Boolean {
-        val isSet = alarmHandler.callAlarm(date, alarmCode, content)
+        val isSet = alarmHandler.callAlarm(dateTime, alarmCode, content)
         if (isSet) {
-            val alarm = Alarm(alarmCode, id, date, content)
+            val alarm = Alarm(alarmCode, id, dateTime, content)
             repository.addAlarm(alarm)
             _isClickAlarmIcon.value = true
         } else {
@@ -133,13 +134,26 @@ class DetailListViewModel @Inject constructor(
         _isClickAlarmIcon.value = true
     }
 
-    private fun getDate(daysToAdd: Int): String {
+    private fun getDate(daysToAdd: Int, alertTime: String): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, daysToAdd)
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        return String.format(Locale.getDefault(), "%d-%02d-%02d 18:00:00", year, month, day)
+
+        val splitAlertTime = alertTime.split(":")
+        val amPm = splitAlertTime[0].toInt()
+        val hour = splitAlertTime[1].toInt() + if (amPm == 1) 12 else 0
+        val minute = splitAlertTime[2].toInt()
+        return String.format(
+            Locale.getDefault(),
+            "%d-%02d-%02d %02d:%02d:00",
+            year,
+            month,
+            day,
+            hour,
+            minute
+        )
     }
 
     fun shareListToOnline(list: ListInfo) {

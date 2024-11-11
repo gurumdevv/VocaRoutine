@@ -40,7 +40,7 @@ class DetailListRepository @Inject constructor(
         apiClient.shareList(userToken, sharedListInfo)
     }
 
-    suspend fun getSharedListById(
+    fun getSharedListById(
         userToken: String,
         postId: String,
         onError: (message: String?) -> Unit,
@@ -74,5 +74,9 @@ class DetailListRepository @Inject constructor(
 
     suspend fun getUserToken(): String {
         return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
+    }
+
+    suspend fun getAlertTime(): String {
+        return userDataSource.getAlertTime()
     }
 }
