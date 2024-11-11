@@ -40,7 +40,7 @@ class OnlineListRepository @Inject constructor(
         }
     }.onCompletion {
         onComplete()
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     fun getMyLists(
         uid: String,
@@ -56,7 +56,7 @@ class OnlineListRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun uploadList(uid: String, userToken: String, listInfo: ListInfo) {
         apiClient.uploadList(uid, userToken, listInfo)

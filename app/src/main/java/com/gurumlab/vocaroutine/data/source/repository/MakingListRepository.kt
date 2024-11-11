@@ -20,7 +20,7 @@ class MakingListRepository @Inject constructor(
     private val userDataSource: UserDataSource
 ) {
 
-    suspend fun getEtymology(
+    fun getEtymology(
         word: String,
         onError: (message: String?) -> Unit,
         onException: (message: String?) -> Unit
@@ -42,7 +42,7 @@ class MakingListRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun getUid(): String {
         return userDataSource.getUid()
@@ -50,7 +50,8 @@ class MakingListRepository @Inject constructor(
 
     companion object {
         const val SYSTEM = "system"
-        const val REQUEST_COMMAND_START = "너는 어원 사전이야. response는 개행문자가 포함되서는 안되고 총 글자 수가 100자가 넘겨서는 안돼."
+        const val REQUEST_COMMAND_START =
+            "너는 어원 사전이야. response는 개행문자가 포함되서는 안되고 총 글자 수가 100자가 넘겨서는 안돼."
         const val REQUEST_COMMAND_END =
             "에 대해서 단어가 분해가 가능하면 먼저 분해를 하고, " +
                     "각 분해된 요소에 대해서 뜻만 설명해주고 \"의미합니다\"로 문장을 끝내줘." +

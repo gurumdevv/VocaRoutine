@@ -36,7 +36,7 @@ class SettingRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     fun getSharedListByCreator(
         uid: String,
@@ -53,7 +53,7 @@ class SettingRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun deleteSharedList(
         uid: String,

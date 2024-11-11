@@ -47,7 +47,7 @@ class HomeRepository @Inject constructor(
         }
     }.onCompletion {
         onComplete()
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun getAlarmCode(id: String, currentDate: String): Int {
         return dao.getAlarmCode(id, currentDate)

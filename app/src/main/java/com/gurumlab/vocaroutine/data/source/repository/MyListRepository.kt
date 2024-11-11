@@ -41,7 +41,7 @@ class MyListRepository @Inject constructor(
         }
     }.onCompletion {
         onComplete()
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun deleteList(uid: String, userToken: String, listId: String) {
         apiClient.deleteMyList(uid, listId, userToken)
@@ -62,7 +62,7 @@ class MyListRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     fun getAllOfflineLists(
         onComplete: () -> Unit
@@ -70,7 +70,7 @@ class MyListRepository @Inject constructor(
         emit(offlineModeDao.getAllListInfo())
     }.onCompletion {
         onComplete()
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
 
     suspend fun deleteOfflineList(listInfo: ListInfo) {

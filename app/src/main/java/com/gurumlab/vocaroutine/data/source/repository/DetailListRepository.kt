@@ -54,7 +54,7 @@ class DetailListRepository @Inject constructor(
         }.onException {
             onException(it.message)
         }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(Dispatchers.IO)
 
     suspend fun downloadListOnDevice(listInfo: ListInfo) {
         offlineModeDao.insertListInfo(listInfo)
