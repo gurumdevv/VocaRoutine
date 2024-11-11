@@ -74,5 +74,5 @@ annotation class GptRetrofit
 annotation class GptOkHttpClient
 
 object GptVersion{
-    const val CURRENT_VERSION = "gpt-4o"
+    const val CURRENT_VERSION = "gpt-4o-mini"
 }
