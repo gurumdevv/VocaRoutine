@@ -60,7 +60,8 @@ class SaveListDialogFragment : BaseDialogFragment<FragmentSaveListDialogBinding>
                 tempListInfo.review,
                 tempListInfo.vocabularies
             )
-            lifecycleScope.launch {
+
+            viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     val userToken =
                         FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
@@ -70,7 +71,7 @@ class SaveListDialogFragment : BaseDialogFragment<FragmentSaveListDialogBinding>
                     findNavController().navigate(action)
                 } catch (e: Exception) {
                     crashlytics.log("${e.message}")
-                    Snackbar.make(requireView(), R.string.fail_create_list, Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, R.string.fail_create_list, Snackbar.LENGTH_LONG)
                         .show()
                 }
             }
