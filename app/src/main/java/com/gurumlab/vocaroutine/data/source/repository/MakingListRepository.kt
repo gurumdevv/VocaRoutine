@@ -29,8 +29,8 @@ class MakingListRepository @Inject constructor(
             ChatRequest(
                 GptVersion.CURRENT_VERSION, listOf(
                     ChatMessage(
-                        "system",
-                        "\'${word}\'에 대해서 어원을 알고 싶은데 단어가 분해가 가능하면 분해해서 100자 이내로 알려주고 문장의 끝은 \"니다\"로 끝내줘"
+                        SYSTEM,
+                        REQUEST_COMMAND_START + "\'${word}\'" + REQUEST_COMMAND_END
                     )
                 )
             )
@@ -46,5 +46,15 @@ class MakingListRepository @Inject constructor(
 
     suspend fun getUid(): String {
         return userDataSource.getUid()
+    }
+
+    companion object {
+        const val SYSTEM = "system"
+        const val REQUEST_COMMAND_START = "너는 어원 사전이야. response는 개행문자가 포함되서는 안되고 총 글자 수가 100자가 넘겨서는 안돼."
+        const val REQUEST_COMMAND_END =
+            "에 대해서 단어가 분해가 가능하면 먼저 분해를 하고, " +
+                    "각 분해된 요소에 대해서 뜻만 설명해주고 \"의미합니다\"로 문장을 끝내줘." +
+                    "각 분해된 요소에 대해서 뜻을 설명했으면 더 이상 설명을 작성할 필요 없어." +
+                    "모든 문장의 끝은 항상 \"니다\"로 끝내줘."
     }
 }

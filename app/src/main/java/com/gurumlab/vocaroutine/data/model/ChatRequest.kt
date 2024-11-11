@@ -1,10 +1,9 @@
 package com.gurumlab.vocaroutine.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.squareup.moshi.Json
 
-@Parcelize
 data class ChatRequest(
     val model: String,
-    val messages: List<ChatMessage>
-) : Parcelable
+    val messages: List<ChatMessage>,
+    @Json(name = "max_completion_tokens") val maxCompletionTokens: Int = 100
+)
