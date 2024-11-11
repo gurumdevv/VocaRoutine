@@ -32,4 +32,11 @@
         <item name="cornerSize">100dp</item>
     </style>
 
+    <style name="CustomNumberPickerStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/orange200</item>
+        <item name="android:textSize">30sp</item>
+        <item name="colorControlNormal">@color/transparent</item>
+    </style>
+
 </resources>

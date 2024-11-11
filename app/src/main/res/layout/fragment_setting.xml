@@ -98,6 +98,25 @@
             app:layout_constraintTop_toBottomOf="@id/btn_setting_account" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_setting_alert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="@color/background_color"
+            android:drawableStart="@drawable/ic_alarm_clock"
+            android:drawableEnd="@drawable/ic_right_arrow"
+            android:drawablePadding="10dp"
+            android:paddingHorizontal="18dp"
+            android:stateListAnimator="@null"
+            android:text="@string/setting_alert"
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_setting_list" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_policy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -113,7 +132,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_setting_list" />
+            app:layout_constraintTop_toBottomOf="@id/btn_setting_alert" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

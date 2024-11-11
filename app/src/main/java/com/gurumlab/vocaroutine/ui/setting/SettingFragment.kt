@@ -38,6 +38,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
             findNavController().navigate(action)
         }
 
+        binding.btnSettingAlert.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingToAlertSetting()
+            findNavController().navigate(action)
+        }
+
         binding.btnPolicy.setOnClickListener {
             val action = SettingFragmentDirections.actionSettingToPolicy()
             findNavController().navigate(action)

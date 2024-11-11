@@ -154,4 +154,12 @@
     <string name="check_alarm_reminders_permission">알람 및 리마인더 권한이 필요합니다.</string>
     <string name="check_alarm_permission">알림 권한이 필요합니다.</string>
     <string name="btn_sign_in_progress">로그인 진행 중</string>
+    <string name="setting_alert">복습 알림 시간 설정</string>
+    <string name="alert_time_description">복습 알림이 발생하는 시간을 수정합니다.</string>
+    <string name="time_picker_divider">:</string>
+    <string name="btn_cancel">취소</string>
+    <string name="btn_apply">확인</string>
+    <string name="am">오전</string>
+    <string name="pm">오후</string>
+    <string name="navigation_alert_setting">복습 알림 시간 설정 화면</string>
 </resources>
