@@ -94,4 +94,12 @@ class SettingRepository @Inject constructor(
     suspend fun getUserToken(): String {
         return FirebaseAuthenticator.getUserToken().takeIf { !it.isNullOrBlank() } ?: ""
     }
+
+    suspend fun getAlertTime(): String {
+        return userDataSource.getAlertTime()
+    }
+
+    suspend fun setAlertTime(time: String) {
+        userDataSource.setAlertTime(time)
+    }
 }

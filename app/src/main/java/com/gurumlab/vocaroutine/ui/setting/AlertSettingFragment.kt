@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.gurumlab.vocaroutine.R
 import com.gurumlab.vocaroutine.databinding.FragmentAlertSettingBinding
 import com.gurumlab.vocaroutine.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -27,21 +31,40 @@ class AlertSettingFragment : BaseFragment<FragmentAlertSettingBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         setLayout()
+        loadAlertTime()
     }
 
     private fun setLayout() {
         setTimePicker()
         setTopAppBar()
         showBottomNavigation(false)
+        setApplyButton()
+        setCancelButton()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         showBottomNavigation(true)
+    }
+
+    private fun loadAlertTime() {
+        viewModel.getAlertTime()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.alertTime.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED
+            ).collect {
+                if (it.isNotBlank()) {
+                    val amPmHourMinute = it.split(":")
+                    binding.numberPickerAmPm.value = amPmHourMinute[0].toInt()
+                    binding.numberPickerHour.value = amPmHourMinute[1].toInt()
+                    binding.numberPickerMinute.value = amPmHourMinute[2].toInt()
+                }
+            }
+        }
     }
 
     private fun setTimePicker() {
@@ -68,18 +91,37 @@ class AlertSettingFragment : BaseFragment<FragmentAlertSettingBinding>() {
         }
     }
 
+    private fun setApplyButton() {
+        binding.btnApply.setOnClickListener {
+            val amPm = binding.numberPickerAmPm.value.toString()
+            val hour = binding.numberPickerHour.value.toString()
+            val minute = binding.numberPickerMinute.value.toString()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.setAlertTime(amPm, hour, minute)
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    private fun setCancelButton() {
+        binding.btnCancel.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
+
     private fun setTopAppBar() {
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }
 
-    private fun Int.toTwoDigitString(): String {
-        return String.format(Locale.getDefault(), "%02d", this)
-    }
-
     private fun showBottomNavigation(visible: Boolean) {
         val bottomNavigation = activity?.findViewById<View>(R.id.bottom_navigation)
         bottomNavigation?.isVisible = visible
+    }
+
+    private fun Int.toTwoDigitString(): String {
+        return String.format(Locale.getDefault(), "%02d", this)
     }
 }

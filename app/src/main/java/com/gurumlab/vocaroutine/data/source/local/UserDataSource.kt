@@ -16,6 +16,7 @@ class UserDataSource @Inject constructor(private val dataStore: DataStore<Prefer
 
     private val uidStringKey = stringPreferencesKey("uid")
     private val permissionBooleanKey = booleanPreferencesKey("permission")
+    private val alertTimeKey = stringPreferencesKey("alertTime")
 
     suspend fun getUid(): String {
         return dataStore.data
@@ -54,6 +55,25 @@ class UserDataSource @Inject constructor(private val dataStore: DataStore<Prefer
     suspend fun setIsPermissionCheck(permission: Boolean) {
         dataStore.edit { preferences ->
             preferences[permissionBooleanKey] = permission
+        }
+    }
+
+    suspend fun getAlertTime(): String {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }.map { preferences ->
+                preferences[alertTimeKey] ?: ""
+            }.firstOrNull() ?: ""
+    }
+
+    suspend fun setAlertTime(alertTime: String) {
+        dataStore.edit { preferences ->
+            preferences[alertTimeKey] = alertTime
         }
     }
 }

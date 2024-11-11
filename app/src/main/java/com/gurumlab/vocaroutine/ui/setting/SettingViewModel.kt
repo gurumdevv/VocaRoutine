@@ -44,6 +44,9 @@ class SettingViewModel @Inject constructor(
     private val _isAccountDelete: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val isAccountDelete: SharedFlow<Boolean> = _isAccountDelete
 
+    private val _alertTime = MutableStateFlow("")
+    val alertTime: StateFlow<String> = _alertTime
+
     private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -238,6 +241,17 @@ class SettingViewModel @Inject constructor(
             FirebaseAuth.getInstance().signOut()
             _isLogout.emit(true)
         }
+    }
+
+    fun getAlertTime() {
+        viewModelScope.launch {
+            val currentAlertTime = repository.getAlertTime()
+            _alertTime.value = currentAlertTime.ifBlank { "1:06:00" }
+        }
+    }
+
+    suspend fun setAlertTime(amPm: String, hour: String, minute: String) {
+        repository.setAlertTime("$amPm:$hour:$minute")
     }
 
     private fun checkNetworkAvailable(failMessageId: Int): Boolean {
