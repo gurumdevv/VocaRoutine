@@ -47,10 +47,11 @@ abstract class BaseDialogFragment<Binding : ViewBinding> : DialogFragment() {
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         if (Build.VERSION.SDK_INT < 30) {
-
+            @Suppress("DEPRECATION")
             val display = windowManager.defaultDisplay
             val size = Point()
 
+            @Suppress("DEPRECATION")
             display.getSize(size)
 
             val window = dialogFragment.dialog?.window
@@ -58,11 +59,8 @@ abstract class BaseDialogFragment<Binding : ViewBinding> : DialogFragment() {
             val x = (size.x * width).toInt()
             val y = (size.y * height).toInt()
             window?.setLayout(x, y)
-
         } else {
-
             val rect = windowManager.currentWindowMetrics.bounds
-
             val window = dialogFragment.dialog?.window
 
             val x = (rect.width() * width).toInt()
