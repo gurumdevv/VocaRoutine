@@ -162,4 +162,5 @@
     <string name="am">오전</string>
     <string name="pm">오후</string>
     <string name="navigation_alert_setting">복습 알림 시간 설정 화면</string>
+    <string name="app_start_description">어원으로 암기 시작하기</string>
 </resources>
