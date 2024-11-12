@@ -41,7 +41,7 @@ ML Kit의 Document Scan, OCR 기능을 도입했습니다. 카메라로 문서�
 | **Android Jetpack** | ViewModel, LiveData, Navigation, Room, Data Binding |
 | **Dependency Injection** | Hilt |
 | **Networking** | Retrofit2, OkHttp3 |
-| **Asynchronous** | Coroutine, Flow |
+| **Asynchronous** | Coroutine, StateFlow, SharedFlow |
 | **Local DB** | Room, DataStore |
 | **Background** | AlarmManager |
 | **Notification** | NotificationManager |
