@@ -71,7 +71,7 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
     private fun setButtonClickListener() {
         binding.btnYes.setOnClickListener {
             if (vocabularies.isNotEmpty()) {
-                vocabularies.removeFirst()
+                vocabularies.removeAt(0)
                 updateVocabularyText()
             }
         }
@@ -80,7 +80,7 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
             if (vocabularies.isNotEmpty()) {
                 val currentVocabulary = vocabularies.first()
                 vocabularies.add(currentVocabulary)
-                vocabularies.removeFirst()
+                vocabularies.removeAt(0)
 
                 val action = FlipFrontFragmentDirections.actionGlobalBack(currentVocabulary)
                 findNavController().navigate(action)
