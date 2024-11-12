@@ -40,6 +40,23 @@ class DetailListRepository @Inject constructor(
         apiClient.shareList(userToken, sharedListInfo)
     }
 
+    fun getListsById(
+        uid: String,
+        userToken: String,
+        listId: String,
+        onError: (message: String?) -> Unit,
+        onException: (message: String?) -> Unit
+    ): Flow<Map<String, ListInfo>> = flow {
+        val response = apiClient.getListsById(uid, userToken, "\"id\"", "\"${listId}\"")
+        response.onSuccess {
+            emit(it)
+        }.onError { code, message ->
+            onError("code: $code, message: $message")
+        }.onException {
+            onException(it.message)
+        }
+    }.flowOn(Dispatchers.IO)
+
     fun getSharedListById(
         userToken: String,
         postId: String,
@@ -55,6 +72,10 @@ class DetailListRepository @Inject constructor(
             onException(it.message)
         }
     }.flowOn(Dispatchers.IO)
+
+    suspend fun deleteList(uid: String, userToken: String, listId: String) {
+        apiClient.deleteMyList(uid, listId, userToken)
+    }
 
     suspend fun downloadListOnDevice(listInfo: ListInfo) {
         offlineModeDao.insertListInfo(listInfo)

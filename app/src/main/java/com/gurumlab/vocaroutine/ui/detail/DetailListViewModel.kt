@@ -62,6 +62,51 @@ class DetailListViewModel @Inject constructor(
         }
     }
 
+    fun deleteList(list: ListInfo, onSuccess: () -> Unit) {
+        if (_isNetworkAvailable.value?.content == true) {
+            deleteOnlineList(list, onSuccess)
+        } else {
+            deleteOffLineList(list, onSuccess)
+        }
+    }
+
+    private fun deleteOnlineList(listInfo: ListInfo, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val uid = repository.getUid()
+            val userToken = repository.getUserToken()
+            val list = repository.getListsById(
+                uid,
+                userToken,
+                listInfo.id,
+                onError = {
+                    setSnackbarMessage(R.string.delete_fail)
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                },
+                onException = {
+                    setSnackbarMessage(R.string.delete_fail)
+                    if (!it.isNullOrBlank()) {
+                        crashlytics.log(it)
+                    }
+                }
+            ).firstOrNull()
+
+            list?.let {
+                val listKey = it.keys.first()
+                repository.deleteList(uid, userToken, listKey)
+            }
+            onSuccess()
+        }
+    }
+
+    private fun deleteOffLineList(listInfo: ListInfo, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            repository.deleteListOnDevice(listInfo)
+            onSuccess()
+        }
+    }
+
     suspend fun loadIsDownloaded(list: ListInfo) {
         val result = repository.getListById(list.id)
         if (!result.isNullOrEmpty()) {

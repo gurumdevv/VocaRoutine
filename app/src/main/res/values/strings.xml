@@ -163,4 +163,6 @@
     <string name="pm">오후</string>
     <string name="navigation_alert_setting">복습 알림 시간 설정 화면</string>
     <string name="app_start_description">어원으로 암기 시작하기</string>
+    <string name="more_description">더보기 버튼</string>
+    <string name="delete_in_menu">삭제</string>
 </resources>

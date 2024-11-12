@@ -39,4 +39,8 @@
         <item name="colorControlNormal">@color/transparent</item>
     </style>
 
+    <style name="CustomPopUpMenuStyle" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@color/background_color</item>
+    </style>
+
 </resources>

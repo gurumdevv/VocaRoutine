@@ -1,9 +1,12 @@
 package com.gurumlab.vocaroutine.ui.detail
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -52,6 +55,7 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
         setTopAppBar()
         setNotification()
         setDownloadIcon()
+        setMoreIcon(R.menu.popup_menu, list)
         hideBottomNavigation(false)
     }
 
@@ -122,6 +126,30 @@ class DetailListFragment : BaseFragment<FragmentDetailListBinding>() {
                         binding.ivSetDownload.setImageResource(R.drawable.ic_download_disabled)
                     }
                 }
+        }
+    }
+
+    private fun setMoreIcon(@MenuRes menuRes: Int, listInfo: ListInfo) {
+        binding.ivMore.setOnClickListener { view ->
+            val popupMenu =
+                PopupMenu(requireContext(), view, Gravity.END, 0, R.style.CustomPopUpMenuStyle)
+
+            popupMenu.menuInflater.inflate(menuRes, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_delete -> {
+                        viewModel.deleteList(listInfo) {
+                            findNavController().navigateUp()
+                        }
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            popupMenu.show()
         }
     }
 

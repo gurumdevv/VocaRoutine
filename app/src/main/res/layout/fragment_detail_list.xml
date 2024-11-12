@@ -38,11 +38,22 @@
                 app:navigationIconTint="@color/icon_color">
 
                 <ImageButton
+                    android:id="@+id/iv_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="13dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/more_description"
+                    android:src="@drawable/ic_more"
+                    app:tint="@color/icon_color" />
+
+                <ImageButton
                     android:id="@+id/iv_setUpload"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/set_upload_description"
                     android:onClick="@{() -> viewModel.shareListToOnline(list)}"
