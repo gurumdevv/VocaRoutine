@@ -8,6 +8,6 @@ class AlarmCodeManager {
     fun getAlarmCode(): Int {
         val nano = LocalDateTime.now().nano
         val randomNum = Random.Default.nextInt(100000000, 1000000000)
-        return nano + randomNum
+        return ((nano + randomNum) / 10) * 10
     }
 }
