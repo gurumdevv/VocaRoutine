@@ -161,7 +161,8 @@
         android:id="@+id/navigation_permission_dialog"
         android:name="com.gurumlab.vocaroutine.ui.home.PermissionDialogFragment"
         android:label="@string/navigation_permission_dialog"
-        tools:layout="@layout/fragment_permission_dialog">
+        tools:layout="@layout/fragment_permission_dialog"
+        tools:targetApi="s">
         <action
             android:id="@+id/action_permission_dialog_to_permission_denied_dialog"
             app:destination="@id/navigation_permission_denied_dialog"
