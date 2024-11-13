@@ -8,15 +8,14 @@ import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.TempListInfo
 import com.gurumlab.vocaroutine.data.model.Vocabulary
 import com.gurumlab.vocaroutine.data.source.repository.MakingListRepository
+import com.gurumlab.vocaroutine.util.AlarmCodeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -24,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MakingListViewModel @Inject constructor(
     private val repository: MakingListRepository,
-    private val crashlytics: FirebaseCrashlytics
+    private val crashlytics: FirebaseCrashlytics,
+    private val alarmCodeManager: AlarmCodeManager
 ) :
     ViewModel() {
 
@@ -87,7 +87,7 @@ class MakingListViewModel @Inject constructor(
                 val uid = repository.getUid()
                 val totalCount = vocabularies.size
                 val date = getCurrentTime()
-                val currentAlarmCode = getAlarmCode()
+                val currentAlarmCode = alarmCodeManager.getAlarmCode()
                 val id = getId(currentAlarmCode)
                 val review = Review(firstReview = false, secondReview = false, thirdReview = false)
                 _alarmCode.emit(currentAlarmCode)
@@ -117,24 +117,6 @@ class MakingListViewModel @Inject constructor(
     private suspend fun getId(alarmCode: Int): String {
         val uid = repository.getUid()
         return ("${uid}${alarmCode}")
-    }
-
-    private fun getAlarmCode(): Int {
-        val calendar = Calendar.getInstance()
-        val currentTIme = Date()
-        calendar.time = currentTIme
-
-        val year = calendar.get(Calendar.YEAR).toString().takeLast(2).toInt()
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        return try {
-            "${year * month * day}${hour}${minute}0".toInt()
-        } catch (e: NumberFormatException) {
-            0
-        }
     }
 
     private fun isValidValue(value: String, messageId: Int): Boolean {

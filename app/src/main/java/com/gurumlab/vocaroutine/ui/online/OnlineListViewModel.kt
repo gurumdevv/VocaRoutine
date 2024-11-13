@@ -8,6 +8,7 @@ import com.gurumlab.vocaroutine.data.model.ListInfo
 import com.gurumlab.vocaroutine.data.model.Review
 import com.gurumlab.vocaroutine.data.model.SharedListInfo
 import com.gurumlab.vocaroutine.data.source.repository.OnlineListRepository
+import com.gurumlab.vocaroutine.util.AlarmCodeManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,9 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -30,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class OnlineListViewModel @Inject constructor(
     private val repository: OnlineListRepository,
-    private val crashlytics: FirebaseCrashlytics
+    private val crashlytics: FirebaseCrashlytics,
+    private val alarmCodeManager: AlarmCodeManager
 ) :
     ViewModel() {
 
@@ -120,11 +120,7 @@ class OnlineListViewModel @Inject constructor(
             val userToken = repository.getUserToken()
             val date = getCurrentTime()
             val review = Review(firstReview = false, secondReview = false, thirdReview = false)
-            val alarmCode = getAlarmCode()
-            if (alarmCode == 0) {
-                _snackbarMessage.emit(R.string.alarm_code_error_try_again)
-                return@launch
-            }
+            val alarmCode = alarmCodeManager.getAlarmCode()
             val newListInfo = ListInfo(
                 id = list.id,
                 title = list.title,
@@ -150,23 +146,5 @@ class OnlineListViewModel @Inject constructor(
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentTime = Date()
         return dateFormat.format(currentTime)
-    }
-
-    private fun getAlarmCode(): Int {
-        val calendar = Calendar.getInstance()
-        val currentTIme = Date()
-        calendar.time = currentTIme
-
-        val year = calendar.get(Calendar.YEAR).toString().takeLast(2).toInt()
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
-
-        return try {
-            "${year * month * day}${hour}${minute}0".toInt()
-        } catch (e: NumberFormatException) {
-            0
-        }
     }
 }
