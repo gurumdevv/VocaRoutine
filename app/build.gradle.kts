@@ -93,7 +93,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("io.coil-kt:coil:2.7.0")
-    implementation("com.airbnb.android:lottie:6.5.2")
+    implementation("com.airbnb.android:lottie:6.6.0")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.1")
     implementation("com.google.dagger:hilt-android:2.52")
