@@ -25,13 +25,15 @@ object DatabaseModule {
         ).build()
     }
 
+    @Singleton
     @Provides
     fun provideAlarmDao(appDatabase: AppDatabase): AlarmDao {
         return appDatabase.alarmDao()
     }
 
+    @Singleton
     @Provides
-    fun provideOfflineModeDao(appDatabase: AppDatabase): OfflineModeDao{
+    fun provideOfflineModeDao(appDatabase: AppDatabase): OfflineModeDao {
         return appDatabase.offlineModeDao()
     }
 }
