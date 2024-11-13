@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -24,7 +24,7 @@ import kotlin.math.absoluteValue
 @AndroidEntryPoint
 class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel by activityViewModels<HomeViewModel>()
     private lateinit var crashlytics: FirebaseCrashlytics
     private var title = ""
     private var createdDate = ""
@@ -40,7 +40,6 @@ class FlipFrontFragment : BaseFragment<FragmentFlipFrontBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         setReview()
         setButtonClickListener()

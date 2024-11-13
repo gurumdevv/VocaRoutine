@@ -26,8 +26,7 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     private val repository: SettingRepository,
     private val crashlytics: FirebaseCrashlytics
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _myListSize: MutableStateFlow<Int> = MutableStateFlow(0)
     val myListSize: StateFlow<Int> = _myListSize
